@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Blindtest Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 1. ÉCRAN D'ACCUEIL / MENU -->
+        <div id="screen-menu" class="screen">
+            <h1>Anime Blindtest</h1>
+            <p>Devinez l'animé derrière l'opening ou l'ending !</p>
+            
+            <div class="menu-buttons">
+                <button id="btn-solo" class="btn">Mode Solo</button>
+                <hr>
+                <div class="multiplayer-box">
+                    <h3>Mode 2 Joueurs</h3>
+                    <input type="text" id="username" placeholder="Votre pseudo" max-length="12">
+                    <button id="btn-create-room" class="btn">Créer une partie</button>
+                    <div class="join-box">
+                        <input type="text" id="room-code-input" placeholder="Code de la partie (ex: 1234)">
+                        <button id="btn-join-room" class="btn secondary">Rejoindre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SALON D'ATTENTE (MULTIJOUEUR) -->
+        <div id="screen-lobby" class="screen hidden">
+            <h2>Salon de jeu</h2>
+            <div class="room-info">
+                Code de la partie : <span id="display-room-code">----</span>
+            </div>
+            <div class="players-list">
+                <p>Joueur 1 (Hôte) : <strong id="lobby-p1">En attente...</strong></p>
+                <p>Joueur 2 : <strong id="lobby-p2">En attente...</strong></p>
+            </div>
+            <button id="btn-start-game" class="btn hidden">Lancer la partie</button>
+            <p id="waiting-msg" class="info-msg">En attente de l'hôte pour démarrer...</p>
+        </div>
+
+        <!-- 3. ZONE DE JEU -->
+        <div id="screen-game" class="screen hidden">
+            <div class="game-header">
+                <div class="round-counter">Question : <span id="current-question-num">1</span>/5</div>
+                <div class="timer">Temps : <span id="timer-sec">20</span>s</div>
+            </div>
+
+            <!-- Lecteur YouTube caché -->
+            <div id="yt-player-container">
+                <div id="yt-player"></div>
+            </div>
+
+            <div class="audio-status">
+                <div class="music-icon">🎵</div>
+                <p>Écoutez attentivement...</p>
+            </div>
+
+            <!-- Les 4 propositions sous forme de grille -->
+            <div class="choices-grid" id="choices-container">
+                <!-- Généré dynamiquement en JS -->
+            </div>
+
+            <div class="game-footer">
+                <div class="score-board">
+                    <p id="score-p1">Joueur 1 : 0 pts</p>
+                    <p id="score-p2" class="hidden">Joueur 2 : 0 pts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ÉCRAN DE FIN -->
+        <div id="screen-results" class="screen hidden">
+            <h2>Partie terminée !</h2>
+            <div id="winner-announcement"></div>
+            <div class="final-scores">
+                <p id="final-p1">Joueur 1 : 0 pts</p>
+                <p id="final-p2" class="hidden">Joueur 2 : 0 pts</p>
+            </div>
+            <button id="btn-restart" class="btn">Retour au menu</button>
+        </div>
+    </div>
+
+    <!-- API YouTube IFrame Player -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <!-- Code applicatif -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

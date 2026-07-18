@@ -1,0 +1,217 @@
+:root {
+    --bg-color: #1a1a2e;
+    --card-bg: #16213e;
+    --accent: #e94560;
+    --text-color: #ffffff;
+    --success: #2ecc71;
+    --error: #e74c3c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--accent);
+}
+
+p {
+    margin-bottom: 20px;
+    color: #b2bec3;
+}
+
+/* Boutons */
+.btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.btn:hover {
+    filter: brightness(1.2);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn.secondary {
+    background-color: #0f3460;
+}
+
+hr {
+    width: 100%;
+    border: 0;
+    height: 1px;
+    background: #4e5d78;
+    margin: 20px 0;
+}
+
+/* Mode multijoueur boite */
+.multiplayer-box {
+    width: 100%;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #4e5d78;
+    background: #0f3460;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.join-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.room-info {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: #0f3460;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: var(--accent);
+}
+
+/* Zone de jeu */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+#yt-player-container {
+    /* Le lecteur YouTube est réduit à 1px pour rester invisible tout en jouant le son */
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    left: -9999px;
+}
+
+.audio-status {
+    margin: 20px 0;
+}
+
+.music-icon {
+    font-size: 3rem;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
+
+/* Grille des choix */
+.choices-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.choice-card {
+    background: #0f3460;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.choice-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
+
+.choice-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.choice-card span {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* États de réponse */
+.choice-card.correct {
+    background-color: var(--success) !important;
+    border-color: var(--success);
+}
+
+.choice-card.wrong {
+    background-color: var(--error) !important;
+    border-color: var(--error);
+}
+
+.choice-card.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.game-footer {
+    width: 100%;
+    border-top: 1px solid #4e5d78;
+    padding-top: 15px;
+}
