@@ -50,7 +50,7 @@ async function loadDatabase() {
     }
 }
 
-// Enlever les mentions "OP [nombre]" ou "ED [nombre]" pour n'avoir que le nom de l'animé
+// Extraire le nom de base de l'animé (pour l'algorithme d'exclusion)
 function getBaseAnimeName(title) {
     return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim();
 }
@@ -72,7 +72,7 @@ function generatePlaylist(length = 5, musicTypeChoice = "Mix") {
 // Sélectionner des choix alternatifs du MÊME type (uniquement OP ou uniquement ED)
 function getSimilarAnime(correctSong, count = 3) {
     const correctBaseName = getBaseAnimeName(correctSong.title);
-    const targetType = correctSong.type; // Garantit que les choix ont le même type que la réponse attendue
+    const targetType = correctSong.type; 
 
     const list = animeDatabase
         .filter(song => getBaseAnimeName(song.title) !== correctBaseName && song.type === targetType)
@@ -94,7 +94,7 @@ function getSimilarAnime(correctSong, count = 3) {
 }
 
 // ----------------------------------------------------
-// CHARGEMENT DYNAMIQUE ET SÉCURISÉ DE L'API YOUTUBE
+// CHARGEMENT DE L'API YOUTUBE
 // ----------------------------------------------------
 function loadYoutubeAPI() {
     return new Promise((resolve) => {
@@ -143,7 +143,7 @@ function stopAudio() {
 }
 
 // ----------------------------------------------------
-// GESTION DU REVEAL DE LA VIDÉO
+// VISIBILITÉ DE LA VIDÉO
 // ----------------------------------------------------
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
@@ -199,12 +199,11 @@ function loadQuestion() {
         const card = document.createElement('div');
         card.className = "choice-card";
         
-        // Affichage épuré du nom de l'animé (sans OP/ED)
-        const displayTitle = getBaseAnimeName(song.title);
+        // song.title est directement utilisé pour laisser la mention OP/ED
         card.innerHTML = `
             <div class="choice-number">${index + 1}</div>
-            <img src="${song.image}" alt="${displayTitle}">
-            <span>${displayTitle}</span>
+            <img src="${song.image}" alt="${song.title}">
+            <span>${song.title}</span>
         `;
         card.addEventListener('click', () => handleChoice(card, song, currentQuestion));
         container.appendChild(card);
@@ -227,7 +226,7 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     hasAnsweredCurrent = true;
     clearInterval(timerInterval);
 
-    revealVideo(); // Révéler la vidéo de manière fluide
+    revealVideo(); 
 
     const isCorrect = chosenSong.id === correctQuestion.id;
     
@@ -250,7 +249,8 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     } else {
         selectedCard.classList.add('wrong');
         document.querySelectorAll('.choice-card').forEach(card => {
-            if (getBaseAnimeName(card.querySelector('span').innerText) === getBaseAnimeName(correctQuestion.title)) {
+            // Comparaison directe des titres complets
+            if (card.querySelector('span').innerText === correctQuestion.title) {
                 card.classList.add('correct');
             }
         });
@@ -261,7 +261,6 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
         }
     }
 
-    // Laisse la vidéo visible pendant 3 secondes avant la suite
     setTimeout(() => {
         nextStep();
     }, 3000);
@@ -269,11 +268,11 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
 
 function autoTimeout(correctQuestion) {
     hasAnsweredCurrent = true;
-    revealVideo(); // Révéler la vidéo même en cas de timeout
+    revealVideo(); 
 
     document.querySelectorAll('.choice-card').forEach(card => {
         card.classList.add('disabled');
-        if (getBaseAnimeName(card.querySelector('span').innerText) === getBaseAnimeName(correctQuestion.title)) {
+        if (card.querySelector('span').innerText === correctQuestion.title) {
             card.classList.add('correct');
         }
     });
@@ -284,7 +283,6 @@ function autoTimeout(correctQuestion) {
         });
     }
 
-    // Laisse la vidéo visible pendant 3 secondes
     setTimeout(() => {
         nextStep();
     }, 3000);
@@ -481,15 +479,15 @@ function listenToRoom() {
     });
 }
 
+// ----------------------------------------------------
+// DEMARRAGE ET LISTENERS
+// ----------------------------------------------------
 function launchGame() {
     update(ref(db, `rooms/${roomCode}`), {
         status: "playing"
     });
 }
 
-// ----------------------------------------------------
-// INITIALISATION ET ÉCOUTEURS D'ÉVÉNEMENTS
-// ----------------------------------------------------
 async function init() {
     await loadDatabase();
     await loadYoutubeAPI();
