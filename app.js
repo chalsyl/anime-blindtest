@@ -14,13 +14,14 @@ const firebaseConfig = {
   appId: "1:778473215430:web:35cfca9c149a30bcb94ec7"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // ----------------------------------------------------
 // VARIABLES ET ÉTAT DU JEU
 // ----------------------------------------------------
-let animeDatabase = []; // Chargé depuis anime.json
+let animeDatabase = []; 
 let ytPlayer = null;
 let gameMode = "solo";
 let myRole = "";
@@ -50,31 +51,29 @@ async function loadDatabase() {
     }
 }
 
-// Extraire le nom de base de l'animé (ex: "Naruto Shippuden OP 16" -> "Naruto Shippuden")
+// Extraire le nom de base de l'animé (ex: "Naruto Shippuden OP 1" -> "Naruto Shippuden")
 function getBaseAnimeName(title) {
     return title.split(/ OP| ED/i)[0].trim();
 }
 
 // ----------------------------------------------------
-// CRÉATION DE PLAYLIST (FILTRÉE PAR OP / ED / MIX)
+// CRÉATION DE PLAYLIST
 // ----------------------------------------------------
 function generatePlaylist(length = 5, musicTypeChoice = "Mix") {
     let availableSongs = animeDatabase.filter(song => {
         if (musicTypeChoice === "OP") return song.type === "OP";
         if (musicTypeChoice === "ED") return song.type === "ED";
-        return true; // Mix
+        return true;
     });
 
     const shuffled = [...availableSongs].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, length);
 }
 
-// Sélectionner des choix similaires sans inclure le même animé
 function getSimilarAnime(correctSong, count = 3) {
     const correctBaseName = getBaseAnimeName(correctSong.title);
 
     const list = animeDatabase
-        // Exclure la bonne réponse ET les autres morceaux du même animé (ex: exclure l'ED si on cherche l'OP)
         .filter(song => getBaseAnimeName(song.title) !== correctBaseName)
         .map(song => {
             let similarity = 0;
@@ -94,32 +93,48 @@ function getSimilarAnime(correctSong, count = 3) {
 }
 
 // ----------------------------------------------------
-// LECTEUR YOUTUBE
+// CHARGEMENT DYNAMIQUE ET SÉCURISÉ DE L'API YOUTUBE
 // ----------------------------------------------------
-window.onYouTubeIframeAPIReady = function() {
-    ytPlayer = new YT.Player('yt-player', {
-        height: '1',
-        width: '1',
-        videoId: '',
-        playerVars: {
-            'autoplay': 0,
-            'controls': 0,
-            'disablekb': 1,
-            'fs': 0,
-            'modestbranding': 1,
-            'rel': 0,
-            'showinfo': 0
-        },
-        events: {
-            'onReady': () => console.log("Lecteur YouTube Prêt")
-        }
+function loadYoutubeAPI() {
+    return new Promise((resolve) => {
+        // Callback global attendu par YouTube
+        window.onYouTubeIframeAPIReady = () => {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '1',
+                width: '1',
+                videoId: '',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'showinfo': 0
+                },
+                events: {
+                    'onReady': () => {
+                        console.log("Lecteur YouTube initialisé et prêt.");
+                        resolve();
+                    }
+                }
+            });
+        };
+
+        // Injection dynamique de la balise script
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     });
-};
+}
 
 function playAudio(youtubeId) {
     if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
         ytPlayer.loadVideoById(youtubeId);
         ytPlayer.playVideo();
+    } else {
+        console.error("Le lecteur YouTube n'est pas encore prêt ou n'a pas pu démarrer.");
     }
 }
 
@@ -167,7 +182,6 @@ function loadQuestion() {
     const distractors = getSimilarAnime(currentQuestion, 3);
     const choices = [currentQuestion, ...distractors].sort(() => 0.5 - Math.random());
 
-    // Utilisation de YoutubeId (avec un Y majuscule comme spécifié dans votre JSON)
     playAudio(currentQuestion.YoutubeId);
 
     const container = document.getElementById('choices-container');
@@ -460,8 +474,13 @@ function launchGame() {
 // INITIALISATION ET ÉCOUTEURS D'ÉVÉNEMENTS
 // ----------------------------------------------------
 async function init() {
-    await loadDatabase(); // Attente du chargement du JSON avant d'activer le jeu
+    // 1. Charger la base de données JSON
+    await loadDatabase();
     
+    // 2. Charger et initialiser l'API YouTube dynamiquement
+    await loadYoutubeAPI();
+    
+    // 3. Activer les écouteurs de clics
     document.getElementById('btn-solo').addEventListener('click', startSoloGame);
     document.getElementById('btn-create-room').addEventListener('click', createRoom);
     document.getElementById('btn-join-room').addEventListener('click', joinRoom);
