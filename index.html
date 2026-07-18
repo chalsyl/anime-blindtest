@@ -13,7 +13,6 @@
             <h1>Anime Blindtest</h1>
             <p>Devinez l'animé derrière l'opening ou l'ending !</p>
             
-            <!-- SÉLECTION DU TYPE DE MUSIQUE -->
             <div class="setting-box">
                 <label for="music-type-select">Type de musique :</label>
                 <select id="music-type-select">
@@ -62,15 +61,15 @@
                 <div class="timer">Temps : <span id="timer-sec">20</span>s</div>
             </div>
 
-            <div id="yt-player-container">
-                <div id="yt-player"></div>
-            </div>
-
+            <!-- Conteneur unifié pour l'audio et la vidéo -->
             <div class="audio-status">
-                <div class="music-icon">🎵</div>
-                <!-- Badge indiquant si c'est un OP ou un ED -->
-                <div id="music-type-badge" class="badge">OPENING</div>
-                <p>Écoutez attentivement...</p>
+                <div id="placeholder-container">
+                    <div class="music-icon">🎵</div>
+                    <p>Écoutez attentivement...</p>
+                </div>
+                <div id="yt-player-container">
+                    <div id="yt-player"></div>
+                </div>
             </div>
 
             <div class="choices-grid" id="choices-container">

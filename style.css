@@ -90,7 +90,7 @@ hr {
     margin: 20px 0;
 }
 
-/* Mode multijoueur boite */
+/* Mode multijoueur */
 .multiplayer-box {
     width: 100%;
 }
@@ -121,99 +121,6 @@ input[type="text"] {
     border-radius: 8px;
     margin-bottom: 20px;
     color: var(--accent);
-}
-
-/* Zone de jeu */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-}
-
-#yt-player-container {
-    /* Le lecteur YouTube est réduit à 1px pour rester invisible tout en jouant le son */
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    position: absolute;
-    left: -9999px;
-}
-
-.audio-status {
-    margin: 20px 0;
-}
-
-.music-icon {
-    font-size: 3rem;
-    animation: bounce 1s infinite alternate;
-}
-
-@keyframes bounce {
-    from { transform: translateY(0); }
-    to { transform: translateY(-10px); }
-}
-
-/* Grille des choix */
-.choices-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    width: 100%;
-    margin-bottom: 25px;
-}
-
-.choice-card {
-    background: #0f3460;
-    border: 2px solid transparent;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.choice-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent);
-}
-
-.choice-card img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.choice-card span {
-    font-size: 0.9rem;
-    font-weight: bold;
-}
-
-/* États de réponse */
-.choice-card.correct {
-    background-color: var(--success) !important;
-    border-color: var(--success);
-}
-
-.choice-card.wrong {
-    background-color: var(--error) !important;
-    border-color: var(--error);
-}
-
-.choice-card.disabled {
-    pointer-events: none;
-    opacity: 0.6;
-}
-
-.game-footer {
-    width: 100%;
-    border-top: 1px solid #4e5d78;
-    padding-top: 15px;
 }
 
 /* Sélecteur de mode */
@@ -257,23 +164,158 @@ input[type="text"] {
     margin-bottom: 20px;
 }
 
-/* Badge de jeu OP / ED */
-.badge {
-    display: inline-block;
-    padding: 4px 12px;
+/* Zone de jeu */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+/* Écran audio / vidéo */
+.audio-status {
+    position: relative;
+    width: 100%;
+    height: 250px; /* Taille optimale pour un affichage vidéo 16:9 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #0b111e;
     border-radius: 12px;
-    font-size: 0.8rem;
+    margin: 20px 0;
+    border: 2px solid #233554;
+    transition: border-color 0.3s;
+}
+
+#placeholder-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.4s ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.music-icon {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    animation: bounce 1s infinite alternate;
+}
+
+#yt-player-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: scale(0.95);
+    z-index: 2;
+}
+
+/* Classe d'animation fluide de la vidéo */
+#yt-player-container.reveal {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+#yt-player {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
+
+/* Grille des choix */
+.choices-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.choice-card {
+    background: #0f3460;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.choice-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
+
+.choice-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.choice-card span {
+    font-size: 0.9rem;
     font-weight: bold;
-    text-transform: uppercase;
-    margin-top: 10px;
 }
 
-.badge.op {
-    background-color: var(--accent);
+/* Numéro indicateur */
+.choice-number {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(0, 0, 0, 0.85);
     color: white;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.95rem;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-.badge.ed {
-    background-color: #3498db;
-    color: white;
+/* États de réponse */
+.choice-card.correct {
+    background-color: var(--success) !important;
+    border-color: var(--success);
+}
+
+.choice-card.wrong {
+    background-color: var(--error) !important;
+    border-color: var(--error);
+}
+
+.choice-card.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.game-footer {
+    width: 100%;
+    border-top: 1px solid #4e5d78;
+    padding-top: 15px;
 }

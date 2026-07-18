@@ -50,9 +50,9 @@ async function loadDatabase() {
     }
 }
 
-// Extraire le nom de base de l'animé (ex: "Naruto Shippuden OP 1" -> "Naruto Shippuden")
+// Enlever les mentions "OP [nombre]" ou "ED [nombre]" pour n'avoir que le nom de l'animé
 function getBaseAnimeName(title) {
-    return title.split(/ OP| ED/i)[0].trim();
+    return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim();
 }
 
 // ----------------------------------------------------
@@ -69,11 +69,13 @@ function generatePlaylist(length = 5, musicTypeChoice = "Mix") {
     return shuffled.slice(0, length);
 }
 
+// Sélectionner des choix alternatifs du MÊME type (uniquement OP ou uniquement ED)
 function getSimilarAnime(correctSong, count = 3) {
     const correctBaseName = getBaseAnimeName(correctSong.title);
+    const targetType = correctSong.type; // Garantit que les choix ont le même type que la réponse attendue
 
     const list = animeDatabase
-        .filter(song => getBaseAnimeName(song.title) !== correctBaseName)
+        .filter(song => getBaseAnimeName(song.title) !== correctBaseName && song.type === targetType)
         .map(song => {
             let similarity = 0;
             song.genres.forEach(g => {
@@ -96,11 +98,10 @@ function getSimilarAnime(correctSong, count = 3) {
 // ----------------------------------------------------
 function loadYoutubeAPI() {
     return new Promise((resolve) => {
-        // Callback global attendu par YouTube
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('yt-player', {
-                height: '1',
-                width: '1',
+                height: '100%',
+                width: '100%',
                 videoId: '',
                 playerVars: {
                     'autoplay': 0,
@@ -109,18 +110,18 @@ function loadYoutubeAPI() {
                     'fs': 0,
                     'modestbranding': 1,
                     'rel': 0,
-                    'showinfo': 0
+                    'showinfo': 0,
+                    'iv_load_policy': 3
                 },
                 events: {
                     'onReady': () => {
-                        console.log("Lecteur YouTube initialisé et prêt.");
+                        console.log("Lecteur YouTube prêt.");
                         resolve();
                     }
                 }
             });
         };
 
-        // Injection dynamique de la balise script
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -132,8 +133,6 @@ function playAudio(youtubeId) {
     if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
         ytPlayer.loadVideoById(youtubeId);
         ytPlayer.playVideo();
-    } else {
-        console.error("Le lecteur YouTube n'est pas encore prêt ou n'a pas pu démarrer.");
     }
 }
 
@@ -141,6 +140,19 @@ function stopAudio() {
     if (ytPlayer && typeof ytPlayer.stopVideo === "function") {
         ytPlayer.stopVideo();
     }
+}
+
+// ----------------------------------------------------
+// GESTION DU REVEAL DE LA VIDÉO
+// ----------------------------------------------------
+function revealVideo() {
+    document.getElementById('placeholder-container').style.opacity = '0';
+    document.getElementById('yt-player-container').classList.add('reveal');
+}
+
+function resetVideoVisibility() {
+    document.getElementById('placeholder-container').style.opacity = '1';
+    document.getElementById('yt-player-container').classList.remove('reveal');
 }
 
 function showScreen(screenId) {
@@ -169,14 +181,11 @@ function startSoloGame() {
 function loadQuestion() {
     hasAnsweredCurrent = false;
     stopAudio();
+    resetVideoVisibility();
     clearInterval(timerInterval);
 
     const currentQuestion = questionsPlaylist[currentQuestionIndex];
     document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
-    
-    const badge = document.getElementById('music-type-badge');
-    badge.innerText = currentQuestion.type === "OP" ? "Opening" : "Ending";
-    badge.className = "badge " + currentQuestion.type.toLowerCase();
 
     const distractors = getSimilarAnime(currentQuestion, 3);
     const choices = [currentQuestion, ...distractors].sort(() => 0.5 - Math.random());
@@ -190,10 +199,12 @@ function loadQuestion() {
         const card = document.createElement('div');
         card.className = "choice-card";
         
+        // Affichage épuré du nom de l'animé (sans OP/ED)
+        const displayTitle = getBaseAnimeName(song.title);
         card.innerHTML = `
             <div class="choice-number">${index + 1}</div>
-            <img src="${song.image}" alt="${song.title}">
-            <span>${song.title}</span>
+            <img src="${song.image}" alt="${displayTitle}">
+            <span>${displayTitle}</span>
         `;
         card.addEventListener('click', () => handleChoice(card, song, currentQuestion));
         container.appendChild(card);
@@ -216,6 +227,8 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     hasAnsweredCurrent = true;
     clearInterval(timerInterval);
 
+    revealVideo(); // Révéler la vidéo de manière fluide
+
     const isCorrect = chosenSong.id === correctQuestion.id;
     
     document.querySelectorAll('.choice-card').forEach(card => {
@@ -237,7 +250,7 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     } else {
         selectedCard.classList.add('wrong');
         document.querySelectorAll('.choice-card').forEach(card => {
-            if (card.querySelector('span').innerText === correctQuestion.title) {
+            if (getBaseAnimeName(card.querySelector('span').innerText) === getBaseAnimeName(correctQuestion.title)) {
                 card.classList.add('correct');
             }
         });
@@ -248,6 +261,7 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
         }
     }
 
+    // Laisse la vidéo visible pendant 3 secondes avant la suite
     setTimeout(() => {
         nextStep();
     }, 3000);
@@ -255,9 +269,11 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
 
 function autoTimeout(correctQuestion) {
     hasAnsweredCurrent = true;
+    revealVideo(); // Révéler la vidéo même en cas de timeout
+
     document.querySelectorAll('.choice-card').forEach(card => {
         card.classList.add('disabled');
-        if (card.querySelector('span').innerText === correctQuestion.title) {
+        if (getBaseAnimeName(card.querySelector('span').innerText) === getBaseAnimeName(correctQuestion.title)) {
             card.classList.add('correct');
         }
     });
@@ -268,6 +284,7 @@ function autoTimeout(correctQuestion) {
         });
     }
 
+    // Laisse la vidéo visible pendant 3 secondes
     setTimeout(() => {
         nextStep();
     }, 3000);
@@ -310,6 +327,7 @@ function checkBothPlayersAnswered() {
 
 function endGame() {
     stopAudio();
+    resetVideoVisibility();
     showScreen('screen-results');
     if (gameMode === "solo") {
         document.getElementById('winner-announcement').innerHTML = `<h3>Bravo ! Vous avez terminé le quiz.</h3>`;
@@ -473,13 +491,9 @@ function launchGame() {
 // INITIALISATION ET ÉCOUTEURS D'ÉVÉNEMENTS
 // ----------------------------------------------------
 async function init() {
-    // 1. Charger la base de données JSON
     await loadDatabase();
-    
-    // 2. Charger et initialiser l'API YouTube dynamiquement
     await loadYoutubeAPI();
     
-    // 3. Activer les écouteurs de clics
     document.getElementById('btn-solo').addEventListener('click', startSoloGame);
     document.getElementById('btn-create-room').addEventListener('click', createRoom);
     document.getElementById('btn-join-room').addEventListener('click', joinRoom);
