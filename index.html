@@ -13,6 +13,16 @@
             <h1>Anime Blindtest</h1>
             <p>Devinez l'animé derrière l'opening ou l'ending !</p>
             
+            <!-- SÉLECTION DU TYPE DE MUSIQUE -->
+            <div class="setting-box">
+                <label for="music-type-select">Type de musique :</label>
+                <select id="music-type-select">
+                    <option value="Mix">Mélange (OP + ED)</option>
+                    <option value="OP">Openings (OP) uniquement</option>
+                    <option value="ED">Endings (ED) uniquement</option>
+                </select>
+            </div>
+
             <div class="menu-buttons">
                 <button id="btn-solo" class="btn">Mode Solo</button>
                 <hr>
@@ -32,7 +42,10 @@
         <div id="screen-lobby" class="screen hidden">
             <h2>Salon de jeu</h2>
             <div class="room-info">
-                Code de la partie : <span id="display-room-code">----</span>
+                Code : <span id="display-room-code">----</span>
+            </div>
+            <div class="room-mode-badge">
+                Musiques : <span id="display-room-mode">Mix</span>
             </div>
             <div class="players-list">
                 <p>Joueur 1 (Hôte) : <strong id="lobby-p1">En attente...</strong></p>
@@ -49,17 +62,17 @@
                 <div class="timer">Temps : <span id="timer-sec">20</span>s</div>
             </div>
 
-            <!-- Lecteur YouTube caché -->
             <div id="yt-player-container">
                 <div id="yt-player"></div>
             </div>
 
             <div class="audio-status">
                 <div class="music-icon">🎵</div>
+                <!-- Badge indiquant si c'est un OP ou un ED -->
+                <div id="music-type-badge" class="badge">OPENING</div>
                 <p>Écoutez attentivement...</p>
             </div>
 
-            <!-- Les 4 propositions sous forme de grille -->
             <div class="choices-grid" id="choices-container">
                 <!-- Généré dynamiquement en JS -->
             </div>
@@ -84,9 +97,7 @@
         </div>
     </div>
 
-    <!-- API YouTube IFrame Player -->
     <script src="https://www.youtube.com/iframe_api"></script>
-    <!-- Code applicatif -->
     <script type="module" src="app.js"></script>
 </body>
 </html>

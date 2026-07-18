@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "title": "Naruto Shippuden OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1565/111305.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Martial Arts", "Shounen"],
+    "YoutubeId": "uYSPeXwsuns"
+  },
+  {
+    "id": 2,
+    "title": "Naruto Shippuden ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1565/111305.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Martial Arts", "Shounen"],
+    "YoutubeId": "rNa1rMkO3Mk"
+  },
+  {
+    "id": 3,
+    "title": "My Hero Academia OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1088/149903l.jpg",
+    "genres": ["Action"],
+    "themes": ["School", "Super Power", "Shounen"],
+    "YoutubeId": "yu0HjPzFYnY"
+  },
+  {
+    "id": 4,
+    "title": "My Hero Academia ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1088/149903l.jpg",
+    "genres": ["Action"],
+    "themes": ["School", "Super Power", "Shounen"],
+    "YoutubeId": "Evb_iw2GsxI"
+  },
+  {
+    "id": 5,
+    "title": "K-On! OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/12/75174.jpg",
+    "genres": ["Comedy"],
+    "themes": ["CGDCT", "Music", "School"],
+    "YoutubeId": "BSNhCEcmMpI"
+  },
+  {
+    "id": 6,
+    "title": "K-On! ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/12/75174.jpg",
+    "genres": ["Comedy"],
+    "themes": ["CGDCT", "Music", "School"],
+    "YoutubeId": "hUOsDhkf8F8"
+  }
+]

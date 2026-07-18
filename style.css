@@ -215,3 +215,65 @@ input[type="text"] {
     border-top: 1px solid #4e5d78;
     padding-top: 15px;
 }
+
+/* Sélecteur de mode */
+.setting-box {
+    width: 100%;
+    margin-bottom: 20px;
+    background: #0f3460;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.setting-box label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #b2bec3;
+}
+
+.setting-box select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #4e5d78;
+    background: var(--card-bg);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Badge de salon */
+.room-mode-badge {
+    font-size: 1rem;
+    background: #e9456022;
+    border: 1px solid var(--accent);
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+/* Badge de jeu OP / ED */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 10px;
+}
+
+.badge.op {
+    background-color: var(--accent);
+    color: white;
+}
+
+.badge.ed {
+    background-color: #3498db;
+    color: white;
+}
