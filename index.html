@@ -13,13 +13,26 @@
             <h1>Anime Blindtest</h1>
             <p>Devinez l'animé derrière l'opening ou l'ending !</p>
             
+            <!-- OPTIONS DU MENU (AÉRÉES) -->
             <div class="setting-box">
-                <label for="music-type-select">Type de musique :</label>
-                <select id="music-type-select">
-                    <option value="Mix">Mélange (OP + ED)</option>
-                    <option value="OP">Openings (OP) uniquement</option>
-                    <option value="ED">Endings (ED) uniquement</option>
-                </select>
+                <div class="setting-item">
+                    <label for="music-type-select">Type de musique :</label>
+                    <select id="music-type-select">
+                        <option value="Mix">Mélange (OP + ED)</option>
+                        <option value="OP">Openings (OP) uniquement</option>
+                        <option value="ED">Endings (ED) uniquement</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label for="quiz-length-input">Nombre de questions :</label>
+                    <input type="number" id="quiz-length-input" value="10" min="3" max="30">
+                </div>
+
+                <div class="setting-item checkbox-item">
+                    <input type="checkbox" id="manual-progress-checkbox">
+                    <label for="manual-progress-checkbox">Passage manuel à la question suivante</label>
+                </div>
             </div>
 
             <div class="menu-buttons">
@@ -44,40 +57,47 @@
                 Code : <span id="display-room-code">----</span>
             </div>
             <div class="room-mode-badge">
-                Musiques : <span id="display-room-mode">Mix</span>
+                Musiques : <span id="display-room-mode">Mix</span> | Questions : <span id="display-room-length">10</span>
             </div>
             <div class="players-list">
                 <p>Joueur 1 (Hôte) : <strong id="lobby-p1">En attente...</strong></p>
                 <p>Joueur 2 : <strong id="lobby-p2">En attente...</strong></p>
             </div>
-            <button id="btn-start-game" class="btn hidden">Lancer la partie</button>
+            <button id="btn-start-game" class="btn">Lancer la partie</button>
             <p id="waiting-msg" class="info-msg">En attente de l'hôte pour démarrer...</p>
         </div>
 
         <!-- 3. ZONE DE JEU -->
         <div id="screen-game" class="screen hidden">
-            <!-- Barre d'en-tête réorganisée à 3 éléments -->
             <div class="game-header">
-                <div class="round-counter">QUESTION : <span id="current-question-num">1</span>/5</div>
+                <div class="round-counter">QUESTION : <span id="current-question-num">1</span>/<span id="total-questions-num">10</span></div>
                 <div class="score-display" id="score-top-display">SCORE : 0</div>
                 <div class="timer">TEMPS : <span id="timer-sec">20</span>s</div>
             </div>
 
-            <!-- Conteneur vidéo horizontal centré -->
             <div class="audio-status">
                 <div id="placeholder-container">
                     <div class="music-icon">🎵</div>
-                    <p>Écoutez attentivement...</p>
+                    <p id="audio-status-text">Écoutez attentivement...</p>
                 </div>
                 <div id="yt-player-container">
                     <div id="yt-player"></div>
+                    <!-- Lecteur vidéo natif masqué par défaut -->
+                    <video id="native-player" playsinline style="width:100%; height:100%; display:none;"></video>
                 </div>
             </div>
 
-            <!-- Choix en série (ligne horizontale) -->
+            <!-- Overlay d'impact pour les annonces de victoire/défaite -->
+<div id="round-overlay" class="round-overlay hidden">
+    <div id="round-overlay-text" class="round-overlay-text"></div>
+</div>
+
             <div class="choices-grid" id="choices-container">
-                <!-- Généré dynamiquement en JS -->
+                <!-- Généré dynamiquement -->
             </div>
+
+            <!-- BOUTON DE PROGRESSION MANUELLE -->
+            <button id="btn-next-question" class="btn hidden">Question suivante ➡️</button>
         </div>
 
         <!-- 4. ÉCRAN DE FIN -->
@@ -88,7 +108,24 @@
                 <p id="final-p1">Joueur 1 : 0 pts</p>
                 <p id="final-p2" class="hidden">Joueur 2 : 0 pts</p>
             </div>
+
+            <!-- HISTORIQUE DES MUSIQUES -->
+            <div class="history-section">
+                <h3>Historique des morceaux</h3>
+                <div id="quiz-history-container">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </div>
+
             <button id="btn-restart" class="btn">Retour au menu</button>
+        </div>
+    </div>
+
+    <!-- MODALE DE LECTURE VIDÉO DE L'HISTORIQUE -->
+    <div id="video-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-modal-btn" class="close-modal">&times;</span>
+            <div id="modal-yt-container"></div>
         </div>
     </div>
 

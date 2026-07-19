@@ -22,19 +22,33 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 10px;
-    overflow: hidden; /* Garantit l'absence totale de scroll sur la page */
 }
 
+/* Boîte de jeu scrollable en interne si le contenu déborde (ex: historique) */
 .container {
     width: 100%;
     max-width: 650px;
     background: var(--card-bg);
-    padding: 15px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    max-height: 98vh;
+    max-height: 95vh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto; /* Autorise le scroll interne */
+}
+
+/* Scrollbar personnalisée */
+.container::-webkit-scrollbar {
+    width: 8px;
+}
+.container::-webkit-scrollbar-track {
+    background: #0f3460;
+    border-radius: 10px;
+}
+.container::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
 }
 
 .screen {
@@ -50,13 +64,13 @@ body {
 }
 
 h1 {
-    font-size: 2.2rem;
-    margin-bottom: 5px;
+    font-size: 2.5rem;
+    margin-bottom: 8px;
     color: var(--accent);
 }
 
 p {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #b2bec3;
     font-size: 0.95rem;
 }
@@ -66,14 +80,14 @@ p {
     background-color: var(--accent);
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 0.95rem;
+    padding: 12px 24px;
+    font-size: 1rem;
     font-weight: bold;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
     width: 100%;
-    margin: 5px 0;
+    margin: 8px 0;
 }
 
 .btn:hover {
@@ -93,23 +107,23 @@ hr {
     border: 0;
     height: 1px;
     background: #4e5d78;
-    margin: 15px 0;
+    margin: 20px 0;
 }
 
-/* Mode multijoueur */
+/* Zone Multijoueur */
 .multiplayer-box {
     width: 100%;
 }
 
-input[type="text"] {
+input[type="text"], input[type="number"] {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     border-radius: 6px;
     border: 1px solid #4e5d78;
     background: #0f3460;
     color: white;
-    font-size: 0.95rem;
-    margin-bottom: 8px;
+    font-size: 1rem;
+    margin-bottom: 10px;
     text-align: center;
 }
 
@@ -129,33 +143,53 @@ input[type="text"] {
     color: var(--accent);
 }
 
-/* Sélecteur de mode */
+/* Section Réglages du Menu (Plus aérée) */
 .setting-box {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     background: #0f3460;
-    padding: 12px;
-    border-radius: 6px;
+    padding: 20px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 15px; /* Plus d'espace entre les éléments */
     text-align: left;
 }
 
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setting-item.checkbox-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.setting-item.checkbox-item input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
 .setting-box label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: bold;
     color: #b2bec3;
+    cursor: pointer;
 }
 
 .setting-box select {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
     border: 1px solid #4e5d78;
     background: var(--card-bg);
     color: white;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     outline: none;
     cursor: pointer;
 }
@@ -170,10 +204,10 @@ input[type="text"] {
     margin-bottom: 15px;
 }
 
-/* Barre d'en-tête réorganisée (3 colonnes) */
+/* En-tête de jeu */
 .game-header {
     display: grid;
-    grid-template-columns: 1fr auto 1fr; /* Question à gauche, score au centre, temps à droite */
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     width: 100%;
     margin-bottom: 10px;
@@ -198,13 +232,13 @@ input[type="text"] {
     text-align: right;
 }
 
-/* Lecteur vidéo horizontal centré (Ne prend pas toute la largeur) */
+/* Lecteur vidéo */
 .audio-status {
     position: relative;
-    width: 65%; /* Limite la largeur pour respecter votre schéma */
+    width: 65%;
     max-width: 360px;
-    aspect-ratio: 16 / 9; /* Format rectangulaire standard */
-    margin: 15px auto; /* Centré horizontalement */
+    aspect-ratio: 16 / 9;
+    margin: 15px auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -267,20 +301,19 @@ input[type="text"] {
     to { transform: translateY(-8px); }
 }
 
-/* Grille des choix en série (alignement horizontal de 4 cartes) */
+/* Grille des choix */
 .choices-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
-/* Cartes de choix avec coins très arrondis */
 .choice-card {
     background: #0f3460;
     border: 2px solid transparent;
-    border-radius: 16px; /* Coins arrondis prononcés (comme sur le schéma) */
+    border-radius: 16px;
     padding: 8px;
     cursor: pointer;
     transition: transform 0.2s, border-color 0.2s;
@@ -296,12 +329,11 @@ input[type="text"] {
     border-color: var(--accent);
 }
 
-/* Format vertical strict 2:3 */
 .choice-card img {
     width: 100%;
     aspect-ratio: 2 / 3;
     object-fit: cover;
-    border-radius: 12px; /* Suit la courbe externe de la carte */
+    border-radius: 12px;
     margin-bottom: 6px;
 }
 
@@ -317,7 +349,6 @@ input[type="text"] {
     height: 2.4em;
 }
 
-/* Indicateur de touche compacté */
 .choice-number {
     position: absolute;
     top: 10px;
@@ -337,7 +368,6 @@ input[type="text"] {
     box-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* États de réponse */
 .choice-card.correct {
     background-color: var(--success) !important;
     border-color: var(--success);
@@ -351,4 +381,187 @@ input[type="text"] {
 .choice-card.disabled {
     pointer-events: none;
     opacity: 0.6;
+}
+
+/* Overlay d'impact de manche */
+.round-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(11, 17, 30, 0.45); /* Assombrissement translucide */
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+}
+
+.round-overlay-text {
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    max-width: 90%;
+    /* Animation d'explosion */
+    animation: explodeEffect 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.round-overlay-text.win {
+    background: rgba(46, 204, 113, 0.9); /* Vert translucide */
+    color: white;
+    border: 3px solid #2ecc71;
+}
+
+.round-overlay-text.lose {
+    background: rgba(231, 76, 60, 0.9); /* Rouge translucide */
+    color: white;
+    border: 3px solid #e74c3c;
+}
+
+/* Animation d'explosion */
+@keyframes explodeEffect {
+    0% { transform: scale(0) rotate(var(--angle)); opacity: 0; }
+    50% { transform: scale(1.2) rotate(var(--angle)); opacity: 0.9; }
+    100% { transform: scale(1) rotate(var(--angle)); opacity: 1; }
+}
+
+/* Animation de disparition inverse */
+@keyframes shrinkEffect {
+    0% { transform: scale(1) rotate(var(--angle)); opacity: 1; }
+    100% { transform: scale(0) rotate(var(--angle)); opacity: 0; }
+}
+
+
+/* Classe appliquée quand on veut faire disparaître le message */
+.round-overlay-text.fade-out {
+    animation: shrinkEffect 0.3s ease-out forwards;
+}
+
+
+.round-overlay-text.lose {
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    border: 3px solid #e74c3c;
+}
+/* Historique des morceaux */
+.history-section {
+    width: 100%;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.history-section h3 {
+    font-size: 1.2rem;
+    color: var(--accent);
+    border-bottom: 1px solid #4e5d78;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0f3460;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.history-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.history-info img {
+    width: 40px;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.history-title {
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.history-result {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.history-result.correct {
+    background-color: var(--success);
+}
+
+.history-result.wrong {
+    background-color: var(--error);
+}
+
+.btn-replay {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Modale de lecture vidéo */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    transition: opacity 0.3s;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    position: relative;
+    width: 90%;
+    max-width: 560px;
+    aspect-ratio: 16 / 9;
+}
+
+.close-modal {
+    position: absolute;
+    top: -35px;
+    right: 0;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+#modal-yt-container {
+    width: 100%;
+    height: 100%;
+}
+
+#modal-yt-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
 }

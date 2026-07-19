@@ -6,7 +6,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1565/111305.jpg",
     "genres": ["Action", "Adventure", "Fantasy"],
     "themes": ["Martial Arts", "Shounen"],
-    "YoutubeId": "uYSPeXwsuns"
+    "YoutubeId": "EBNl8bwdVcA"
   },
   {
     "id": 2,
@@ -24,7 +24,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/10/78745l.jpg",
     "genres": ["Action"],
     "themes": ["School", "Super Power", "Shounen"],
-    "YoutubeId": "yu0HjPzFYnY"
+    "YoutubeId": "BGBQkvPAzSY"
   },
   {
     "id": 4,
@@ -42,7 +42,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/10/76120l.jpg",
     "genres": ["Comedy"],
     "themes": ["CGDCT", "Music", "School"],
-    "YoutubeId": "BSNhCEcmMpI"
+    "YoutubeId": "02gxkhPwWzM"
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/10/76120l.jpg",
     "genres": ["Comedy"],
     "themes": ["CGDCT", "Music", "School"],
-    "YoutubeId": "hUOsDhkf8F8"
+    "YoutubeId": "https://animethemes.moe/anime/k_on/ED1-NCBD1080"
   },
   {
     "id": 7,
@@ -105,7 +105,7 @@
         "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
         "genres": ["Romance"],
         "themes": ["School", "Shounen"],
-        "YoutubeId": "UfKxH3bP2xg"
+        "YoutubeId": "https://animethemes.moe/anime/horimiya/ED1-NCBD1080"
     },
   {
     "id": 13,
@@ -150,7 +150,7 @@
         "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
         "genres": ["Romance"],
         "themes": ["School"],
-        "YoutubeId": "Bme2siFikIs"
+        "YoutubeId": "bWTGWUH9-Nc"
     },
     {
         "id": 18,
@@ -231,7 +231,7 @@
         "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
         "genres": ["Romance", "Comedy"],
         "themes": ["School", "Shounen"],
-        "YoutubeId": "ql9o0oo4OBc"
+        "YoutubeId": "https://animethemes.moe/anime/boku_no_kokoro_no_yabai_yatsu/ED1"
     },
     {
     "id": 25,
@@ -267,7 +267,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
     "genres": ["Action", "Adventure", "Supernatural"],
     "themes": ["Shounen"],
-    "YoutubeId": "LIZOJwuG12U"
+    "YoutubeId": "https://animethemes.moe/anime/bleach/ED1-NCDVD528"
   },
 {
     "id": 29,
@@ -294,7 +294,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
     "genres": ["Action", "Adventure", "Supernatural"],
     "themes": ["Shounen"],
-    "YoutubeId": "jyPKus_6i1Q"
+    "YoutubeId": "Rv5V-5CErRE"
   },
   {
     "id": 32,
@@ -321,7 +321,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1589/95329l.jpg",
     "genres": ["Action", "Adventure",  "Fantasy", "Romance"],
     "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
-    "YoutubeId": "y4P382S3qyA"
+    "YoutubeId": "https://animethemes.moe/anime/inuyasha/ED1-NCDVD576"
   },
   {
     "id": 35,
@@ -348,7 +348,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1346/119505l.jpg",
     "genres": ["Action", "Comedy", "Romance"],
     "themes": ["Shounen", "Historical", "Samurai"],
-    "YoutubeId": "YvvlGma6COM"
+    "YoutubeId": "3snz5zDcUYo"
   },
   {
     "id": 38,
@@ -384,7 +384,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/7/10472l.jpg",
     "genres": ["Action", "Horror", "Supernatural"],
     "themes": ["Seinen", "Adult Cast", "Gore", "Vampire"],
-    "YoutubeId": "rBPegoYoD9Q"
+    "YoutubeId": "https://animethemes.moe/anime/hellsing/OP1-NCDVD"
   },
   {
     "id": 42,
@@ -420,7 +420,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/4/19644l.jpg",
     "genres": ["Action", "Adventure", "Sci-Fi"],
     "themes": ["Adult Cast", "Space"],
-    "YoutubeId": "0hfOyOBHIq4"
+    "YoutubeId": "mitYwJ83TaE"
   },
   {
     "id": 46,
@@ -451,20 +451,20 @@
   },
   {
     "id": 49,
-    "title": "Hajime no Ippo",
+    "title": "Hajime no Ippo OP 1",
     "type": "OP",
-    "image": "https://cdn.myanimelist.net/images/anime/1958/93533l.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/4/86334l.jpg",
     "genres": ["Sports"],
     "themes": ["Shounen", "Combat Sports"],
-    "YoutubeId": "6g0k1J3x5pA"
+    "YoutubeId": "https://animethemes.moe/anime/hajime_no_ippo/OP1-NCDVD576"
   },
   {
     "id": 50,
     "title": "Hajime no Ippo ED 1",
     "type": "ED",
-    "image": "https://cdn.myanimelist.net/images/anime/1958/93533l.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/4/86334l.jpg",
     "genres": ["Sports"],
     "themes": ["Shounen", "Combat Sports"],
-    "YoutubeId": "_7W9Q4V5G6s"
+    "YoutubeId": "https://animethemes.moe/anime/hajime_no_ippo/ED1-NCDVD576"
   }
 ]
