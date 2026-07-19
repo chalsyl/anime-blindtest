@@ -71,13 +71,21 @@
         <div id="screen-game" class="screen hidden">
             <div class="game-header">
                 <div class="round-counter">QUESTION : <span id="current-question-num">1</span>/<span id="total-questions-num">10</span></div>
+                <div class="score-display-wrapper">
                 <div class="score-display" id="score-top-display">SCORE : 0</div>
+                    <!-- Sticker de gain de points dynamique -->
+                    <div id="score-increment-sticker" class="score-sticker hidden"></div>
+                </div>
                 <div class="timer">TEMPS : <span id="timer-sec">20</span>s</div>
             </div>
 
             <div class="audio-status">
                 <div id="placeholder-container">
                     <div class="music-icon">🎵</div>
+                    <!-- Barre de temps horizontale dynamique -->
+                    <div class="timer-bar-container">
+                        <div id="timer-bar" class="timer-bar"></div>
+                    </div>
                     <p id="audio-status-text">Écoutez attentivement...</p>
                 </div>
                 <div id="yt-player-container">

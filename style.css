@@ -1,17 +1,17 @@
 :root {
-    --bg-color: #1a1a2e;
-    --card-bg: #16213e;
+    --bg-color: #0f172a; /* Slate 900 sombre et profond */
+    --card-bg: rgba(30, 41, 59, 0.7); /* Slate 800 transparent */
     --accent: #e94560;
     --text-color: #ffffff;
-    --success: #2ecc71;
-    --error: #e74c3c;
+    --success: #10b981; /* Vert émeraude */
+    --error: #ef4444; /* Rouge rose moderne */
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 body {
@@ -21,33 +21,47 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 10px;
+    padding: 15px;
+    overflow: hidden;
+    /* Subtils reflets de couleur en arrière-plan */
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(233, 69, 96, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(15, 52, 96, 0.15) 0%, transparent 50%);
 }
 
-/* Boîte de jeu scrollable en interne si le contenu déborde (ex: historique) */
+/* --- EFFET VERRE DÉPOLI (GLASSMORPHISM) SUR LA BOITE --- */
 .container {
     width: 100%;
     max-width: 650px;
     background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px); /* Effet de flou arrière-plan */
+    -webkit-backdrop-filter: blur(12px);
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
     max-height: 95vh;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Autorise le scroll interne */
+    overflow-y: auto;
+    /* Animation d'apparition fluide */
+    animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Scrollbar personnalisée */
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
 .container::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 .container::-webkit-scrollbar-track {
-    background: #0f3460;
-    border-radius: 10px;
+    background: transparent;
 }
 .container::-webkit-scrollbar-thumb {
-    background: var(--accent);
+    background: rgba(233, 69, 96, 0.4);
     border-radius: 10px;
 }
 
@@ -65,133 +79,175 @@ body {
 
 h1 {
     font-size: 2.5rem;
+    font-weight: 900;
     margin-bottom: 8px;
-    color: var(--accent);
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
 }
 
 p {
-    margin-bottom: 20px;
-    color: #b2bec3;
+    margin-bottom: 25px;
+    color: #94a3b8;
     font-size: 0.95rem;
 }
 
-/* Boutons */
+/* --- BOUTONS MODERNES AVEC DÉGRADÉS & IMPACT --- */
 .btn {
-    background-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent) 0%, #bd2f49 100%);
     color: white;
     border: none;
-    padding: 12px 24px;
+    padding: 14px 24px;
     font-size: 1rem;
-    font-weight: bold;
-    border-radius: 8px;
+    font-weight: 700;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
     margin: 8px 0;
+    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
 }
 
 .btn:hover {
-    filter: brightness(1.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5);
+    filter: brightness(1.1);
 }
 
 .btn:active {
-    transform: scale(0.98);
+    transform: translateY(0);
 }
 
 .btn.secondary {
-    background-color: #0f3460;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.3);
+}
+
+.btn.secondary:hover {
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.5);
 }
 
 hr {
     width: 100%;
     border: 0;
     height: 1px;
-    background: #4e5d78;
-    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 25px 0;
 }
 
-/* Zone Multijoueur */
+/* --- SOUS-CARTE MULTIJOUEUR --- */
 .multiplayer-box {
     width: 100%;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    margin-top: 15px;
+}
+
+.multiplayer-box h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    letter-spacing: 0.5px;
 }
 
 input[type="text"], input[type="number"] {
     width: 100%;
     padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #4e5d78;
-    background: #0f3460;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #0f172a;
     color: white;
-    font-size: 1rem;
-    margin-bottom: 10px;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+    outline: none;
 }
 
 .join-box {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-top: 5px;
 }
 
-.room-info {
-    font-size: 1.3rem;
-    font-weight: bold;
-    background: #0f3460;
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    color: var(--accent);
-}
-
-/* Section Réglages du Menu (Plus aérée) */
+/* --- BOITE DE RÉGLAGES (SETTING BOX) --- */
 .setting-box {
     width: 100%;
     margin-bottom: 25px;
-    background: #0f3460;
+    background: rgba(15, 23, 42, 0.4);
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Plus d'espace entre les éléments */
+    gap: 18px; /* Plus d'espace vertical pour aérer */
     text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .setting-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .setting-item.checkbox-item {
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
+    background: rgba(233, 69, 96, 0.03);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(233, 69, 96, 0.08);
+    transition: background 0.3s ease;
+}
+
+.setting-item.checkbox-item:hover {
+    background: rgba(233, 69, 96, 0.06);
 }
 
 .setting-item.checkbox-item input {
     width: 18px;
     height: 18px;
     cursor: pointer;
+    accent-color: var(--accent); /* Colore la checkbox d'origine */
 }
 
 .setting-box label {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #b2bec3;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     cursor: pointer;
 }
 
 .setting-box select {
     width: 100%;
     padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #4e5d78;
-    background: var(--card-bg);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #0f172a;
     color: white;
     font-size: 0.95rem;
     outline: none;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.setting-box select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
 }
 
 /* Badge de salon */
@@ -424,6 +480,86 @@ input[type="text"], input[type="number"] {
     background: rgba(231, 76, 60, 0.9); /* Rouge translucide */
     color: white;
     border: 3px solid #e74c3c;
+}
+
+/* --- BARRE DE TEMPS DYNAMIQUE --- */
+.timer-bar-container {
+    width: 65%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin: 8px 0;
+    overflow: hidden;
+}
+
+.timer-bar {
+    width: 100%;
+    height: 100%;
+    background: #10b981; /* Vert de départ */
+    border-radius: 4px;
+    transition: width 1s linear, background-color 0.3s ease;
+}
+
+/* Devient rouge en dessous de 10s */
+.timer-bar.warning {
+    background-color: var(--error);
+}
+
+/* Clignotement de la bordure du conteneur principal */
+.container.warning-pulse {
+    animation: borderPulse 1s infinite alternate;
+}
+
+@keyframes borderPulse {
+    from { 
+        border-color: rgba(255, 255, 255, 0.06); 
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3); 
+    }
+    to { 
+        border-color: var(--error); 
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.5), inset 0 0 10px rgba(239, 68, 68, 0.15); 
+    }
+}
+
+/* --- STICKER DE SCORE & FUSION --- */
+.score-display-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-display {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease;
+}
+
+/* Gonflement du score lors de l'absorption */
+.score-display.bulge {
+    transform: scale(1.15);
+    background-color: #f1c40f !important; /* Devient doré au moment de l'impact */
+    color: #0f172a;
+}
+
+.score-sticker {
+    position: absolute;
+    left: 105%; /* Positionné juste à droite du score */
+    background: #f1c40f; /* Or brillant */
+    color: #0f172a;
+    padding: 2px 8px;
+    font-weight: 900;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transform: rotate(8deg);
+    box-shadow: 0 4px 10px rgba(241, 196, 15, 0.4);
+    z-index: 5;
+    white-space: nowrap;
+    transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+}
+
+/* Translation et disparition vers le score (absorption) */
+.score-sticker.absorb {
+    transform: translate(-50px, 0) scale(0.4) rotate(0deg);
+    opacity: 0;
 }
 
 /* Animation d'explosion */

@@ -466,5 +466,275 @@
     "genres": ["Sports"],
     "themes": ["Shounen", "Combat Sports"],
     "YoutubeId": "https://animethemes.moe/anime/hajime_no_ippo/ED1-NCDVD576"
+  },
+  {
+    "id": 51,
+    "title": "Dance Dance Danseur OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1571/121381l.jpg",
+    "genres": ["Drama"],
+    "themes": ["Seinen", "Performing Arts"],
+    "YoutubeId": "QuyT2urYb74"
+  },
+  {
+    "id": 52,
+    "title": "Dance Dance Danseur ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1571/121381l.jpg",
+    "genres": ["Drama"],
+    "themes": ["Seinen", "Performing Arts"],
+    "YoutubeId": "rGZkC0gPF6U"
+  },
+  {
+    "id": 53,
+    "title": "Yuri!!! on Ice OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/6/81149l.jpg",
+    "genres": ["Sports"],
+    "themes": ["Performing Arts"],
+    "YoutubeId": "6bGivPNjbrw"
+  },
+  {
+    "id": 54,
+    "title": "Yuri!!! on Ice ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/6/81149l.jpg",
+    "genres": ["Sports"],
+    "themes": ["Performing Arts"],
+    "YoutubeId": "https://animethemes.moe/anime/yuri_on_ice/ED1-NCBD1080"
+  },
+  {
+    "id": 55,
+    "title": "SK∞ OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1549/119195l.jpg",
+    "genres": ["Sports"],
+    "themes": ["Racing"],
+    "YoutubeId": "https://animethemes.moe/anime/sk/OP1"
+  },
+  {
+    "id": 56,
+    "title": "SK∞ ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1549/119195l.jpg",
+    "genres": ["Sports"],
+    "themes": ["Racing"],
+    "YoutubeId": "https://animethemes.moe/anime/sk/ED1"
+  },
+  {
+    "id": 57,
+    "title": "Uma Musume: Cinderella Gray OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1626/148097l.jpg",
+    "genres": ["Sports", "Drama"],
+    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "YoutubeId": "BxUF9WQQZFI"
+  },
+  {
+    "id": 58,
+    "title": "Uma Musume: Cinderella Gray ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1626/148097l.jpg",
+    "genres": ["Sports", "Drama"],
+    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "YoutubeId": "nJs0rcVwaqw"
+  },
+  {
+    "id": 59,
+    "title": "Uma Musume: Cinderella Gray OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1120/152280l.jpg",
+    "genres": ["Sports", "Drama"],
+    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "YoutubeId": "zaontFJPfbI"
+  },
+  {
+    "id": 60,
+    "title": "Uma Musume: Cinderella Gray ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1120/152280l.jpg",
+    "genres": ["Sports", "Drama"],
+    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "YoutubeId": "DM7zIKHz7Dw"
+  },
+  {
+    "id": 61,
+    "title": "Stars Align OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1063/100122l.jpg",
+    "genres": ["Sports", "Drama"],
+    "themes": ["School"],
+    "YoutubeId": "1xsQwWwq-V4"
+  },
+  {
+    "id": 62,
+    "title": "Stars Align ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1980/138581l.jpg",
+    "genres": ["Sports", "Drama"],
+    "themes": ["School"],
+    "YoutubeId": "https://animethemes.moe/anime/hoshiai_no_sora/ED1"
+  },
+  {
+    "id": 63,
+    "title": "Your Lie in April OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/5/69957l.jpg",
+    "genres": ["Romance", "Drama"],
+    "themes": ["Shounen", "Love Polygon", "Music", "Performing Arts", "School"],
+    "YoutubeId": "fBsfD0Eytjw"
+  },
+  {
+    "id": 64,
+    "title": "Your Lie in April ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/5/69957l.jpg",
+    "genres": ["Romance", "Drama"],
+    "themes": ["Shounen", "Love Polygon", "Music", "Performing Arts", "School"],
+    "YoutubeId": "NOnSynIeiSk"
+  },
+  {
+    "id": 65,
+    "title": "Your Lie in April OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/5/69957l.jpg",
+    "genres": ["Romance", "Drama"],
+    "themes": ["Shounen", "Love Polygon", "Music", "Performing Arts", "School"],
+    "YoutubeId": "qoomGKIUm8Y"
+  },
+  {
+    "id": 66,
+    "title": "Your Lie in April ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/5/69957l.jpg",
+    "genres": ["Romance", "Drama"],
+    "themes": ["Shounen", "Love Polygon", "Music", "Performing Arts", "School"],
+    "YoutubeId": "jRFk22ENWNg"
+  },
+  {
+    "id": 67,
+    "title": "March Comes in Like a Lion OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/12/82901l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "Strategy Game"],
+    "YoutubeId": "cKWqPXkLgzY"
+  },
+  {
+    "id": 68,
+    "title": "March Comes in Like a Lion ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/12/82901l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "Strategy Game"],
+    "YoutubeId": "PhS_1FHpcQQ"
+  },
+  {
+    "id": 69,
+    "title": "March Comes in Like a Lion OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/12/82901l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "Strategy Game"],
+    "YoutubeId": "PKjbF2a90Fo"
+  },
+  {
+    "id": 70,
+    "title": "March Comes in Like a Lion ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/12/82901l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "Strategy Game"],
+    "YoutubeId": "8kQDSgt-4xE"
+  },
+  {
+    "id": 71,
+    "title": "March Comes in Like a Lion 2nd Season OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/3/88469l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "Strategy Game"],
+    "YoutubeId": "YvOK6DiZw1M"
+  },
+  {
+    "id": 72,
+    "title": "March Comes in Like a Lion 2nd Season ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/3/88469l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "Strategy Game"],
+    "YoutubeId": "_THhgbhfo4A"
+  },
+  {
+    "id": 73,
+    "title": "Ikoku Nikki OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1791/154233l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Josei"],
+    "YoutubeId": "g_nDJVMvSD8"
+  },
+  {
+    "id": 74,
+    "title": "Ikoku Nikki ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1791/154233l.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Josei"],
+    "YoutubeId": "fyzUQiDSXqs"
+  },
+  {
+    "id": 75,
+    "title": "Sakamichi no Apollon OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1500/143192l.jpg",
+    "genres": ["Drama", "Romance"],
+    "themes": ["Josei", "Historical", "Love Polygon", "Music", "School"],
+    "YoutubeId": "MTw9tYs5bEQ"
+  },
+  {
+    "id": 76,
+    "title": "Sakamichi no Apollon ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1500/143192l.jpg",
+    "genres": ["Drama", "Romance"],
+    "themes": ["Josei", "Historical", "Love Polygon", "Music", "School"],
+    "YoutubeId": "IckEICNb6L4"
+  },
+  {
+    "id": 77,
+    "title": "Barakamon OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1426/111248l.jpg",
+    "genres": ["Slice of Life"],
+    "themes": ["Childcare", "Iyashikei", "Visual Arts"],
+    "YoutubeId": "yWMgk7Bu2sM"
+  },
+  {
+    "id": 78,
+    "title": "Barakamon ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1426/111248l.jpg",
+    "genres": ["Slice of Life"],
+    "themes": ["Childcare", "Iyashikei", "Visual Arts"],
+    "YoutubeId": "6qXgKfbmxyE"
+  },
+  {
+    "id": 79,
+    "title": "Kakushigoto OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1048/128385l.jpg",
+    "genres": ["Slice of Life"],
+    "themes": ["Shounen", "Childcare", "Gag Humor", "Otaku Culture"],
+    "YoutubeId": "y7333GgriD8"
+  },
+  {
+    "id": 80,
+    "title": "Kakushigoto ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1048/128385l.jpg",
+    "genres": ["Slice of Life"],
+    "themes": ["Shounen", "Childcare", "Gag Humor", "Otaku Culture"],
+    "YoutubeId": "TI8x4b-xt8c"
   }
 ]

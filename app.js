@@ -368,11 +368,16 @@ function loadQuestion() {
     document.getElementById('btn-next-question').classList.add('hidden');
     document.getElementById('round-overlay').classList.add('hidden');
 
+    // Réinitialiser la barre de temps et supprimer le clignotement d'alerte
+    const timerBar = document.getElementById('timer-bar');
+    timerBar.style.width = '100%';
+    timerBar.classList.remove('warning');
+    document.querySelector('.container').classList.remove('warning-pulse');
+
     if (document.activeElement) {
         document.activeElement.blur();
     }
 
-    // Sécurité : Vérifie si la playlist est bien chargée
     if (!questionsPlaylist || questionsPlaylist.length === 0 || !questionsPlaylist[currentQuestionIndex]) {
         console.error("Erreur : La playlist est vide ou invalide.");
         alert("Erreur de chargement de la partie. Retour au menu.");
@@ -406,11 +411,25 @@ function loadQuestion() {
 
     currentTimer = 20;
     document.getElementById('timer-sec').innerText = currentTimer;
+    
+    // GESTION DU DECOMPTE ET DES EFFETS VISUELS
     timerInterval = setInterval(() => {
         currentTimer--;
         document.getElementById('timer-sec').innerText = currentTimer;
+        
+        // Mise à jour de la barre de temps horizontale
+        const percent = (currentTimer / 20) * 100;
+        timerBar.style.width = percent + '%';
+
+        // Effets d'urgence sous la barre des 10 secondes (milieu)
+        if (currentTimer <= 10) {
+            timerBar.classList.add('warning');
+            document.querySelector('.container').classList.add('warning-pulse');
+        }
+
         if (currentTimer <= 0) {
             clearInterval(timerInterval);
+            document.querySelector('.container').classList.remove('warning-pulse');
             autoTimeout(currentQuestion);
         }
     }, 1000);
@@ -440,28 +459,31 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     });
 
     if (isCorrect) {
-        selectedCard.classList.add('correct');
-        
-        if (gameMode === "solo") {
-            document.getElementById('score-top-display').innerText = `SCORE : ${Number(score.toFixed(1))}`;
-            showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
-            triggerProgression();
+            selectedCard.classList.add('correct');
+            
+            // Supprime immédiatement le clignotement rouge d'urgence s'il était actif
+            document.querySelector('.container').classList.remove('warning-pulse');
+
+            if (gameMode === "solo") {
+                // Lance l'animation de fusion (qui mettra à jour l'affichage après 2,5s + 0,3s d'absorption)
+                animateScoreFusion(earnedPoints, score); 
+                showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
+                triggerProgression();
+            } else {
+                // Multijoueur
+                const username = document.getElementById('username').value.trim() || "Joueur 1";
+                update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+                    score: Number(score.toFixed(1)),
+                    hasAnswered: true,
+                    isCorrect: true
+                });
+                update(ref(db, `rooms/${roomCode}`), {
+                    roundStatus: "revealed",
+                    roundWinner: myRole,
+                    lastWinnerName: username
+                });
+            }
         } else {
-            // Multijoueur : Envoi des infos à Firebase (on déclare qu'on a trouvé)
-            const username = document.getElementById('username').value.trim() || "Joueur 1";
-            update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
-                score: Number(score.toFixed(1)),
-                hasAnswered: true,
-                isCorrect: true
-            });
-            // On force l'état de la room à "revealed" avec le gagnant
-            update(ref(db, `rooms/${roomCode}`), {
-                roundStatus: "revealed",
-                roundWinner: myRole,
-                lastWinnerName: username
-            });
-        }
-    } else {
         selectedCard.classList.add('wrong');
         document.querySelectorAll('.choice-card').forEach(card => {
             if (card.querySelector('span').innerText === correctQuestion.title) {
@@ -508,6 +530,40 @@ function showImpactOverlay(text, isWin) {
     }, 2000);
 }
 
+function animateScoreFusion(earnedPoints, nextScoreValue) {
+    if (earnedPoints <= 0) return;
+
+    const sticker = document.getElementById('score-increment-sticker');
+    const scoreDisplay = document.getElementById('score-top-display');
+
+    // Étape 1 : Affiche le sticker collé à droite du score (+X)
+    sticker.innerText = `+${Number(earnedPoints.toFixed(1))}`;
+    sticker.className = "score-sticker"; // Réinitialise l'état visible
+
+    // Étape 2 : Attend 2,5 secondes (2500ms) avant de lancer l'absorption
+    setTimeout(() => {
+        sticker.classList.add('absorb'); // Animation CSS de translation/disparition (durée 300ms)
+
+        setTimeout(() => {
+            sticker.classList.add('hidden');
+            sticker.classList.remove('absorb');
+
+            // Étape 3 : Met à jour le texte du score réel
+            if (gameMode === "solo") {
+                scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
+            }
+
+            // Étape 4 : Fait gonfler le score temporairement (effet d'absorption)
+            scoreDisplay.classList.add('bulge');
+            setTimeout(() => {
+                scoreDisplay.classList.remove('bulge');
+            }, 250); // Retire le gonflement après 250ms
+
+        }, 300); // 300ms correspond à la durée de l'animation CSS d'absorption
+
+    }, 2500);
+}
+
 function autoTimeout(correctQuestion) {
     hasAnsweredCurrent = true;
     clearTimeout(ytWatchdog);
@@ -537,6 +593,11 @@ function autoTimeout(correctQuestion) {
 }
 
 function triggerProgression() {
+    // Sécurité : on relit la valeur réelle de l'option directement sur l'élément HTML en mode Solo
+    if (gameMode === "solo") {
+        manualProgress = document.getElementById('manual-progress-checkbox').checked;
+    }
+
     if (manualProgress) {
         if (gameMode === "solo" || myRole === "p1") {
             document.getElementById('btn-next-question').classList.remove('hidden');
@@ -544,6 +605,9 @@ function triggerProgression() {
             document.getElementById('audio-status-text').innerText = "Attente de l'hôte pour passer...";
         }
     } else {
+        // CORRECTION : On force le bouton à rester masqué si le passage automatique est actif
+        document.getElementById('btn-next-question').classList.add('hidden');
+        
         setTimeout(() => {
             nextStep();
         }, 3000);
