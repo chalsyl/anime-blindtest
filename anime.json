@@ -21,7 +21,7 @@
     "id": 3,
     "title": "My Hero Academia OP 1",
     "type": "OP",
-    "image": "https://cdn.myanimelist.net/images/anime/1088/149903l.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/10/78745l.jpg",
     "genres": ["Action"],
     "themes": ["School", "Super Power", "Shounen"],
     "YoutubeId": "yu0HjPzFYnY"
@@ -30,7 +30,7 @@
     "id": 4,
     "title": "My Hero Academia ED 1",
     "type": "ED",
-    "image": "https://cdn.myanimelist.net/images/anime/1088/149903l.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/10/78745l.jpg",
     "genres": ["Action"],
     "themes": ["School", "Super Power", "Shounen"],
     "YoutubeId": "Evb_iw2GsxI"
@@ -39,7 +39,7 @@
     "id": 5,
     "title": "K-On! OP 1",
     "type": "OP",
-    "image": "https://cdn.myanimelist.net/images/anime/12/75174.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/10/76120l.jpg",
     "genres": ["Comedy"],
     "themes": ["CGDCT", "Music", "School"],
     "YoutubeId": "BSNhCEcmMpI"
@@ -48,9 +48,423 @@
     "id": 6,
     "title": "K-On! ED 1",
     "type": "ED",
-    "image": "https://cdn.myanimelist.net/images/anime/12/75174.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/10/76120l.jpg",
     "genres": ["Comedy"],
     "themes": ["CGDCT", "Music", "School"],
     "YoutubeId": "hUOsDhkf8F8"
+  },
+  {
+    "id": 7,
+    "title": "bocchi the rock OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1448/127956l.jpg",
+    "genres": ["Comedy"],
+    "themes": ["CGDCT", "Music"],
+    "YoutubeId": "dlSbEP4V-gI"
+  },
+  {
+    "id": 8,
+    "title": "bocchi the rock ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1448/127956l.jpg",
+    "genres": ["Comedy"],
+    "themes": ["CGDCT", "Music"],
+    "YoutubeId": "wbQEA_nxLaE"
+  },
+  {
+    "id": 9,
+    "title": "Komi Can't Communicate OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1899/117237l.jpg",
+    "genres": ["Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "ZRf6b3JbJDk"
+  },
+  {
+    "id": 10,
+    "title": "Komi Can't Communicate ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1899/117237l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "Ovz1K5ieNCQ"
+  },
+    {
+        "id": 11,
+        "title": "Horimiya OP 1",
+        "type": "OP",
+        "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
+        "genres": ["Romance"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "OkPUJspnE6Q"
+    },
+    {
+        "id": 12,
+        "title": "Horimiya ED 1",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
+        "genres": ["Romance"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "UfKxH3bP2xg"
+    },
+  {
+    "id": 13,
+    "title": "My Dress-Up Darling OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1179/119897l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Otaku Culture"],
+    "YoutubeId": "oG4eu4HMtbo"
+  },
+    {
+        "id": 14,
+        "title": "My Dress-Up Darling ED 1",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1179/119897l.jpg",
+        "genres": ["Romance"],
+        "themes": ["School", "Otaku Culture"],
+        "YoutubeId": "_8rk_af6ApM"
+    },
+    {
+    "id": 15,
+    "title": "My Dress-Up Darling OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1024/150787l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Otaku Culture"],
+    "YoutubeId": "ie5GcVid_8k"
+  },
+    {
+        "id": 16,
+        "title": "My Dress-Up Darling ED 2",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1024/150787l.jpg",
+        "genres": ["Romance"],
+        "themes": ["School", "Otaku Culture"],
+        "YoutubeId": "75WraMAZ0Lo"
+    },
+    {
+        "id": 17,
+        "title": "Shikimori's Not Just a Cutie OP 1",
+        "type": "OP",
+        "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
+        "genres": ["Romance"],
+        "themes": ["School"],
+        "YoutubeId": "Bme2siFikIs"
+    },
+    {
+        "id": 18,
+        "title": "Shikimori's Not Just a Cutie ED 1",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
+        "genres": ["Romance"],
+        "themes": ["School"],
+        "YoutubeId": "t7IBNTR8DHA"
+    },
+    {
+        "id": 19,
+        "title": "TONIKAWA: Over the Moon For You OP 1",
+        "type": "OP",
+        "image": "https://cdn.myanimelist.net/images/anime/1613/108722l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "vQiodbKEW6s"
+    },
+    {
+        "id": 20,
+        "title": "TONIKAWA: Over the Moon For You ED 1",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1613/108722l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "1dVfPq0wnrA"
+    },
+    {
+        "id": 21,
+        "title": "You and I Are Polar Opposites OP 1",
+        "type": "OP",
+        "image": "https://cdn.myanimelist.net/images/anime/1140/154457l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "ha_mVguCfFM"
+    },
+    {
+        "id": 22,
+        "title": "You and I Are Polar Opposites ED 1",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1140/154457l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "tySEyirXY3o"
+    },
+    {
+        "id": 21,
+        "title": "You and I Are Polar Opposites OP 2",
+        "type": "OP",
+        "image": "https://cdn.myanimelist.net/images/anime/1143/158409l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "kUe7LOCbjzQ"
+    },
+    {
+        "id": 22,
+        "title": "You and I Are Polar Opposites ED 2",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1143/158409l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "FlqDBh8QjZk"
+    },
+    {
+        "id": 23,
+        "title": "The Dangers in My Heart OP 1",
+        "type": "OP",
+        "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "Za2FmwuIEwY"
+    },
+    {
+        "id": 24,
+        "title": "The Dangers in My Heart ED 1",
+        "type": "ED",
+        "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
+        "genres": ["Romance", "Comedy"],
+        "themes": ["School", "Shounen"],
+        "YoutubeId": "ql9o0oo4OBc"
+    },
+    {
+    "id": 25,
+    "title": "The Dangers in My Heart OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1643/138581l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "A0tKGpKOU4Y"
+  },
+  {
+    "id": 26,
+    "title": "The Dangers in My Heart ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1643/138581l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "qoT0MK54RB4"
+  },
+  {
+    "id": 27,
+    "title": "bleach OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "wW9TwZdWpjw"
+  },
+  {
+    "id": 28,
+    "title": "bleach ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "LIZOJwuG12U"
+  },
+{
+    "id": 29,
+    "title": "bleach OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "h1MoLQ9Wcv0"
+  },
+  {
+    "id": 30,
+    "title": "bleach ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "EEh_fsD7-ZM"
+  },
+  {
+    "id": 31,
+    "title": "bleach OP 7",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "jyPKus_6i1Q"
+  },
+  {
+    "id": 32,
+    "title": "bleach ED 3",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1541/147774l.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "QJGy2n7ReHk"
+  },
+  {
+    "id": 33,
+    "title": "InuYasha OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1589/95329l.jpg",
+    "genres": ["Action", "Adventure",  "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "l6UWhb9dGHQ"
+  },
+  {
+    "id": 34,
+    "title": "InuYasha ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1589/95329l.jpg",
+    "genres": ["Action", "Adventure",  "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "y4P382S3qyA"
+  },
+  {
+    "id": 35,
+    "title": "Yu Yu Hakusho OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1228/111372l.jpg",
+    "genres": ["Action", "Supernatural"],
+    "themes": ["Shounen", "Martial Arts", "Mythology"],
+    "YoutubeId": "urZWmEgm72Q"
+  },
+  {
+    "id": 36,
+    "title": "Yu Yu Hakusho ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1228/111372l.jpg",
+    "genres": ["Action", "Supernatural"],
+    "themes": ["Shounen", "Martial Arts", "Mythology"],
+    "YoutubeId": "H-KFEnX4LWk"
+  },
+  {
+    "id": 37,
+    "title": "Rurouni Kenshin OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1346/119505l.jpg",
+    "genres": ["Action", "Comedy", "Romance"],
+    "themes": ["Shounen", "Historical", "Samurai"],
+    "YoutubeId": "YvvlGma6COM"
+  },
+  {
+    "id": 38,
+    "title": "Rurouni Kenshin ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1346/119505l.jpg",
+    "genres": ["Action", "Comedy", "Romance"],
+    "themes": ["Shounen", "Historical", "Samurai"],
+    "YoutubeId": "91XoynAUp-w"
+  },
+  {
+    "id": 39,
+    "title": "Samurai Champloo OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1370/135212l.jpg",
+    "genres": ["Action", "Comedy", "Adventure"],
+    "themes": ["Shounen", "Historical", "Samurai"],
+    "YoutubeId": "Eq6EYcpWB_c"
+  },
+  {
+    "id": 40,
+    "title": "Samurai Champloo ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1370/135212l.jpg",
+    "genres": ["Action", "Comedy", "Adventure"],
+    "themes": ["Shounen", "Historical", "Samurai"],
+    "YoutubeId": "mQAfG3DgG7M"
+  },
+  {
+    "id": 41,
+    "title": "Hellsing OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/7/10472l.jpg",
+    "genres": ["Action", "Horror", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Gore", "Vampire"],
+    "YoutubeId": "rBPegoYoD9Q"
+  },
+  {
+    "id": 42,
+    "title": "Hellsing ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/7/10472l.jpg",
+    "genres": ["Action", "Horror", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Gore", "Vampire"],
+    "YoutubeId": "aOqgjoQLNlc"
+  },
+  {
+    "id": 43,
+    "title": "Trigun OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/7/20310l.jpg",
+    "genres": ["Action", "Adventure", "Sci-Fi"],
+    "themes": ["Shounen", "Adult Cast"],
+    "YoutubeId": "4OxFSy8G5wk"
+  },
+  {
+    "id": 44,
+    "title": "Trigun ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/7/20310l.jpg",
+    "genres": ["Action", "Adventure", "Sci-Fi"],
+    "themes": ["Shounen", "Adult Cast"],
+    "YoutubeId": "rO0H80_JiOI"
+  },
+  {
+    "id": 45,
+    "title": "Cowboy Bebop OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/4/19644l.jpg",
+    "genres": ["Action", "Adventure", "Sci-Fi"],
+    "themes": ["Adult Cast", "Space"],
+    "YoutubeId": "0hfOyOBHIq4"
+  },
+  {
+    "id": 46,
+    "title": "Cowboy Bebop ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/4/19644l.jpg",
+    "genres": ["Action", "Adventure", "Sci-Fi"],
+    "themes": ["Adult Cast", "Space"],
+    "YoutubeId": "Ru_H5PiyfSA"
+  },
+  {
+    "id": 47,
+    "title": "Megalo Box OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1958/93533l.jpg",
+    "genres": ["Sports", "Sci-Fi"],
+    "themes": ["Seinen", "Combat Sports", "Adult Cast"],
+    "YoutubeId": "ByMrJy5p7q8"
+  },
+  {
+    "id": 48,
+    "title": "Megalo Box ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1958/93533l.jpg",
+    "genres": ["Sports", "Sci-Fi"],
+    "themes": ["Seinen", "Combat Sports", "Adult Cast"],
+    "YoutubeId": "WrBwIpJ5yus"
+  },
+  {
+    "id": 49,
+    "title": "Hajime no Ippo",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1958/93533l.jpg",
+    "genres": ["Sports"],
+    "themes": ["Shounen", "Combat Sports"],
+    "YoutubeId": "6g0k1J3x5pA"
+  },
+  {
+    "id": 50,
+    "title": "Hajime no Ippo ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1958/93533l.jpg",
+    "genres": ["Sports"],
+    "themes": ["Shounen", "Combat Sports"],
+    "YoutubeId": "_7W9Q4V5G6s"
   }
 ]
