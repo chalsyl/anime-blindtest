@@ -56,12 +56,14 @@
 
         <!-- 3. ZONE DE JEU -->
         <div id="screen-game" class="screen hidden">
+            <!-- Barre d'en-tête réorganisée à 3 éléments -->
             <div class="game-header">
-                <div class="round-counter">Question : <span id="current-question-num">1</span>/5</div>
-                <div class="timer">Temps : <span id="timer-sec">20</span>s</div>
+                <div class="round-counter">QUESTION : <span id="current-question-num">1</span>/5</div>
+                <div class="score-display" id="score-top-display">SCORE : 0</div>
+                <div class="timer">TEMPS : <span id="timer-sec">20</span>s</div>
             </div>
 
-            <!-- Conteneur unifié pour l'audio et la vidéo -->
+            <!-- Conteneur vidéo horizontal centré -->
             <div class="audio-status">
                 <div id="placeholder-container">
                     <div class="music-icon">🎵</div>
@@ -72,15 +74,9 @@
                 </div>
             </div>
 
+            <!-- Choix en série (ligne horizontale) -->
             <div class="choices-grid" id="choices-container">
                 <!-- Généré dynamiquement en JS -->
-            </div>
-
-            <div class="game-footer">
-                <div class="score-board">
-                    <p id="score-p1">Joueur 1 : 0 pts</p>
-                    <p id="score-p2" class="hidden">Joueur 2 : 0 pts</p>
-                </div>
             </div>
         </div>
 

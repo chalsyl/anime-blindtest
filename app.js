@@ -69,7 +69,7 @@ function generatePlaylist(length = 5, musicTypeChoice = "Mix") {
     return shuffled.slice(0, length);
 }
 
-// Sélectionner des choix alternatifs du MÊME type (uniquement OP ou uniquement ED)
+// Sélectionner des choix alternatifs du MÊME type
 function getSimilarAnime(correctSong, count = 3) {
     const correctBaseName = getBaseAnimeName(correctSong.title);
     const targetType = correctSong.type; 
@@ -172,8 +172,7 @@ function startSoloGame() {
     const musicType = document.getElementById('music-type-select').value;
     questionsPlaylist = generatePlaylist(5, musicType);
     
-    document.getElementById('score-p2').classList.add('hidden');
-    document.getElementById('score-p1').innerText = `Score : ${score} pts`;
+    document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
     showScreen('screen-game');
     loadQuestion();
 }
@@ -199,7 +198,6 @@ function loadQuestion() {
         const card = document.createElement('div');
         card.className = "choice-card";
         
-        // song.title est directement utilisé pour laisser la mention OP/ED
         card.innerHTML = `
             <div class="choice-number">${index + 1}</div>
             <img src="${song.image}" alt="${song.title}">
@@ -238,7 +236,7 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
         selectedCard.classList.add('correct');
         if (gameMode === "solo") {
             score += 10;
-            document.getElementById('score-p1').innerText = `Score : ${score} pts`;
+            document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
         } else {
             score += 10;
             update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
@@ -249,7 +247,6 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     } else {
         selectedCard.classList.add('wrong');
         document.querySelectorAll('.choice-card').forEach(card => {
-            // Comparaison directe des titres complets
             if (card.querySelector('span').innerText === correctQuestion.title) {
                 card.classList.add('correct');
             }
@@ -447,7 +444,6 @@ function listenToRoom() {
 
         if (room.status === "playing" && document.getElementById('screen-game').classList.contains('hidden')) {
             questionsPlaylist = room.playlist;
-            document.getElementById('score-p2').classList.remove('hidden');
             showScreen('screen-game');
         }
 
@@ -463,13 +459,13 @@ function listenToRoom() {
             if (myRole === "p1") {
                 score = scoreP1;
                 opponentScore = scoreP2;
-                document.getElementById('score-p1').innerText = `Moi : ${score} pts`;
-                document.getElementById('score-p2').innerText = `${room.players.p2 ? room.players.p2.name : 'P2'} : ${opponentScore} pts`;
+                const p2Name = room.players.p2 ? room.players.p2.name : 'P2';
+                document.getElementById('score-top-display').innerText = `MOI : ${score} | ${p2Name} : ${opponentScore}`;
             } else {
                 score = scoreP2;
                 opponentScore = scoreP1;
-                document.getElementById('score-p1').innerText = `Moi : ${score} pts`;
-                document.getElementById('score-p2').innerText = `${room.players.p1.name} : ${opponentScore} pts`;
+                const p1Name = room.players.p1.name;
+                document.getElementById('score-top-display').innerText = `MOI : ${score} | ${p1Name} : ${opponentScore}`;
             }
         }
 
