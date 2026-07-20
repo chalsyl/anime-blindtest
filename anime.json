@@ -796,7 +796,7 @@
     "title": "No.6 OP 1",
     "type": "OP",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10161-iJAey1M4zFrX.jpg",
-    "genres": ["Action", "Drama", "Psychological", "Sci-Fi"],
+    "genres": ["Action", "Drama", "Mystery", "Sci-Fi"],
     "themes": ["Shoujo"],
     "YoutubeId": "msLpNlQYaKk"
   },
@@ -805,8 +805,188 @@
     "title": "No.6 ED 1",
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10161-iJAey1M4zFrX.jpg",
-    "genres": ["Action", "Drama", "Psychological", "Sci-Fi"],
+    "genres": ["Action", "Drama", "Mystery", "Sci-Fi"],
     "themes": ["Shoujo"],
     "YoutubeId": "https://animethemes.moe/anime/no6/ED1-NCBD1080"
+  },
+  {
+    "id": 89,
+    "title": "Moriarty the Patriot OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114124-def92qPuIVeK.jpg",
+    "genres": ["Mystery", "Suspense"],
+    "themes": ["Shounen", "Adult Cast", "Historical", "Organized Crime", "Psychological"],
+    "YoutubeId": "KlqRjoUU7PA"
+  },
+  {
+    "id": 90,
+    "title": "Moriarty the Patriot ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114124-def92qPuIVeK.jpg",
+    "genres": ["Mystery", "Suspense"],
+    "themes": ["Shounen", "Adult Cast", "Historical", "Organized Crime", "Psychological"],
+    "YoutubeId": "XMG2q-TxRto"
+  },
+  {
+    "id": 91,
+    "title": "91 Days OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21711-EQN4sCIXRhKf.png",
+    "genres": ["Action", "Drama", "Psychological"],
+    "themes": ["Adult Cast", "Historical", "Organized Crime"],
+    "YoutubeId": "jkd__a6WmS4"
+  },
+  {
+    "id": 92,
+    "title": "91 Days ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21711-EQN4sCIXRhKf.png",
+    "genres": ["Action", "Drama", "Psychological"],
+    "themes": ["Adult Cast", "Historical", "Organized Crime"],
+    "YoutubeId": "Ad0gGaSeb6M"
+  },
+  {
+    "id": 93,
+    "title": "GANGSTA. OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20773-yfJQMyHqZyJr.jpg",
+    "genres": ["Action", "Drama"],
+    "themes": ["Seinen", "Adult Cast", "Organized Crime"],
+    "YoutubeId": "COBpRXm_CUQ"
+  },
+  {
+    "id": 94,
+    "title": "GANGSTA. ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20773-yfJQMyHqZyJr.jpg",
+    "genres": ["Action", "Drama"],
+    "themes": ["Seinen", "Adult Cast", "Organized Crime"],
+    "YoutubeId": "QCT2B5MseDI"
+  },
+  {
+    "id": 95,
+    "title": "Terror in Resonance OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20661-aCR7QgzDfOSI.png",
+    "genres": ["Mystery", "Suspense"],
+    "themes": ["Detective", "Psychological"],
+    "YoutubeId": "g1ARRcK4LVs"
+  },
+  {
+    "id": 96,
+    "title": "Terror in Resonance ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20661-aCR7QgzDfOSI.png",
+    "genres": ["Mystery", "Suspense"],
+    "themes": ["Detective", "Psychological"],
+    "YoutubeId": "xOiYuSGZuLI"
+  },
+  {
+    "id": 98,
+    "title": "B: The Beginning ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21665-QnenQOaxzhpf.jpg",
+    "genres": ["Action", "Mystery", "Suspense"],
+    "themes": ["Detective", "Psychological", "Super Power"],
+    "YoutubeId": "zcB9SSXxY0A"
+  },
+  {
+    "id": 99,
+    "title": "PSYCHO-PASS OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx13601-i42VFuHpqEOJ.jpg",
+    "genres": ["Action", "Mystery", "Sci-Fi", "Suspense"],
+    "themes": ["Adult Cast", "Detective", "Psychological"],
+    "YoutubeId": "daQkx-Jwq2g"
+  },
+  {
+    "id": 100,
+    "title": "PSYCHO-PASS ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx13601-i42VFuHpqEOJ.jpg",
+    "genres": ["Action", "Mystery", "Sci-Fi", "Suspense"],
+    "themes": ["Adult Cast", "Detective", "Psychological"],
+    "YoutubeId": "sF0QLtk3YH0"
+  },
+  {
+    "id": 102,
+    "title": "Shinsekai yori ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1549/136389l.jpg",
+    "genres": ["Drama", "Horror", "Fantasy", "Mystery", "Sci-Fi", "Suspense"],
+    "themes": ["Psychological"],
+    "YoutubeId": "mz1ypuGJ3VM"
+  },
+  {
+    "id": 103,
+    "title": "Made in Abyss OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97986-TQ7dCgbS3y5s.jpg",
+    "genres": ["Adventure", "Drama", "Fantasy", "Horror", "Sci-Fi"],
+    "themes": ["Gore"],
+    "YoutubeId": "e91G8m9uM_0"
+  },
+  {
+    "id": 104,
+    "title": "Made in Abyss ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97986-TQ7dCgbS3y5s.jpg",
+    "genres": ["Adventure", "Drama", "Fantasy", "Horror", "Sci-Fi"],
+    "themes": ["Gore"],
+    "YoutubeId": "In2PzM9zaPQ"
+  },
+  {
+    "id": 105,
+    "title": "The Promised Neverland OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
+    "genres": ["Horror", "Mystery", "Psychological", "Suspense"],
+    "themes": ["Shounen", "Psychological", "Survival"],
+    "YoutubeId": "yB2t5y7ujlg"
+  },
+  {
+    "id": 106,
+    "title": "The Promised Neverland ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
+    "genres": ["Horror", "Mystery", "Psychological", "Suspense"],
+    "themes": ["Shounen", "Psychological", "Survival"],
+    "YoutubeId": "-7VRXvj4A84"
+  },
+  {
+    "id": 107,
+    "title": "SHADOWS HOUSE 2nd Season OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1634/124231.jpg",
+    "genres": ["Fantasy", "Horror", "Mystery", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "0T7QV-kwLvY"
+  },
+  {
+    "id": 108,
+    "title": "SHADOWS HOUSE ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx125038-BCfEvry0QBXW.png",
+    "genres": ["Fantasy", "Horror", "Mystery", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "e5-n6doxloo"
+  },
+  {
+    "id": 109,
+    "title": "Summer Time Rendering OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx129201-HJBauga2be8I.png",
+    "genres": ["Action", "Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Time Travel"],
+    "YoutubeId": "8wjHaeCgbps"
+  },
+  {
+    "id": 110,
+    "title": "Summer Time Rendering ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx129201-HJBauga2be8I.png",
+    "genres": ["Action", "Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Time Travel"],
+    "YoutubeId": "JGG3OyeOfSM"
   }
 ]
