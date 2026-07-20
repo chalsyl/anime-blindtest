@@ -32,6 +32,8 @@ let playedHistory = [];
 
 let ytWatchdog = null;
 let ytRetryCount = 0;
+let progressionTimeout = null;
+let roundProcessed = false;
 
 async function loadDatabase() {
     try {
@@ -373,6 +375,7 @@ function startSoloGame() {
 
 function loadQuestion() {
     hasAnsweredCurrent = false;
+    roundProcessed = false; 
     ytRetryCount = 0;
     stopAudio();
     resetVideoVisibility();
@@ -452,15 +455,16 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     score += earnedPoints;
 
     playedHistory.push({ song: correctQuestion, success: isCorrect });
-
     document.querySelectorAll('.choice-card').forEach(card => card.classList.add('disabled'));
 
     if (isCorrect) {
         selectedCard.classList.add('correct');
         document.querySelector('.container').classList.remove('warning-pulse');
 
+        // Animation du score active pour tous les modes
+        animateScoreFusion(earnedPoints, score);
+
         if (gameMode === "solo") {
-            animateScoreFusion(earnedPoints, score); 
             showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
             triggerProgression();
         } else {
@@ -533,7 +537,9 @@ function triggerProgression() {
         }
     } else {
         document.getElementById('btn-next-question').classList.add('hidden');
-        setTimeout(() => { nextStep(); }, 3000);
+        // Empêche le déclenchement de multiples timers si le réseau lagge
+        clearTimeout(progressionTimeout);
+        progressionTimeout = setTimeout(() => { nextStep(); }, 3000);
     }
 }
 
@@ -546,14 +552,15 @@ function nextStep() {
             endGame();
         }
     } else {
-        if (myRole === "p1") checkBothPlayersAnswered();
+        if (myRole === "p1") moveToNextRound();
     }
 }
 
-function checkBothPlayersAnswered() {
-    get(ref(db, `rooms/${roomCode}/players`)).then(snapshot => {
-        const players = snapshot.val();
-        if (players.p1.hasAnswered && (!players.p2 || players.p2.hasAnswered)) {
+// Remplace checkBothPlayersAnswered
+function moveToNextRound() {
+    get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
+        const room = snapshot.val();
+        if (room.roundStatus === "revealed") {
             const nextIndex = currentQuestionIndex + 1;
             if (nextIndex < questionsPlaylist.length) {
                 update(ref(db, `rooms/${roomCode}`), {
@@ -872,7 +879,9 @@ function listenToRoom() {
                 loadQuestion();
             }
 
-            if (room.roundStatus === "revealed") {
+            if (room.roundStatus === "revealed" && !roundProcessed) {
+                roundProcessed = true; // Verrouille cette logique pour ne pas boucler
+
                 if (!hasAnsweredCurrent) {
                     hasAnsweredCurrent = true;
                     clearInterval(timerInterval);
@@ -894,7 +903,9 @@ function listenToRoom() {
                     showImpactOverlay(`${room.lastWinnerName} a remporté cette manche`, false);
                 }
                 triggerProgression();
-            } else {
+                
+            } else if (room.roundStatus === "guessing") {
+                // Gestion si personne n'a trouvé
                 if (myRole === "p1" && room.players.p1.hasAnswered && room.players.p2 && room.players.p2.hasAnswered) {
                     if (!room.players.p1.isCorrect && !room.players.p2.isCorrect) {
                         update(ref(db, `rooms/${roomCode}`), { roundStatus: "revealed", roundWinner: "none" });
