@@ -125,6 +125,7 @@ async function preloadNextVideo() {
 
 function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
     let availableSongs = animeDatabase.filter(song => {
+        if (!song.type) return false;
         if (musicTypeChoice === "OP") return song.type.toUpperCase() === "OP";
         if (musicTypeChoice === "ED") return song.type.toUpperCase() === "ED";
         return true;
@@ -133,20 +134,31 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
     const shuffled = [...availableSongs].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, length);
 
+    if (selected.length === 0) {
+        alert("Aucun morceau ne correspond aux critères choisis !");
+        return [];
+    }
+
     return selected.map(correctSong => {
         const distractors = getSimilarAnime(correctSong, 3);
         const choices = [correctSong, ...distractors].sort(() => 0.5 - Math.random());
+        
+        // SÉCURITÉ FIREBASE : On force des valeurs par défaut pour éviter les "undefined" mortels
         return {
             correct: {
-                id: correctSong.id,
-                title: correctSong.title,
-                image: correctSong.image,
-                YoutubeId: correctSong.YoutubeId,
-                type: correctSong.type,
-                genres: correctSong.genres,
-                themes: correctSong.themes
+                id: correctSong.id || 0,
+                title: correctSong.title || "Inconnu",
+                image: correctSong.image || "",
+                YoutubeId: correctSong.YoutubeId || "",
+                type: correctSong.type || "",
+                genres: correctSong.genres || [],
+                themes: correctSong.themes || []
             },
-            choices: choices.map(c => ({ id: c.id, title: c.title, image: c.image }))
+            choices: choices.map(c => ({ 
+                id: c.id || 0, 
+                title: c.title || "Inconnu", 
+                image: c.image || "" 
+            }))
         };
     });
 }
@@ -449,7 +461,10 @@ function startSoloGame() {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
         return;
     }
-    if (animeDatabase.length === 0) return;
+    if (animeDatabase.length === 0) {
+        alert("La base de données des animés est vide ou n'a pas pu charger.");
+        return;
+    }
     unlockNativePlayer();
     
     gameMode = "solo";
@@ -457,9 +472,15 @@ function startSoloGame() {
     score = 0;
     playedHistory = [];
 
-    totalQuestions = parseInt(document.getElementById('quiz-length-input').value) || 10;
-    const musicType = document.getElementById('music-type-select').value;
+    // LECTURE SÉCURISÉE DES RÉGLAGES DU MENU
+    const lenInput = document.getElementById('quiz-length-input');
+    totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
+    
+    const typeSelect = document.getElementById('music-type-select');
+    const musicType = typeSelect ? typeSelect.value : "Mix";
+
     questionsPlaylist = generatePlaylist(totalQuestions, musicType);
+    if (questionsPlaylist.length === 0) return; // Arrêt si aucun morceau trouvé
     
     preloadImages(questionsPlaylist[0]);
 
@@ -805,13 +826,24 @@ function createRoom() {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
         return;
     }
-    if (animeDatabase.length === 0) return;
+    if (animeDatabase.length === 0) {
+        alert("La base de données est vide.");
+        return;
+    }
     unlockNativePlayer();
     
-    const username = document.getElementById('username').value.trim() || "Joueur 1";
-    const musicType = document.getElementById('music-type-select').value;
-    totalQuestions = parseInt(document.getElementById('quiz-length-input').value) || 10;
-    manualProgress = document.getElementById('manual-progress-checkbox').checked;
+    // LECTURE SÉCURISÉE DES VALEURS DU MENU
+    const userInp = document.getElementById('username');
+    const username = userInp && userInp.value.trim() !== "" ? userInp.value.trim() : "Joueur 1";
+    
+    const typeSelect = document.getElementById('music-type-select');
+    const musicType = typeSelect ? typeSelect.value : "Mix";
+    
+    const lenInput = document.getElementById('quiz-length-input');
+    totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
+    
+    const manualCb = document.getElementById('manual-progress-checkbox');
+    manualProgress = manualCb ? manualCb.checked : false;
 
     roomCode = Math.floor(1000 + Math.random() * 9000).toString();
     myRole = "p1";
@@ -819,11 +851,12 @@ function createRoom() {
     playedHistory = [];
 
     const playlist = generatePlaylist(totalQuestions, musicType);
+    if (playlist.length === 0) return;
 
     set(ref(db, `rooms/${roomCode}`), {
         status: "waiting",
         currentQuestionIndex: 0,
-        roundStatus: "loading", // Modifié pour la synchro
+        roundStatus: "loading", 
         roundWinner: "none",
         musicType: musicType,
         totalQuestions: totalQuestions,
@@ -853,6 +886,9 @@ function createRoom() {
             });
         }
         listenToRoom();
+    }).catch(error => {
+        console.error("Firebase Error:", error);
+        alert("Erreur Firebase : Impossible de créer la partie (Vérifiez la console).");
     });
 }
 
@@ -864,8 +900,12 @@ function joinRoom() {
     if (animeDatabase.length === 0) return;
     unlockNativePlayer();
     
-    const username = document.getElementById('username').value.trim() || "Joueur 2";
-    roomCode = document.getElementById('room-code-input').value.trim();
+    const userInp = document.getElementById('username');
+    const username = userInp && userInp.value.trim() !== "" ? userInp.value.trim() : "Joueur 2";
+    
+    const codeInp = document.getElementById('room-code-input');
+    roomCode = codeInp ? codeInp.value.trim() : "";
+    
     myRole = "p2";
     gameMode = "multi";
     playedHistory = [];
@@ -873,7 +913,7 @@ function joinRoom() {
     if (!roomCode) return alert("Veuillez entrer un code");
 
     get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
-        if (!snapshot.exists()) return alert("Partie introuvable !");
+        if (!snapshot.exists()) return alert("Partie introuvable ! Vérifiez le code.");
         
         const roomData = snapshot.val();
         if (roomData.players.p2) return alert("La partie est déjà pleine !");
@@ -887,8 +927,8 @@ function joinRoom() {
             isReady: false
         }).then(() => {
             document.getElementById('display-room-code').innerText = roomCode;
-            document.getElementById('display-room-mode').innerText = roomData.musicType;
-            document.getElementById('display-room-length').innerText = roomData.totalQuestions;
+            document.getElementById('display-room-mode').innerText = roomData.musicType || "Mix";
+            document.getElementById('display-room-length').innerText = roomData.totalQuestions || 10;
             document.getElementById('lobby-p1').innerText = roomData.players.p1.name;
             document.getElementById('lobby-p2').innerText = username;
             document.getElementById('btn-start-game').classList.add('hidden');
@@ -906,7 +946,13 @@ function joinRoom() {
                 });
             }
             listenToRoom();
+        }).catch(error => {
+            console.error("Firebase Error:", error);
+            alert("Erreur lors de la connexion au salon.");
         });
+    }).catch(error => {
+        console.error("Firebase Get Error:", error);
+        alert("Erreur de connexion à Firebase.");
     });
 }
 
