@@ -1159,5 +1159,59 @@
     "genres": ["Action", "Sci-Fi", "Suspense"],
     "themes": ["Music", "Time Travel"],
     "YoutubeId": "HSRX04NXWCA"
+  },
+  {
+    "id": 130,
+    "title": "Guilty Crown OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10793-KCysCbrVNqK9.jpg",
+    "genres": ["Action", "Romance", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Super Power"],
+    "YoutubeId": "W10RXr9c44Y"
+  },
+  {
+    "id": 131,
+    "title": "Guilty Crown ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10793-KCysCbrVNqK9.jpg",
+    "genres": ["Action", "Romance", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Super Power"],
+    "YoutubeId": "J1rAD-fkRKk"
+  },
+  {
+    "id": 132,
+    "title": "DARLING in the FRANXX OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx99423-8MBxtwCeHf8B.png",
+    "genres": ["Action", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "MvbwV7JxvqE"
+  },
+  {
+    "id": 133,
+    "title": "DARLING in the FRANXX ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx99423-8MBxtwCeHf8B.png",
+    "genres": ["Action", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "IAZMcHA7rYs"
+  },
+  {
+    "id": 134,
+    "title": "Eureka Seven OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx237-P1YEQQFqZ1An.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "OcitK6JTPeQ"
+  },
+  {
+    "id": 135,
+    "title": "Eureka Seven ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx237-P1YEQQFqZ1An.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "vZsgTwMIbn0"
   }
 ]
