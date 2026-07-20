@@ -1,9 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// ----------------------------------------------------
-// CONFIGURATION FIREBASE PERSONNELLE
-// ----------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyDejimWjgsbqP2cmrfL_Oa_sotz8h-sBKg",
   authDomain: "anime-quiz-63d73.firebaseapp.com",
@@ -17,9 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ----------------------------------------------------
-// VARIABLES ET ÉTAT DU JEU
-// ----------------------------------------------------
 let animeDatabase = []; 
 let ytPlayer = null;
 let gameMode = "solo";
@@ -34,63 +28,51 @@ let questionsPlaylist = [];
 let timerInterval = null;
 let currentTimer = 20;
 let hasAnsweredCurrent = false;
-
-// Historique de la partie en cours
 let playedHistory = [];
 
-// Chien de garde (Watchdog) pour YouTube
 let ytWatchdog = null;
 let ytRetryCount = 0;
 
-// ----------------------------------------------------
-// CHARGEMENT DU FICHIER JSON EXTERNE
-// ----------------------------------------------------
 async function loadDatabase() {
     try {
         const response = await fetch('anime.json');
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
         animeDatabase = await response.json();
-        console.log("Données chargées avec succès depuis anime.json");
     } catch (error) {
-        console.error("Impossible de charger le fichier anime.json :", error);
+        console.error("Impossible de charger anime.json :", error);
     }
 }
 
-// Détecter si l'URL provient d'AnimeThemes
+function getBaseAnimeName(title) {
+    return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim();
+}
+
 function isAnimeThemes(url) {
     return url.startsWith('http') && url.includes('animethemes.moe');
 }
 
-// Convertir une URL de page d'AnimeThemes en lien vidéo de streaming direct via leur API
 async function getAnimeThemesVideoUrl(animethemesUrl) {
     try {
         const urlObj = new URL(animethemesUrl);
         const pathParts = urlObj.pathname.split('/').filter(p => p);
-        const animeSlug = pathParts[1]; // ex: "hajime_no_ippo"
-        
-        // Extraction intelligente du vrai code du thème (ex: "ED1-NCDVD576" -> "ED1")
+        const animeSlug = pathParts[1]; 
         const targetThemeSlug = pathParts[2].split('-')[0].toUpperCase();
         
         const response = await fetch(`https://api.animethemes.moe/anime/${animeSlug}?include=animethemes.animethemeentries.videos`);
         const json = await response.json();
-        
         const themes = json.anime.animethemes || [];
-        
-        // 1. Recherche par correspondance exacte du code de thème (ex: "ED1")
-        const matchedTheme = themes.find(theme => theme.slug.toUpperCase() === targetThemeSlug);
+        const matchedTheme = themes.find(t => t.slug.toUpperCase() === targetThemeSlug);
         
         if (matchedTheme && matchedTheme.animethemeentries) {
+            const allVideos = [];
             for (const entry of matchedTheme.animethemeentries) {
-                if (entry.videos && entry.videos.length > 0) {
-                    // Renvoie directement l'adresse vidéo officielle du bon thème
-                    return entry.videos[0].link; 
-                }
+                if (entry.videos) allVideos.push(...entry.videos);
+            }
+            if (allVideos.length > 0) {
+                allVideos.sort((a, b) => (a.resolution || 1080) - (b.resolution || 1080));
+                return allVideos[0].link; 
             }
         }
-        
-        // 2. Recherche secondaire de secours (si l'API a structuré le thème différemment)
         for (const theme of themes) {
             for (const entry of theme.animethemeentries || []) {
                 for (const video of entry.videos || []) {
@@ -100,53 +82,44 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
                 }
             }
         }
-    } catch (e) {
-        console.error("Erreur de récupération AnimeThemes API:", e);
-    }
+    } catch (e) {}
     return null;
 }
 
-// Précharger silencieusement la vidéo suivante pendant que le joueur réfléchit sur la question en cours
+// --- NOUVEAU : PRÉCHARGEMENT DES IMAGES ---
+function preloadImages(questionObj) {
+    if (!questionObj || !questionObj.choices) return;
+    questionObj.choices.forEach(choice => {
+        const img = new Image();
+        img.src = choice.image; // Force le navigateur à mettre l'image en cache
+    });
+}
+
 async function preloadNextVideo() {
     const nextIndex = currentQuestionIndex + 1;
-    
-    // S'il reste une question après celle-ci
     if (nextIndex < questionsPlaylist.length) {
-        const nextQuestion = questionsPlaylist[nextIndex].correct;
+        const nextQuestionObj = questionsPlaylist[nextIndex];
+        const nextQuestion = nextQuestionObj.correct;
+        
+        // Précharge les images de la question suivante !
+        preloadImages(nextQuestionObj);
         
         if (isAnimeThemes(nextQuestion.YoutubeId)) {
-            console.log(`[Préchargement] Résolution anticipée de l'URL pour la question ${nextIndex + 1}...`);
-            
-            // 1. On interroge l'API d'AnimeThemes à l'avance
             const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
-            
             if (directUrl) {
-                // 2. On stocke l'URL résolue directement dans l'objet de la playlist
                 questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
-                
-                // 3. On ordonne au lecteur invisible de commencer à télécharger le fichier 1080p
                 const preloader = document.getElementById('preloader-player');
                 if (preloader) {
                     preloader.src = directUrl;
-                    preloader.load(); // Force le navigateur à bufferiser en tâche de fond
-                    console.log(`[Préchargement] Téléchargement en tâche de fond démarré pour : ${nextQuestion.title}`);
+                    preloader.load(); 
                 }
             }
         }
     }
 }
 
-// Extraire le nom de base de l'animé (pour l'algorithme d'exclusion)
-function getBaseAnimeName(title) {
-    return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim();
-}
-
-// ----------------------------------------------------
-// CRÉATION DE PLAYLIST
-// ----------------------------------------------------
 function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
     let availableSongs = animeDatabase.filter(song => {
-        // .toUpperCase() permet de tolérer "op", "OP", "ed", "ED"
         if (musicTypeChoice === "OP") return song.type.toUpperCase() === "OP";
         if (musicTypeChoice === "ED") return song.type.toUpperCase() === "ED";
         return true;
@@ -155,16 +128,9 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
     const shuffled = [...availableSongs].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, length);
 
-    // Sécurité : si aucune chanson ne correspond
-    if (selected.length === 0) {
-        alert("Aucun morceau ne correspond aux critères sélectionnés dans votre fichier anime.json !");
-        return [];
-    }
-
     return selected.map(correctSong => {
         const distractors = getSimilarAnime(correctSong, 3);
         const choices = [correctSong, ...distractors].sort(() => 0.5 - Math.random());
-        
         return {
             correct: {
                 id: correctSong.id,
@@ -175,16 +141,11 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
                 genres: correctSong.genres,
                 themes: correctSong.themes
             },
-            choices: choices.map(c => ({
-                id: c.id,
-                title: c.title,
-                image: c.image
-            }))
+            choices: choices.map(c => ({ id: c.id, title: c.title, image: c.image }))
         };
     });
 }
 
-// Sélectionner des choix alternatifs du MÊME type
 function getSimilarAnime(correctSong, count = 3) {
     const correctBaseName = getBaseAnimeName(correctSong.title);
     const targetType = correctSong.type; 
@@ -193,12 +154,8 @@ function getSimilarAnime(correctSong, count = 3) {
         .filter(song => getBaseAnimeName(song.title) !== correctBaseName && song.type === targetType)
         .map(song => {
             let similarity = 0;
-            song.genres.forEach(g => {
-                if (correctSong.genres.includes(g)) similarity += 2;
-            });
-            song.themes.forEach(t => {
-                if (correctSong.themes.includes(t)) similarity += 1;
-            });
+            song.genres.forEach(g => { if (correctSong.genres.includes(g)) similarity += 2; });
+            song.themes.forEach(t => { if (correctSong.themes.includes(t)) similarity += 1; });
             return { song: song, score: similarity };
         });
 
@@ -208,9 +165,6 @@ function getSimilarAnime(correctSong, count = 3) {
     return shuffled.slice(0, count).map(item => item.song);
 }
 
-// ----------------------------------------------------
-// CHARGEMENT DE L'API YOUTUBE & GESTION ERREURS
-// ----------------------------------------------------
 function loadYoutubeAPI() {
     return new Promise((resolve) => {
         window.onYouTubeIframeAPIReady = () => {
@@ -219,14 +173,8 @@ function loadYoutubeAPI() {
                 width: '100%',
                 videoId: '',
                 playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0,
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'showinfo': 0,
-                    'iv_load_policy': 3
+                    'autoplay': 0, 'controls': 0, 'disablekb': 1, 'fs': 0,
+                    'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3
                 },
                 events: {
                     'onReady': () => resolve(),
@@ -237,10 +185,7 @@ function loadYoutubeAPI() {
                         }
                     },
                     'onError': (event) => {
-                        console.warn("Code d'erreur détecté sur le lecteur YouTube :", event.data);
                         clearTimeout(ytWatchdog);
-
-                        // En cas d'erreur de lecture YouTube, on retente un chargement rapide
                         if (ytRetryCount < 2) {
                             ytRetryCount++;
                             setTimeout(() => {
@@ -252,12 +197,19 @@ function loadYoutubeAPI() {
                 }
             });
         };
-
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     });
+}
+
+function unlockNativePlayer() {
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+        nativePlayer.play().catch(() => {});
+    }
 }
 
 async function attemptPlayWithRetry(youtubeId) {
@@ -269,13 +221,10 @@ async function attemptPlayWithRetry(youtubeId) {
     const ytPlayerContainer = document.getElementById('yt-player-container');
 
     if (isAnimeThemes(youtubeId)) {
-        // --- MODE ANIMETHEMES ---
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
         if (nativePlayerContainer) {
             nativePlayerContainer.style.display = 'block';
             nativePlayer.src = ""; 
-            
-            // CORRECTION 1 : On force la réactivation du son à chaque nouvelle manche
             nativePlayer.muted = false;
             nativePlayer.volume = 1.0;
             
@@ -291,18 +240,15 @@ async function attemptPlayWithRetry(youtubeId) {
                 nativePlayer.src = directUrl;
                 nativePlayer.load();
                 nativePlayer.play().catch(e => {
-                    console.warn("Lecture bloquée par le navigateur, passage en sourdine de sécurité...");
-                    nativePlayer.muted = true; // Sourdine temporaire pour éviter le plantage
+                    nativePlayer.muted = true; 
                     nativePlayer.play();
                 });
-                
                 document.getElementById('audio-status-text').innerText = "Écoutez attentivement...";
             } else {
-                document.getElementById('audio-status-text').innerText = "Erreur de chargement du flux.";
+                document.getElementById('audio-status-text').innerText = "Erreur de flux.";
             }
         }
     } else {
-        // --- MODE YOUTUBE ---
         if (nativePlayerContainer) {
             nativePlayerContainer.style.display = 'none';
             nativePlayer.pause();
@@ -320,13 +266,7 @@ async function attemptPlayWithRetry(youtubeId) {
                 const state = ytPlayer.getPlayerState();
                 if (state !== YT.PlayerState.PLAYING && ytRetryCount < 3) {
                     ytRetryCount++;
-                    console.warn(`Watchdog: Vidéo bloquée (état: ${state}). Nouvelle tentative ${ytRetryCount}/3...`);
-                    
-                    if (ytRetryCount === 2) {
-                        ytPlayer.mute(); 
-                        document.getElementById('audio-status-text').innerText = "Connexion difficile... Activation du mode muet.";
-                    }
-
+                    if (ytRetryCount === 2) ytPlayer.mute(); 
                     ytPlayer.playVideo();
                     attemptPlayWithRetry(youtubeId);
                 }
@@ -337,11 +277,7 @@ async function attemptPlayWithRetry(youtubeId) {
 
 function stopAudio() {
     clearTimeout(ytWatchdog);
-    // Arrêt de YouTube
-    if (ytPlayer && typeof ytPlayer.stopVideo === "function") {
-        ytPlayer.stopVideo();
-    }
-    // Arrêt du lecteur natif
+    if (ytPlayer && typeof ytPlayer.stopVideo === "function") ytPlayer.stopVideo();
     const nativePlayer = document.getElementById('native-player');
     if (nativePlayer) {
         nativePlayer.pause();
@@ -349,9 +285,6 @@ function stopAudio() {
     }
 }
 
-// ----------------------------------------------------
-// VISIBILITÉ DE LA VIDÉO
-// ----------------------------------------------------
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
     document.getElementById('yt-player-container').classList.add('reveal');
@@ -370,39 +303,67 @@ function showScreen(screenId) {
     document.querySelector('.container').scrollTop = 0;
 }
 
-// ----------------------------------------------------
-// LOGIQUE DU JEU
-// ----------------------------------------------------
+function showImpactOverlay(text, isWin) {
+    const overlay = document.getElementById('round-overlay');
+    const overlayText = document.getElementById('round-overlay-text');
+    overlayText.innerText = text;
+    overlayText.className = "round-overlay-text " + (isWin ? "win" : "lose");
+    const randomAngle = (Math.random() * 16 - 8).toFixed(1);
+    overlayText.style.setProperty('--angle', `${randomAngle}deg`);
+    overlay.classList.remove('hidden');
 
-// Fonction de ruse : Débloque le lecteur natif en jouant un son vide de 0.1s lors d'un clic humain
-function unlockNativePlayer() {
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        // Code Base64 d'un fichier audio complètement vierge et silencieux
-        nativePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-        nativePlayer.play().catch(() => {});
-    }
+    setTimeout(() => {
+        overlayText.classList.add('fade-out');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+            overlayText.classList.remove('fade-out');
+        }, 300);
+    }, 2000);
 }
 
+function animateScoreFusion(earnedPoints, nextScoreValue) {
+    if (earnedPoints <= 0) return;
+    const sticker = document.getElementById('score-increment-sticker');
+    const scoreDisplay = document.getElementById('score-top-display');
+
+    sticker.innerText = `+${Number(earnedPoints.toFixed(1))}`;
+    sticker.className = "score-sticker";
+
+    setTimeout(() => {
+        sticker.classList.add('absorb');
+        setTimeout(() => {
+            sticker.classList.add('hidden');
+            sticker.classList.remove('absorb');
+            if (gameMode === "solo") {
+                scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
+            }
+            scoreDisplay.classList.add('bulge');
+            setTimeout(() => scoreDisplay.classList.remove('bulge'), 250);
+        }, 300);
+    }, 2500);
+}
+
+// --- LOGIQUE DU JEU ---
 function startSoloGame() {
-    // Sécurité si le lecteur n'a pas fini de charger en arrière-plan
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
         return;
     }
     if (animeDatabase.length === 0) return;
     unlockNativePlayer();
+    
     gameMode = "solo";
     currentQuestionIndex = 0;
     score = 0;
     playedHistory = [];
 
     totalQuestions = parseInt(document.getElementById('quiz-length-input').value) || 10;
-    manualProgress = document.getElementById('manual-progress-checkbox').checked;
-
     const musicType = document.getElementById('music-type-select').value;
     questionsPlaylist = generatePlaylist(totalQuestions, musicType);
     
+    // Précharge les images de la TOUTE PREMIÈRE question
+    preloadImages(questionsPlaylist[0]);
+
     document.getElementById('total-questions-num').innerText = totalQuestions;
     document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
     
@@ -419,18 +380,14 @@ function loadQuestion() {
     document.getElementById('btn-next-question').classList.add('hidden');
     document.getElementById('round-overlay').classList.add('hidden');
 
-    // Réinitialiser la barre de temps et supprimer le clignotement d'alerte
     const timerBar = document.getElementById('timer-bar');
     timerBar.style.width = '100%';
     timerBar.classList.remove('warning');
     document.querySelector('.container').classList.remove('warning-pulse');
 
-    if (document.activeElement) {
-        document.activeElement.blur();
-    }
+    if (document.activeElement) document.activeElement.blur();
 
     if (!questionsPlaylist || questionsPlaylist.length === 0 || !questionsPlaylist[currentQuestionIndex]) {
-        console.error("Erreur : La playlist est vide ou invalide.");
         alert("Erreur de chargement de la partie. Retour au menu.");
         showScreen('screen-menu');
         return;
@@ -443,14 +400,14 @@ function loadQuestion() {
     document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
 
     attemptPlayWithRetry(currentQuestion.YoutubeId);
-        preloadNextVideo();
+    preloadNextVideo();
+
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
 
     choices.forEach((song, index) => {
         const card = document.createElement('div');
         card.className = "choice-card";
-        
         card.innerHTML = `
             <div class="choice-number">${index + 1}</div>
             <img src="${song.image}" alt="${song.title}">
@@ -463,16 +420,13 @@ function loadQuestion() {
     currentTimer = 20;
     document.getElementById('timer-sec').innerText = currentTimer;
     
-    // GESTION DU DECOMPTE ET DES EFFETS VISUELS
     timerInterval = setInterval(() => {
         currentTimer--;
         document.getElementById('timer-sec').innerText = currentTimer;
         
-        // Mise à jour de la barre de temps horizontale
         const percent = (currentTimer / 20) * 100;
         timerBar.style.width = percent + '%';
 
-        // Effets d'urgence sous la barre des 10 secondes (milieu)
         if (currentTimer <= 10) {
             timerBar.classList.add('warning');
             document.querySelector('.container').classList.add('warning-pulse');
@@ -491,50 +445,38 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     hasAnsweredCurrent = true;
     clearInterval(timerInterval);
     clearTimeout(ytWatchdog);
-
     revealVideo(); 
 
     const isCorrect = chosenSong.id === correctQuestion.id;
-    
-    // Score décroissant (parfait = 10, diminue de 0.5/sec)
     const earnedPoints = isCorrect ? Math.max(0, currentTimer * 0.5) : 0;
     score += earnedPoints;
 
-    playedHistory.push({
-        song: correctQuestion,
-        success: isCorrect
-    });
+    playedHistory.push({ song: correctQuestion, success: isCorrect });
 
-    document.querySelectorAll('.choice-card').forEach(card => {
-        card.classList.add('disabled');
-    });
+    document.querySelectorAll('.choice-card').forEach(card => card.classList.add('disabled'));
 
     if (isCorrect) {
-            selectedCard.classList.add('correct');
-            
-            // Supprime immédiatement le clignotement rouge d'urgence s'il était actif
-            document.querySelector('.container').classList.remove('warning-pulse');
+        selectedCard.classList.add('correct');
+        document.querySelector('.container').classList.remove('warning-pulse');
 
-            if (gameMode === "solo") {
-                // Lance l'animation de fusion (qui mettra à jour l'affichage après 2,5s + 0,3s d'absorption)
-                animateScoreFusion(earnedPoints, score); 
-                showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
-                triggerProgression();
-            } else {
-                // Multijoueur
-                const username = document.getElementById('username').value.trim() || "Joueur 1";
-                update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
-                    score: Number(score.toFixed(1)),
-                    hasAnswered: true,
-                    isCorrect: true
-                });
-                update(ref(db, `rooms/${roomCode}`), {
-                    roundStatus: "revealed",
-                    roundWinner: myRole,
-                    lastWinnerName: username
-                });
-            }
+        if (gameMode === "solo") {
+            animateScoreFusion(earnedPoints, score); 
+            showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
+            triggerProgression();
         } else {
+            const username = document.getElementById('username').value.trim() || "Joueur 1";
+            update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+                score: Number(score.toFixed(1)),
+                hasAnswered: true,
+                isCorrect: true
+            });
+            update(ref(db, `rooms/${roomCode}`), {
+                roundStatus: "revealed",
+                roundWinner: myRole,
+                lastWinnerName: username
+            });
+        }
+    } else {
         selectedCard.classList.add('wrong');
         document.querySelectorAll('.choice-card').forEach(card => {
             if (card.querySelector('span').innerText === correctQuestion.title) {
@@ -546,7 +488,6 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
             showImpactOverlay("ÉCHEC", false);
             triggerProgression();
         } else {
-            // Si on a faux en multi, on attend que l'autre réponde ou trouve
             update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
                 hasAnswered: true,
                 isCorrect: false
@@ -555,75 +496,11 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
     }
 }
 
-function showImpactOverlay(text, isWin) {
-    const overlay = document.getElementById('round-overlay');
-    const overlayText = document.getElementById('round-overlay-text');
-    
-    overlayText.innerText = text;
-    overlayText.className = "round-overlay-text " + (isWin ? "win" : "lose");
-    
-    // Incline dynamiquement via une variable CSS
-    const randomAngle = (Math.random() * 16 - 8).toFixed(1);
-    overlayText.style.setProperty('--angle', `${randomAngle}deg`);
-    
-    overlay.classList.remove('hidden');
-
-    // Disparition après 2 secondes
-    setTimeout(() => {
-        overlayText.classList.add('fade-out');
-        
-        // Cache totalement l'overlay après la fin de l'animation de sortie (0.3s)
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-            overlayText.classList.remove('fade-out');
-        }, 300);
-        
-    }, 2000);
-}
-
-function animateScoreFusion(earnedPoints, nextScoreValue) {
-    if (earnedPoints <= 0) return;
-
-    const sticker = document.getElementById('score-increment-sticker');
-    const scoreDisplay = document.getElementById('score-top-display');
-
-    // Étape 1 : Affiche le sticker collé à droite du score (+X)
-    sticker.innerText = `+${Number(earnedPoints.toFixed(1))}`;
-    sticker.className = "score-sticker"; // Réinitialise l'état visible
-
-    // Étape 2 : Attend 2,5 secondes (2500ms) avant de lancer l'absorption
-    setTimeout(() => {
-        sticker.classList.add('absorb'); // Animation CSS de translation/disparition (durée 300ms)
-
-        setTimeout(() => {
-            sticker.classList.add('hidden');
-            sticker.classList.remove('absorb');
-
-            // Étape 3 : Met à jour le texte du score réel
-            if (gameMode === "solo") {
-                scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
-            }
-
-            // Étape 4 : Fait gonfler le score temporairement (effet d'absorption)
-            scoreDisplay.classList.add('bulge');
-            setTimeout(() => {
-                scoreDisplay.classList.remove('bulge');
-            }, 250); // Retire le gonflement après 250ms
-
-        }, 300); // 300ms correspond à la durée de l'animation CSS d'absorption
-
-    }, 2500);
-}
-
 function autoTimeout(correctQuestion) {
     hasAnsweredCurrent = true;
     clearTimeout(ytWatchdog);
     revealVideo(); 
-
-    playedHistory.push({
-        song: correctQuestion,
-        success: false
-    });
+    playedHistory.push({ song: correctQuestion, success: false });
 
     document.querySelectorAll('.choice-card').forEach(card => {
         card.classList.add('disabled');
@@ -644,7 +521,6 @@ function autoTimeout(correctQuestion) {
 }
 
 function triggerProgression() {
-    // Sécurité : on relit la valeur réelle de l'option directement sur l'élément HTML en mode Solo
     if (gameMode === "solo") {
         manualProgress = document.getElementById('manual-progress-checkbox').checked;
     }
@@ -656,12 +532,8 @@ function triggerProgression() {
             document.getElementById('audio-status-text').innerText = "Attente de l'hôte pour passer...";
         }
     } else {
-        // CORRECTION : On force le bouton à rester masqué si le passage automatique est actif
         document.getElementById('btn-next-question').classList.add('hidden');
-        
-        setTimeout(() => {
-            nextStep();
-        }, 3000);
+        setTimeout(() => { nextStep(); }, 3000);
     }
 }
 
@@ -674,34 +546,33 @@ function nextStep() {
             endGame();
         }
     } else {
-        if (myRole === "p1") {
-            checkBothPlayersAnswered();
-        }
+        if (myRole === "p1") checkBothPlayersAnswered();
     }
 }
 
 function checkBothPlayersAnswered() {
-    const nextIndex = currentQuestionIndex + 1;
-    if (nextIndex < questionsPlaylist.length) {
-        update(ref(db, `rooms/${roomCode}`), {
-            currentQuestionIndex: nextIndex,
-            roundStatus: "guessing",
-            roundWinner: "none",
-            "players/p1/hasAnswered": false,
-            "players/p1/isCorrect": false,
-            "players/p2/hasAnswered": false,
-            "players/p2/isCorrect": false
-        });
-    } else {
-        update(ref(db, `rooms/${roomCode}`), {
-            status: "finished"
-        });
-    }
+    get(ref(db, `rooms/${roomCode}/players`)).then(snapshot => {
+        const players = snapshot.val();
+        if (players.p1.hasAnswered && (!players.p2 || players.p2.hasAnswered)) {
+            const nextIndex = currentQuestionIndex + 1;
+            if (nextIndex < questionsPlaylist.length) {
+                update(ref(db, `rooms/${roomCode}`), {
+                    currentQuestionIndex: nextIndex,
+                    roundStatus: "guessing",
+                    roundWinner: "none",
+                    "players/p1/hasAnswered": false,
+                    "players/p1/isCorrect": false,
+                    "players/p2/hasAnswered": false,
+                    "players/p2/isCorrect": false
+                });
+            } else {
+                update(ref(db, `rooms/${roomCode}`), { status: "finished" });
+            }
+        }
+    });
 }
 
-// ----------------------------------------------------
-// HISTORIQUE & FIN DU JEU
-// ----------------------------------------------------
+// --- HISTORIQUE & FIN ---
 function renderHistory() {
     const historyContainer = document.getElementById('quiz-history-container');
     historyContainer.innerHTML = "";
@@ -709,7 +580,6 @@ function renderHistory() {
     playedHistory.forEach(item => {
         const div = document.createElement('div');
         div.className = "history-item";
-
         const resultClass = item.success ? "correct" : "wrong";
         const resultText = item.success ? "Trouvé" : "Échoué";
 
@@ -727,7 +597,6 @@ function renderHistory() {
         div.querySelector('.btn-replay').addEventListener('click', () => {
             playHistoryVideo(item.song.YoutubeId);
         });
-
         historyContainer.appendChild(div);
     });
 }
@@ -737,22 +606,15 @@ async function playHistoryVideo(youtubeId) {
     const ytContainer = document.getElementById('modal-yt-container');
 
     if (isAnimeThemes(youtubeId)) {
-        ytContainer.innerHTML = "Chargement d'AnimeThemes...";
+        ytContainer.innerHTML = "<p style='color:white; text-align:center; margin-top:20%;'>Chargement d'AnimeThemes...</p>";
         const directUrl = await getAnimeThemesVideoUrl(youtubeId);
         if (directUrl) {
-            ytContainer.innerHTML = `
-                <video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>
-            `;
+            ytContainer.innerHTML = `<video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>`;
         } else {
-            ytContainer.innerHTML = "Erreur de chargement du flux.";
+            ytContainer.innerHTML = "<p style='color:red; text-align:center; margin-top:20%;'>Erreur de chargement.</p>";
         }
     } else {
-        ytContainer.innerHTML = `
-            <iframe src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&controls=1" 
-                    allow="autoplay; encrypted-media" 
-                    allowfullscreen>
-            </iframe>
-        `;
+        ytContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&controls=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     }
     modal.classList.remove('hidden');
 }
@@ -769,15 +631,24 @@ function endGame() {
     resetVideoVisibility();
     showScreen('screen-results');
     renderHistory();
+    
+    // Réinitialisation des boutons de rejeu
+    document.getElementById('btn-play-again').disabled = false;
+    document.getElementById('btn-play-again').classList.remove('hidden');
+    document.getElementById('play-again-msg').classList.add('hidden');
+
+    // --- CALCUL DE LA MOYENNE ---
+    const average = (score / totalQuestions).toFixed(1);
+    document.getElementById('average-score-display').innerText = `Moyenne : ${average}/10`;
 
     if (gameMode === "solo") {
-        document.getElementById('winner-announcement').innerHTML = `<h3>Bravo ! Vous avez terminé le quiz.</h3>`;
-        document.getElementById('final-p1').innerText = `Votre score : ${score} pts`;
+        document.getElementById('winner-announcement').innerHTML = `<h3>Bravo ! Vous avez terminé.</h3>`;
+        document.getElementById('final-p1').innerText = `Votre score : ${Number(score.toFixed(1))} pts`;
         document.getElementById('final-p2').classList.add('hidden');
     } else {
         document.getElementById('final-p2').classList.remove('hidden');
-        document.getElementById('final-p1').innerText = `Vous : ${score} pts`;
-        document.getElementById('final-p2').innerText = `Adversaire : ${opponentScore} pts`;
+        document.getElementById('final-p1').innerText = `Vous : ${Number(score.toFixed(1))} pts`;
+        document.getElementById('final-p2').innerText = `Adversaire : ${Number(opponentScore.toFixed(1))} pts`;
         
         if (score > opponentScore) {
             document.getElementById('winner-announcement').innerHTML = `<h3 style="color:var(--success)">Victoire !</h3>`;
@@ -789,51 +660,63 @@ function endGame() {
     }
 }
 
-// ----------------------------------------------------
-// ECOUTEUR CLAVIER GLOBAL (1, 2, 3, 4 & ESPACE)
-// ----------------------------------------------------
+// --- GESTION DU REJEU (Play Again) ---
+document.getElementById('btn-play-again').addEventListener('click', () => {
+    document.getElementById('btn-play-again').disabled = true;
+
+    if (gameMode === "solo") {
+        // Relance directe avec les mêmes paramètres
+        const musicType = document.getElementById('music-type-select').value;
+        questionsPlaylist = generatePlaylist(totalQuestions, musicType);
+        score = 0;
+        currentQuestionIndex = 0;
+        playedHistory = [];
+        document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
+        preloadImages(questionsPlaylist[0]);
+        showScreen('screen-game');
+        loadQuestion();
+    } else {
+        // En multi, signale qu'on est prêt
+        document.getElementById('play-again-msg').classList.remove('hidden');
+        update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+            playAgain: true
+        });
+    }
+});
+
 window.addEventListener('keydown', (event) => {
     const gameScreen = document.getElementById('screen-game');
     if (gameScreen.classList.contains('hidden')) return;
 
-    // Gestion de la touche Espace pour passer manuellement
     if (event.key === " " || event.key === "Spacebar") {
-        event.preventDefault(); // Évite le défilement de page indésirable
+        event.preventDefault(); 
         const nextBtn = document.getElementById('btn-next-question');
-        // Si la réponse est donnée et que le bouton de progression est actif
         if (hasAnsweredCurrent && !nextBtn.classList.contains('hidden')) {
             nextStep();
             return;
         }
     }
-
-    // Gestion des touches 1, 2, 3, 4 pour la sélection (Uniquement si le joueur n'a pas répondu)
     if (hasAnsweredCurrent) return; 
 
     const allowedKeys = ["1", "2", "3", "4"];
     if (allowedKeys.includes(event.key)) {
         const keyIndex = parseInt(event.key) - 1;
         const cards = document.querySelectorAll('.choice-card');
-        if (cards[keyIndex]) {
-            cards[keyIndex].click();
-        }
+        if (cards[keyIndex]) cards[keyIndex].click();
     }
 });
 
-// ----------------------------------------------------
-// MULTIJOUEUR
-// ----------------------------------------------------
+// --- MULTIJOUEUR ---
 function createRoom() {
-    // Sécurité si le lecteur n'a pas fini de charger en arrière-plan
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
         return;
     }
     if (animeDatabase.length === 0) return;
     unlockNativePlayer();
+    
     const username = document.getElementById('username').value.trim() || "Joueur 1";
     const musicType = document.getElementById('music-type-select').value;
-    
     totalQuestions = parseInt(document.getElementById('quiz-length-input').value) || 10;
     manualProgress = document.getElementById('manual-progress-checkbox').checked;
 
@@ -847,14 +730,14 @@ function createRoom() {
     set(ref(db, `rooms/${roomCode}`), {
         status: "waiting",
         currentQuestionIndex: 0,
-        roundStatus: "guessing", // Ajouté
-        roundWinner: "none",      // Ajouté
+        roundStatus: "guessing",
+        roundWinner: "none",
         musicType: musicType,
         totalQuestions: totalQuestions,
         manualProgress: manualProgress,
         playlist: playlist,
         players: {
-            p1: { name: username, score: 0, hasAnswered: false, isCorrect: false } // isCorrect ajouté
+            p1: { name: username, score: 0, hasAnswered: false, isCorrect: false, playAgain: false }
         }
     }).then(() => {
         document.getElementById('display-room-code').innerText = roomCode;
@@ -865,18 +748,29 @@ function createRoom() {
         document.getElementById('btn-start-game').classList.remove('hidden');
         document.getElementById('waiting-msg').classList.add('hidden');
         showScreen('screen-lobby');
+        
+        if (playlist.length > 0) preloadImages(playlist[0]);
+        if (playlist.length > 0 && isAnimeThemes(playlist[0].correct.YoutubeId)) {
+            getAnimeThemesVideoUrl(playlist[0].correct.YoutubeId).then(directUrl => {
+                if (directUrl) {
+                    playlist[0].correct.resolvedUrl = directUrl;
+                    const preloader = document.getElementById('preloader-player');
+                    if (preloader) { preloader.src = directUrl; preloader.load(); }
+                }
+            });
+        }
         listenToRoom();
     });
 }
 
 function joinRoom() {
-    // Sécurité si le lecteur n'a pas fini de charger en arrière-plan
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
         return;
     }
     if (animeDatabase.length === 0) return;
     unlockNativePlayer();
+    
     const username = document.getElementById('username').value.trim() || "Joueur 2";
     roomCode = document.getElementById('room-code-input').value.trim();
     myRole = "p2";
@@ -886,21 +780,17 @@ function joinRoom() {
     if (!roomCode) return alert("Veuillez entrer un code");
 
     get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
-        if (!snapshot.exists()) {
-            alert("Partie introuvable !");
-            return;
-        }
+        if (!snapshot.exists()) return alert("Partie introuvable !");
         
         const roomData = snapshot.val();
-        if (roomData.players.p2) {
-            alert("La partie est déjà pleine !");
-            return;
-        }
+        if (roomData.players.p2) return alert("La partie est déjà pleine !");
 
         update(ref(db, `rooms/${roomCode}/players/p2`), {
             name: username,
             score: 0,
-            hasAnswered: false
+            hasAnswered: false,
+            isCorrect: false,
+            playAgain: false
         }).then(() => {
             document.getElementById('display-room-code').innerText = roomCode;
             document.getElementById('display-room-mode').innerText = roomData.musicType;
@@ -910,6 +800,17 @@ function joinRoom() {
             document.getElementById('btn-start-game').classList.add('hidden');
             document.getElementById('waiting-msg').classList.remove('hidden');
             showScreen('screen-lobby');
+            
+            if (roomData.playlist && roomData.playlist.length > 0) preloadImages(roomData.playlist[0]);
+            if (roomData.playlist && roomData.playlist.length > 0 && isAnimeThemes(roomData.playlist[0].correct.YoutubeId)) {
+                getAnimeThemesVideoUrl(roomData.playlist[0].correct.YoutubeId).then(directUrl => {
+                    if (directUrl) {
+                        roomData.playlist[0].correct.resolvedUrl = directUrl;
+                        const preloader = document.getElementById('preloader-player');
+                        if (preloader) { preloader.src = directUrl; preloader.load(); }
+                    }
+                });
+            }
             listenToRoom();
         });
     });
@@ -925,6 +826,38 @@ function listenToRoom() {
             if (room.players.p2) document.getElementById('lobby-p2').innerText = room.players.p2.name;
         }
 
+        // Relance de partie Multijoueur détectée
+        if (room.status === "finished") {
+            if (myRole === "p1" && room.players.p1.playAgain && room.players.p2 && room.players.p2.playAgain) {
+                const newPlaylist = generatePlaylist(room.totalQuestions, room.musicType);
+                update(ref(db, `rooms/${roomCode}`), {
+                    status: "playing",
+                    currentQuestionIndex: 0,
+                    roundStatus: "guessing",
+                    roundWinner: "none",
+                    playlist: newPlaylist,
+                    "players/p1/score": 0,
+                    "players/p1/hasAnswered": false,
+                    "players/p1/isCorrect": false,
+                    "players/p1/playAgain": false,
+                    "players/p2/score": 0,
+                    "players/p2/hasAnswered": false,
+                    "players/p2/isCorrect": false,
+                    "players/p2/playAgain": false
+                });
+            }
+        }
+
+        if (room.status === "playing" && !document.getElementById('screen-results').classList.contains('hidden')) {
+            // Nettoyage de l'écran de fin lors du restart Multi
+            playedHistory = [];
+            score = 0;
+            opponentScore = 0;
+            questionsPlaylist = room.playlist;
+            preloadImages(questionsPlaylist[0]);
+            showScreen('screen-game');
+        }
+
         if (room.status === "playing" && document.getElementById('screen-game').classList.contains('hidden')) {
             questionsPlaylist = room.playlist;
             totalQuestions = room.totalQuestions;
@@ -934,35 +867,25 @@ function listenToRoom() {
         }
 
         if (room.status === "playing") {
-            // Synchronisation de l'index de la question
             if (room.currentQuestionIndex !== currentQuestionIndex || (room.currentQuestionIndex === 0 && !hasAnsweredCurrent && document.getElementById('choices-container').children.length === 0)) {
                 currentQuestionIndex = room.currentQuestionIndex;
                 loadQuestion();
             }
 
-            // --- GESTION EN DIRECT DES MANCHES MULTIJOUEUR ---
             if (room.roundStatus === "revealed") {
                 if (!hasAnsweredCurrent) {
-                    // Si l'autre joueur a trouvé avant nous : on fige notre écran et on révèle la vidéo
                     hasAnsweredCurrent = true;
                     clearInterval(timerInterval);
                     clearTimeout(ytWatchdog);
                     revealVideo();
                     document.querySelectorAll('.choice-card').forEach(card => card.classList.add('disabled'));
-                    
-                    // Colore la bonne réponse
                     const correctQuestion = questionsPlaylist[currentQuestionIndex].correct;
                     document.querySelectorAll('.choice-card').forEach(card => {
-                        if (card.querySelector('span').innerText === correctQuestion.title) {
-                            card.classList.add('correct');
-                        }
+                        if (card.querySelector('span').innerText === correctQuestion.title) card.classList.add('correct');
                     });
-
-                    // On enregistre dans notre historique local comme échoué
                     playedHistory.push({ song: correctQuestion, success: false });
                 }
 
-                // Affichage de l'overlay stylé selon le gagnant
                 if (room.roundWinner === myRole) {
                     showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
                 } else if (room.roundWinner === "none") {
@@ -970,58 +893,38 @@ function listenToRoom() {
                 } else {
                     showImpactOverlay(`${room.lastWinnerName} a remporté cette manche`, false);
                 }
-
                 triggerProgression();
             } else {
-                // Si la manche est en cours ("guessing") et qu'on est l'hôte (p1) :
-                // On vérifie si les deux joueurs ont répondu mais que personne n'a trouvé
                 if (myRole === "p1" && room.players.p1.hasAnswered && room.players.p2 && room.players.p2.hasAnswered) {
                     if (!room.players.p1.isCorrect && !room.players.p2.isCorrect) {
-                        update(ref(db, `rooms/${roomCode}`), {
-                            roundStatus: "revealed",
-                            roundWinner: "none"
-                        });
+                        update(ref(db, `rooms/${roomCode}`), { roundStatus: "revealed", roundWinner: "none" });
                     }
                 }
             }
 
-            // Mise à jour de l'affichage des scores
-            const scoreP1 = room.players.p1.score;
+            const scoreP1 = room.players.p1.score || 0;
             const scoreP2 = room.players.p2 ? room.players.p2.score : 0;
-            
             if (myRole === "p1") {
-                score = scoreP1;
-                opponentScore = scoreP2;
-                const p2Name = room.players.p2 ? room.players.p2.name : 'P2';
-                document.getElementById('score-top-display').innerText = `MOI : ${score} | ${p2Name} : ${opponentScore}`;
+                score = scoreP1; opponentScore = scoreP2;
+                document.getElementById('score-top-display').innerText = `MOI : ${Number(score.toFixed(1))} | ${room.players.p2 ? room.players.p2.name : 'P2'} : ${Number(opponentScore.toFixed(1))}`;
             } else {
-                score = scoreP2;
-                opponentScore = scoreP1;
-                const p1Name = room.players.p1.name;
-                document.getElementById('score-top-display').innerText = `MOI : ${score} | ${p1Name} : ${opponentScore}`;
+                score = scoreP2; opponentScore = scoreP1;
+                document.getElementById('score-top-display').innerText = `MOI : ${Number(score.toFixed(1))} | ${room.players.p1.name} : ${Number(opponentScore.toFixed(1))}`;
             }
         }
 
-        if (room.status === "finished") {
+        if (room.status === "finished" && !document.getElementById('screen-game').classList.contains('hidden')) {
             endGame();
         }
     });
 }
 
 function launchGame() {
-    update(ref(db, `rooms/${roomCode}`), {
-        status: "playing",
-        roundStatus: "guessing",
-        roundWinner: "none"
-    });
+    update(ref(db, `rooms/${roomCode}`), { status: "playing", roundStatus: "guessing", roundWinner: "none" });
 }
 
-// ----------------------------------------------------
-// COMMENCER L'INITIALISATION
-// ----------------------------------------------------
 async function init() {
     await loadDatabase();
-    
     document.getElementById('btn-solo').addEventListener('click', startSoloGame);
     document.getElementById('btn-create-room').addEventListener('click', createRoom);
     document.getElementById('btn-join-room').addEventListener('click', joinRoom);
@@ -1038,12 +941,9 @@ async function init() {
         if (e.target.id === "video-modal") closeVideoModal();
     });
 
-    // Sécurité globale (si un navigateur mobile extrême force encore la sourdine)
     document.body.addEventListener('click', () => {
         const nativePlayer = document.getElementById('native-player');
-        if (nativePlayer && nativePlayer.muted) {
-            nativePlayer.muted = false;
-        }
+        if (nativePlayer && nativePlayer.muted) nativePlayer.muted = false;
     });
 
     loadYoutubeAPI();

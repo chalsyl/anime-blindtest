@@ -126,13 +126,19 @@
 
             <!-- HISTORIQUE DES MUSIQUES -->
             <div class="history-section">
-                <h3>Historique des morceaux</h3>
+                <div class="history-header">
+                    <h3>Historique des morceaux</h3>
+                    <span id="average-score-display" class="average-badge">Moyenne : 0/10</span>
+                </div>
                 <div id="quiz-history-container">
                     <!-- Généré dynamiquement -->
                 </div>
             </div>
 
-            <button id="btn-restart" class="btn">Retour au menu</button>
+            <!-- BOUTONS D'ACTION FINAUX -->
+            <button id="btn-play-again" class="btn">Rejouer (Mêmes paramètres)</button>
+            <p id="play-again-msg" class="info-msg hidden">En attente de l'adversaire...</p>
+            <button id="btn-restart" class="btn secondary">Quitter et Retour au menu</button>
         </div>
     </div>
 
