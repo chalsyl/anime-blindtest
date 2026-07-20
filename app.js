@@ -270,14 +270,17 @@ async function attemptPlayWithRetry(youtubeId) {
 
     if (isAnimeThemes(youtubeId)) {
         // --- MODE ANIMETHEMES ---
-        // Masque le conteneur YouTube, affiche le conteneur AnimeThemes
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
         if (nativePlayerContainer) {
             nativePlayerContainer.style.display = 'block';
             nativePlayer.src = ""; 
             
+            // CORRECTION 1 : On force la réactivation du son à chaque nouvelle manche
+            nativePlayer.muted = false;
+            nativePlayer.volume = 1.0;
+            
             const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
-            let directUrl = currentQuestion.resolvedUrl; // Récupère la vidéo préchargée
+            let directUrl = currentQuestion.resolvedUrl;
 
             if (!directUrl) {
                 document.getElementById('audio-status-text').innerText = "Chargement d'AnimeThemes...";
@@ -288,8 +291,8 @@ async function attemptPlayWithRetry(youtubeId) {
                 nativePlayer.src = directUrl;
                 nativePlayer.load();
                 nativePlayer.play().catch(e => {
-                    console.warn("Lecture bloquée, passage en sourdine...");
-                    nativePlayer.muted = true;
+                    console.warn("Lecture bloquée par le navigateur, passage en sourdine de sécurité...");
+                    nativePlayer.muted = true; // Sourdine temporaire pour éviter le plantage
                     nativePlayer.play();
                 });
                 
@@ -300,7 +303,6 @@ async function attemptPlayWithRetry(youtubeId) {
         }
     } else {
         // --- MODE YOUTUBE ---
-        // Masque le conteneur AnimeThemes, affiche le conteneur YouTube
         if (nativePlayerContainer) {
             nativePlayerContainer.style.display = 'none';
             nativePlayer.pause();
@@ -371,6 +373,17 @@ function showScreen(screenId) {
 // ----------------------------------------------------
 // LOGIQUE DU JEU
 // ----------------------------------------------------
+
+// Fonction de ruse : Débloque le lecteur natif en jouant un son vide de 0.1s lors d'un clic humain
+function unlockNativePlayer() {
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        // Code Base64 d'un fichier audio complètement vierge et silencieux
+        nativePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+        nativePlayer.play().catch(() => {});
+    }
+}
+
 function startSoloGame() {
     // Sécurité si le lecteur n'a pas fini de charger en arrière-plan
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
@@ -378,6 +391,7 @@ function startSoloGame() {
         return;
     }
     if (animeDatabase.length === 0) return;
+    unlockNativePlayer();
     gameMode = "solo";
     currentQuestionIndex = 0;
     score = 0;
@@ -816,6 +830,7 @@ function createRoom() {
         return;
     }
     if (animeDatabase.length === 0) return;
+    unlockNativePlayer();
     const username = document.getElementById('username').value.trim() || "Joueur 1";
     const musicType = document.getElementById('music-type-select').value;
     
@@ -861,6 +876,7 @@ function joinRoom() {
         return;
     }
     if (animeDatabase.length === 0) return;
+    unlockNativePlayer();
     const username = document.getElementById('username').value.trim() || "Joueur 2";
     roomCode = document.getElementById('room-code-input').value.trim();
     myRole = "p2";
@@ -1004,10 +1020,8 @@ function launchGame() {
 // COMMENCER L'INITIALISATION
 // ----------------------------------------------------
 async function init() {
-    // 1. Charger la base de données JSON (très rapide)
     await loadDatabase();
     
-    // 2. Activer les écouteurs de clics IMMÉDIATEMENT (le menu est interactif tout de suite)
     document.getElementById('btn-solo').addEventListener('click', startSoloGame);
     document.getElementById('btn-create-room').addEventListener('click', createRoom);
     document.getElementById('btn-join-room').addEventListener('click', joinRoom);
@@ -1024,7 +1038,15 @@ async function init() {
         if (e.target.id === "video-modal") closeVideoModal();
     });
 
-    // 3. Charger le lecteur YouTube en arrière-plan (sans bloquer le menu)
+    // Sécurité globale (si un navigateur mobile extrême force encore la sourdine)
+    document.body.addEventListener('click', () => {
+        const nativePlayer = document.getElementById('native-player');
+        if (nativePlayer && nativePlayer.muted) {
+            nativePlayer.muted = false;
+        }
+    });
+
     loadYoutubeAPI();
 }
+
 init();

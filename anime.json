@@ -231,7 +231,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
     "genres": ["Romance", "Comedy"],
     "themes": ["School", "Shounen"],
-    "YoutubeId": "https://animethemes.moe/anime/boku_no_kokoro_no_yabai_yatsu/ED1"
+    "YoutubeId": "ql9o0oo4OBc"
   },
   {
     "id": 25,
@@ -790,5 +790,23 @@
     "genres": ["Action", "Adventure", "Supernatural"],
     "themes": ["Shounen", "Mythology"],
     "YoutubeId": "inWYbShD54s"
+  },
+  {
+    "id": 87,
+    "title": "No.6 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10161-iJAey1M4zFrX.jpg",
+    "genres": ["Action", "Drama", "Psychological", "Sci-Fi"],
+    "themes": ["Shoujo"],
+    "YoutubeId": "msLpNlQYaKk"
+  },
+  {
+    "id": 88,
+    "title": "No.6 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10161-iJAey1M4zFrX.jpg",
+    "genres": ["Action", "Drama", "Psychological", "Sci-Fi"],
+    "themes": ["Shoujo"],
+    "YoutubeId": "https://animethemes.moe/anime/no6/ED1-NCBD1080"
   }
 ]
