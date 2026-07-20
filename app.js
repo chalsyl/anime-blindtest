@@ -2,13 +2,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, set, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
-    apiKey: "VOTRE_API_KEY",
-    authDomain: "VOTRE_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://VOTRE_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "VOTRE_PROJECT_ID",
-    storageBucket: "VOTRE_PROJECT_ID.appspot.com",
-    messagingSenderId: "VOTRE_SENDER_ID",
-    appId: "VOTRE_APP_ID"
+  apiKey: "AIzaSyDejimWjgsbqP2cmrfL_Oa_sotz8h-sBKg",
+  authDomain: "anime-quiz-63d73.firebaseapp.com",
+  databaseURL: "https://anime-quiz-63d73-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "anime-quiz-63d73",
+  storageBucket: "anime-quiz-63d73.firebasestorage.app",
+  messagingSenderId: "778473215430",
+  appId: "1:778473215430:web:35cfca9c149a30bcb94ec7"
 };
 
 const app = initializeApp(firebaseConfig);
