@@ -79,20 +79,27 @@
                 <div class="timer">TEMPS : <span id="timer-sec">20</span>s</div>
             </div>
 
+            <!-- Conteneur vidéo horizontal centré -->
             <div class="audio-status">
                 <div id="placeholder-container">
                     <div class="music-icon">🎵</div>
-                    <!-- Barre de temps horizontale dynamique -->
                     <div class="timer-bar-container">
                         <div id="timer-bar" class="timer-bar"></div>
                     </div>
                     <p id="audio-status-text">Écoutez attentivement...</p>
                 </div>
+                
+                <!-- 1. Conteneur YouTube isolé -->
                 <div id="yt-player-container">
                     <div id="yt-player"></div>
-                    <!-- Lecteur vidéo natif masqué par défaut -->
-                    <video id="native-player" playsinline style="width:100%; height:100%; display:none;"></video>
                 </div>
+                
+                <!-- 2. Conteneur AnimeThemes isolé (Garantit l'affichage) -->
+                <div id="native-player-container" style="display:none;">
+                    <video id="native-player" playsinline style="width:100%; height:100%;"></video>
+                </div>
+                
+                <video id="preloader-player" preload="auto" muted style="display:none;"></video>
             </div>
 
             <!-- Overlay d'impact pour les annonces de victoire/défaite -->

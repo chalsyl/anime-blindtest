@@ -34,7 +34,7 @@ body {
     width: 100%;
     max-width: 650px;
     background: var(--card-bg);
-    backdrop-filter: blur(12px); /* Effet de flou arrière-plan */
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 25px;
     border-radius: 16px;
@@ -43,8 +43,8 @@ body {
     max-height: 95vh;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    /* Animation d'apparition fluide */
+    overflow-y: auto; /* Garde le défilement vertical pour l'historique */
+    overflow-x: hidden; /* <--- AJOUTEZ CETTE LIGNE pour supprimer la barre rouge du bas */
     animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -327,7 +327,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     margin-bottom: 0;
 }
 
-#yt-player-container {
+#yt-player-container, #native-player-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -340,7 +340,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     z-index: 2;
 }
 
-#yt-player-container.reveal {
+#yt-player-container.reveal, #native-player-container.reveal {
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);

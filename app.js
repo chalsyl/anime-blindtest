@@ -106,6 +106,36 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
     return null;
 }
 
+// Précharger silencieusement la vidéo suivante pendant que le joueur réfléchit sur la question en cours
+async function preloadNextVideo() {
+    const nextIndex = currentQuestionIndex + 1;
+    
+    // S'il reste une question après celle-ci
+    if (nextIndex < questionsPlaylist.length) {
+        const nextQuestion = questionsPlaylist[nextIndex].correct;
+        
+        if (isAnimeThemes(nextQuestion.YoutubeId)) {
+            console.log(`[Préchargement] Résolution anticipée de l'URL pour la question ${nextIndex + 1}...`);
+            
+            // 1. On interroge l'API d'AnimeThemes à l'avance
+            const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
+            
+            if (directUrl) {
+                // 2. On stocke l'URL résolue directement dans l'objet de la playlist
+                questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
+                
+                // 3. On ordonne au lecteur invisible de commencer à télécharger le fichier 1080p
+                const preloader = document.getElementById('preloader-player');
+                if (preloader) {
+                    preloader.src = directUrl;
+                    preloader.load(); // Force le navigateur à bufferiser en tâche de fond
+                    console.log(`[Préchargement] Téléchargement en tâche de fond démarré pour : ${nextQuestion.title}`);
+                }
+            }
+        }
+    }
+}
+
 // Extraire le nom de base de l'animé (pour l'algorithme d'exclusion)
 function getBaseAnimeName(title) {
     return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim();
@@ -230,30 +260,35 @@ function loadYoutubeAPI() {
     });
 }
 
-// Watchdog : tente de relancer et mute la vidéo si nécessaire pour forcer la lecture
 async function attemptPlayWithRetry(youtubeId) {
     clearTimeout(ytWatchdog);
     if (!ytPlayer) return;
 
+    const nativePlayerContainer = document.getElementById('native-player-container');
     const nativePlayer = document.getElementById('native-player');
-    const ytPlayerEl = document.getElementById('yt-player');
+    const ytPlayerContainer = document.getElementById('yt-player-container');
 
     if (isAnimeThemes(youtubeId)) {
         // --- MODE ANIMETHEMES ---
-        // Masque le lecteur YouTube, affiche et configure le lecteur natif
-        if (ytPlayerEl) ytPlayerEl.style.display = 'none';
-        if (nativePlayer) {
-            nativePlayer.style.display = 'block';
+        // Masque le conteneur YouTube, affiche le conteneur AnimeThemes
+        if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
+        if (nativePlayerContainer) {
+            nativePlayerContainer.style.display = 'block';
             nativePlayer.src = ""; 
             
-            document.getElementById('audio-status-text').innerText = "Chargement d'AnimeThemes...";
+            const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+            let directUrl = currentQuestion.resolvedUrl; // Récupère la vidéo préchargée
+
+            if (!directUrl) {
+                document.getElementById('audio-status-text').innerText = "Chargement d'AnimeThemes...";
+                directUrl = await getAnimeThemesVideoUrl(youtubeId);
+            }
             
-            const directUrl = await getAnimeThemesVideoUrl(youtubeId);
             if (directUrl) {
                 nativePlayer.src = directUrl;
                 nativePlayer.load();
                 nativePlayer.play().catch(e => {
-                    console.warn("Lecture bloquée, passage en sourdine de sécurité...");
+                    console.warn("Lecture bloquée, passage en sourdine...");
                     nativePlayer.muted = true;
                     nativePlayer.play();
                 });
@@ -265,12 +300,12 @@ async function attemptPlayWithRetry(youtubeId) {
         }
     } else {
         // --- MODE YOUTUBE ---
-        // Masque le lecteur natif, affiche et configure le lecteur YouTube
-        if (nativePlayer) {
-            nativePlayer.style.display = 'none';
+        // Masque le conteneur AnimeThemes, affiche le conteneur YouTube
+        if (nativePlayerContainer) {
+            nativePlayerContainer.style.display = 'none';
             nativePlayer.pause();
         }
-        if (ytPlayerEl) ytPlayerEl.style.display = 'block';
+        if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
 
         if (typeof ytPlayer.loadVideoById === "function") {
             ytPlayer.unMute(); 
@@ -318,11 +353,13 @@ function stopAudio() {
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
     document.getElementById('yt-player-container').classList.add('reveal');
+    document.getElementById('native-player-container').classList.add('reveal');
 }
 
 function resetVideoVisibility() {
     document.getElementById('placeholder-container').style.opacity = '1';
     document.getElementById('yt-player-container').classList.remove('reveal');
+    document.getElementById('native-player-container').classList.remove('reveal');
 }
 
 function showScreen(screenId) {
@@ -392,7 +429,7 @@ function loadQuestion() {
     document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
 
     attemptPlayWithRetry(currentQuestion.YoutubeId);
-
+        preloadNextVideo();
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
 
