@@ -89,24 +89,24 @@
     "themes": ["School", "Shounen"],
     "YoutubeId": "Ovz1K5ieNCQ"
   },
-    {
-        "id": 11,
-        "title": "Horimiya OP 1",
-        "type": "OP",
-        "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
-        "genres": ["Romance"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "OkPUJspnE6Q"
-    },
-    {
-        "id": 12,
-        "title": "Horimiya ED 1",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
-        "genres": ["Romance"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "https://animethemes.moe/anime/horimiya/ED1-NCBD1080"
-    },
+  {
+    "id": 11,
+    "title": "Horimiya OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "OkPUJspnE6Q"
+  },
+  {
+    "id": 12,
+    "title": "Horimiya ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "https://animethemes.moe/anime/horimiya/ED1-NCBD1080"
+  },
   {
     "id": 13,
     "title": "My Dress-Up Darling OP 1",
@@ -116,16 +116,16 @@
     "themes": ["School", "Otaku Culture"],
     "YoutubeId": "oG4eu4HMtbo"
   },
-    {
-        "id": 14,
-        "title": "My Dress-Up Darling ED 1",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1179/119897l.jpg",
-        "genres": ["Romance"],
-        "themes": ["School", "Otaku Culture"],
-        "YoutubeId": "_8rk_af6ApM"
-    },
-    {
+  {
+    "id": 14,
+    "title": "My Dress-Up Darling ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1179/119897l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Otaku Culture"],
+    "YoutubeId": "_8rk_af6ApM"
+  },
+  {
     "id": 15,
     "title": "My Dress-Up Darling OP 2",
     "type": "OP",
@@ -134,106 +134,106 @@
     "themes": ["School", "Otaku Culture"],
     "YoutubeId": "ie5GcVid_8k"
   },
-    {
-        "id": 16,
-        "title": "My Dress-Up Darling ED 2",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1024/150787l.jpg",
-        "genres": ["Romance"],
-        "themes": ["School", "Otaku Culture"],
-        "YoutubeId": "75WraMAZ0Lo"
-    },
-    {
-        "id": 17,
-        "title": "Shikimori's Not Just a Cutie OP 1",
-        "type": "OP",
-        "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
-        "genres": ["Romance"],
-        "themes": ["School"],
-        "YoutubeId": "bWTGWUH9-Nc"
-    },
-    {
-        "id": 18,
-        "title": "Shikimori's Not Just a Cutie ED 1",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
-        "genres": ["Romance"],
-        "themes": ["School"],
-        "YoutubeId": "t7IBNTR8DHA"
-    },
-    {
-        "id": 19,
-        "title": "TONIKAWA: Over the Moon For You OP 1",
-        "type": "OP",
-        "image": "https://cdn.myanimelist.net/images/anime/1613/108722l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "vQiodbKEW6s"
-    },
-    {
-        "id": 20,
-        "title": "TONIKAWA: Over the Moon For You ED 1",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1613/108722l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "1dVfPq0wnrA"
-    },
-    {
-        "id": 21,
-        "title": "You and I Are Polar Opposites OP 1",
-        "type": "OP",
-        "image": "https://cdn.myanimelist.net/images/anime/1140/154457l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "ha_mVguCfFM"
-    },
-    {
-        "id": 22,
-        "title": "You and I Are Polar Opposites ED 1",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1140/154457l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "tySEyirXY3o"
-    },
-    {
-        "id": 21,
-        "title": "You and I Are Polar Opposites OP 2",
-        "type": "OP",
-        "image": "https://cdn.myanimelist.net/images/anime/1143/158409l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "kUe7LOCbjzQ"
-    },
-    {
-        "id": 22,
-        "title": "You and I Are Polar Opposites ED 2",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1143/158409l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "FlqDBh8QjZk"
-    },
-    {
-        "id": 23,
-        "title": "The Dangers in My Heart OP 1",
-        "type": "OP",
-        "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "Za2FmwuIEwY"
-    },
-    {
-        "id": 24,
-        "title": "The Dangers in My Heart ED 1",
-        "type": "ED",
-        "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
-        "genres": ["Romance", "Comedy"],
-        "themes": ["School", "Shounen"],
-        "YoutubeId": "https://animethemes.moe/anime/boku_no_kokoro_no_yabai_yatsu/ED1"
-    },
-    {
+  {
+    "id": 16,
+    "title": "My Dress-Up Darling ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1024/150787l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School", "Otaku Culture"],
+    "YoutubeId": "75WraMAZ0Lo"
+  },
+  {
+    "id": 17,
+    "title": "Shikimori's Not Just a Cutie OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School"],
+    "YoutubeId": "bWTGWUH9-Nc"
+  },
+  {
+    "id": 18,
+    "title": "Shikimori's Not Just a Cutie ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1995/121695l.jpg",
+    "genres": ["Romance"],
+    "themes": ["School"],
+    "YoutubeId": "t7IBNTR8DHA"
+  },
+  {
+    "id": 19,
+    "title": "TONIKAWA: Over the Moon For You OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1613/108722l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "vQiodbKEW6s"
+  },
+  {
+    "id": 20,
+    "title": "TONIKAWA: Over the Moon For You ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1613/108722l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "1dVfPq0wnrA"
+  },
+  {
+    "id": 21,
+    "title": "You and I Are Polar Opposites OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1140/154457l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "ha_mVguCfFM"
+  },
+  {
+    "id": 22,
+    "title": "You and I Are Polar Opposites ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1140/154457l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "tySEyirXY3o"
+  },
+  {
+    "id": 21,
+    "title": "You and I Are Polar Opposites OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1143/158409l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "kUe7LOCbjzQ"
+  },
+  {
+    "id": 22,
+    "title": "You and I Are Polar Opposites ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1143/158409l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "FlqDBh8QjZk"
+  },
+  {
+    "id": 23,
+    "title": "The Dangers in My Heart OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "Za2FmwuIEwY"
+  },
+  {
+    "id": 24,
+    "title": "The Dangers in My Heart ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1545/133887l.jpg",
+    "genres": ["Romance", "Comedy"],
+    "themes": ["School", "Shounen"],
+    "YoutubeId": "https://animethemes.moe/anime/boku_no_kokoro_no_yabai_yatsu/ED1"
+  },
+  {
     "id": 25,
     "title": "The Dangers in My Heart OP 2",
     "type": "OP",
@@ -269,7 +269,7 @@
     "themes": ["Shounen"],
     "YoutubeId": "https://animethemes.moe/anime/bleach/ED1-NCDVD528"
   },
-{
+  {
     "id": 29,
     "title": "bleach OP 2",
     "type": "OP",
@@ -310,7 +310,7 @@
     "title": "InuYasha OP 1",
     "type": "OP",
     "image": "https://cdn.myanimelist.net/images/anime/1589/95329l.jpg",
-    "genres": ["Action", "Adventure",  "Fantasy", "Romance"],
+    "genres": ["Action", "Adventure", "Fantasy", "Romance"],
     "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
     "YoutubeId": "l6UWhb9dGHQ"
   },
@@ -319,7 +319,7 @@
     "title": "InuYasha ED 1",
     "type": "ED",
     "image": "https://cdn.myanimelist.net/images/anime/1589/95329l.jpg",
-    "genres": ["Action", "Adventure",  "Fantasy", "Romance"],
+    "genres": ["Action", "Adventure", "Fantasy", "Romance"],
     "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
     "YoutubeId": "https://animethemes.moe/anime/inuyasha/ED1-NCDVD576"
   },
@@ -527,7 +527,7 @@
     "type": "OP",
     "image": "https://cdn.myanimelist.net/images/anime/1626/148097l.jpg",
     "genres": ["Sports", "Drama"],
-    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "themes": ["Racing", "Anthropomorphic", "Seinen"],
     "YoutubeId": "BxUF9WQQZFI"
   },
   {
@@ -536,7 +536,7 @@
     "type": "ED",
     "image": "https://cdn.myanimelist.net/images/anime/1626/148097l.jpg",
     "genres": ["Sports", "Drama"],
-    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "themes": ["Racing", "Anthropomorphic", "Seinen"],
     "YoutubeId": "nJs0rcVwaqw"
   },
   {
@@ -545,7 +545,7 @@
     "type": "OP",
     "image": "https://cdn.myanimelist.net/images/anime/1120/152280l.jpg",
     "genres": ["Sports", "Drama"],
-    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "themes": ["Racing", "Anthropomorphic", "Seinen"],
     "YoutubeId": "zaontFJPfbI"
   },
   {
@@ -554,7 +554,7 @@
     "type": "ED",
     "image": "https://cdn.myanimelist.net/images/anime/1120/152280l.jpg",
     "genres": ["Sports", "Drama"],
-    "themes": ["Racing", "Anthropomorphic","Seinen"],
+    "themes": ["Racing", "Anthropomorphic", "Seinen"],
     "YoutubeId": "DM7zIKHz7Dw"
   },
   {
@@ -736,5 +736,59 @@
     "genres": ["Slice of Life"],
     "themes": ["Shounen", "Childcare", "Gag Humor", "Otaku Culture"],
     "YoutubeId": "TI8x4b-xt8c"
+  },
+  {
+    "id": 81,
+    "title": "Blue Exorcist OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9919-nXS7JOZrWHfS.jpg",
+    "genres": ["Action", "Fantasy", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "UI6BPgMEqvA"
+  },
+  {
+    "id": 82,
+    "title": "Blue Exorcist ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9919-nXS7JOZrWHfS.jpg",
+    "genres": ["Action", "Fantasy", "Supernatural"],
+    "themes": ["Shounen", "Mythology", "School"],
+    "YoutubeId": "ItSJzPUpQek"
+  },
+  {
+    "id": 83,
+    "title": "Soul Eater OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx3588-fSMggQoFSbUI.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "kjHsIeJi_pM"
+  },
+  {
+    "id": 84,
+    "title": "Soul Eater ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx3588-fSMggQoFSbUI.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "C_y09j8KPA8"
+  },
+  {
+    "id": 85,
+    "title": "Noragami OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20447-EoQXeygHaVCK.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "w60Becb2hKA"
+  },
+  {
+    "id": 86,
+    "title": "Noragami ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20447-EoQXeygHaVCK.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "inWYbShD54s"
   }
 ]
