@@ -988,5 +988,176 @@
     "genres": ["Action", "Drama", "Mystery", "Supernatural", "Suspense"],
     "themes": ["Shounen", "Time Travel"],
     "YoutubeId": "JGG3OyeOfSM"
+  },
+  {
+    "id": 111,
+    "title": "Parasite -the maxim- OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/3/73178l.jpg",
+    "genres": ["Action", "Horror", "Sci-Fi", "Suspense"],
+    "themes": ["Psychological", "Gore", "Seinen"],
+    "YoutubeId": "ziatgnrtG0Y"
+  },
+  {
+    "id": 112,
+    "title": "Parasite -the maxim- ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/3/73178l.jpg",
+    "genres": ["Action", "Horror", "Sci-Fi", "Suspense"],
+    "themes": ["Psychological", "Gore", "Seinen"],
+    "YoutubeId": "EVndDcpk1A0"
+  },
+  {
+    "id": 113,
+    "title": "Devilman Crybaby OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx98460-bLtH2c3jd6sV.png",
+    "genres": ["Action", "Avant Garde", "Horror", "Supernatural"],
+    "themes": ["Shounen", "Gore", "Mythology"],
+    "YoutubeId": "UM3uDMbtMkg"
+  },
+  {
+    "id": 114,
+    "title": "INUYASHIKI LAST HERO OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97922-qrGn5fkQinDs.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi", "Suspense"],
+    "themes": ["Seinen", "Gore", "Psychological"],
+    "YoutubeId": "cYciY8Y8Y8s"
+  },
+  {
+    "id": 115,
+    "title": "INUYASHIKI LAST HERO ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97922-qrGn5fkQinDs.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi", "Suspense"],
+    "themes": ["Seinen", "Gore", "Psychological"],
+    "YoutubeId": "0T49D73myWA"
+  },
+  {
+    "id": 116,
+    "title": "AJIN: Demi-Human OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21341-Pyc7SkMEuGsl.jpg",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Gore"],
+    "YoutubeId": "7BmxmRnKnZg"
+  },
+  {
+    "id": 117,
+    "title": "AJIN: Demi-Human ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21341-Pyc7SkMEuGsl.jpg",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Gore"],
+    "YoutubeId": "vP57Ss5E7w0"
+  },
+  {
+    "id": 118,
+    "title": "Yuru Camp△ OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx98444-Vzysp1EsrzgD.jpg",
+    "genres": ["Comedy", "Slice of Life"],
+    "themes": ["Seinen"],
+    "YoutubeId": "7-EwChG1WTA"
+  },
+  {
+    "id": 119,
+    "title": "Yuru Camp△ ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx98444-Vzysp1EsrzgD.jpg",
+    "genres": ["Comedy", "Slice of Life"],
+    "themes": ["Seinen"],
+    "YoutubeId": "CrTmHil72ls"
+  },
+  {
+    "id": 120,
+    "title": "Girls Band Cry OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx164212-eKh15LQxkTEx.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Music"],
+    "YoutubeId": "YDLafQ-Rg-k"
+  },
+  {
+    "id": 121,
+    "title": "Girls Band Cry ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx164212-eKh15LQxkTEx.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Music"],
+    "YoutubeId": "Go6wsJwKf4c"
+  },
+  {
+    "id": 122,
+    "title": "Rock is a Lady’s Modesty OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179694-7zhc0T6IImor.jpg",
+    "genres": ["Comedy"],
+    "themes": ["Seinen", "School", "Music"],
+    "YoutubeId": "yvQJMvms-ok"
+  },
+  {
+    "id": 123,
+    "title": "Rock is a Lady’s Modesty ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179694-7zhc0T6IImor.jpg",
+    "genres": ["Comedy"],
+    "themes": ["Seinen", "School", "Music"],
+    "YoutubeId": "_EOsEl8p1nk"
+  },
+  {
+    "id": 126,
+    "title": "Carole & Tuesday OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101281-s1UoXUaYXhxn.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Music"],
+    "YoutubeId": "jsNm1LQUrXM"
+  },
+  {
+    "id": 127,
+    "title": "Carole & Tuesday ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101281-s1UoXUaYXhxn.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Music"],
+    "YoutubeId": "N-xG7vmJV0c"
+  },
+  {
+    "id": 124,
+    "title": "Carole & Tuesday OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101281-s1UoXUaYXhxn.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Music"],
+    "YoutubeId": "UDwgonpXNRU"
+  },
+  {
+    "id": 125,
+    "title": "Carole & Tuesday ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101281-s1UoXUaYXhxn.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Music"],
+    "YoutubeId": "N_2kdKiMCPM"
+  },
+  {
+    "id": 128,
+    "title": "Vivy -Fluorite Eye's Song- OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128546-UIwyhuhjxmL0.jpg",
+    "genres": ["Action", "Sci-Fi", "Suspense"],
+    "themes": ["Music", "Time Travel"],
+    "YoutubeId": "2p8ig-TrYPY"
+  },
+  {
+    "id": 129,
+    "title": "Vivy -Fluorite Eye's Song- ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128546-UIwyhuhjxmL0.jpg",
+    "genres": ["Action", "Sci-Fi", "Suspense"],
+    "themes": ["Music", "Time Travel"],
+    "YoutubeId": "HSRX04NXWCA"
   }
 ]
