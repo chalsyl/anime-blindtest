@@ -87,7 +87,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1899/117237l.jpg",
     "genres": ["Romance"],
     "themes": ["School", "Shounen"],
-    "YoutubeId": "Ovz1K5ieNCQ"
+    "YoutubeId": "https://cdn.myanimelist.net/images/anime/1108/121157l.jpg"
   },
   {
     "id": 11,
@@ -1213,5 +1213,320 @@
     "genres": ["Action", "Adventure", "Drama", "Romance", "Sci-Fi"],
     "themes": ["Mecha"],
     "YoutubeId": "vZsgTwMIbn0"
+  },
+  {
+    "id": 136,
+    "title": "SANDA OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179302-gWWAh5BfQyl4.jpg",
+    "genres": ["Action", "Drama", "Mystery"],
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "U1qcMPqzYN4"
+  },
+  {
+    "id": 137,
+    "title": "SANDA ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179302-gWWAh5BfQyl4.jpg",
+    "genres": ["Action", "Drama", "Mystery"],
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "PwOKS7BiJ50"
+  },
+  {
+    "id": 138,
+    "title": "Mushoku Tensei: Jobless Reincarnation OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-1ANspF1EWyFx.jpg",
+    "genres": ["Adventure", "Drama", "Ecchi", "Fantasy"],
+    "themes": ["Isekai", "Reincarnation"],
+    "YoutubeId": "https://animethemes.moe/anime/mushoku_tensei_isekai_ittara_honki_dasu/OP1"
+  },
+  {
+    "id": 139,
+    "title": "Mushoku Tensei: Jobless Reincarnation ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-1ANspF1EWyFx.jpg",
+    "genres": ["Adventure", "Drama", "Ecchi", "Fantasy"],
+    "themes": ["Isekai", "Reincarnation"],
+    "YoutubeId": "3mLWoJF17U4"
+  },
+  {
+    "id": 140,
+    "title": "To Be Hero X OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156092-yHqgQZOF2mbg.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Super Power"],
+    "YoutubeId": "8QJ8KNdhkiA"
+  },
+  {
+    "id": 141,
+    "title": "To Be Hero X ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156092-yHqgQZOF2mbg.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Super Power"],
+    "YoutubeId": "gQ940ZInrTY"
+  },
+  {
+    "id": 142,
+    "title": "DEMON LORD 2099 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163135-NjvXyXvTYSHH.jpg",
+    "genres": ["Action", "Fantasy", "Sci-Fi"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "bgVG-IZ8uaU"
+  },
+  {
+    "id": 143,
+    "title": "DEMON LORD 2099 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163135-NjvXyXvTYSHH.jpg",
+    "genres": ["Action", "Fantasy", "Sci-Fi"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "6G0TQljuwxM"
+  },
+  {
+    "id": 144,
+    "title": "ACCA: 13-Territory Inspection Dept. OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21823-0XTjZ0Rtm7va.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Adult Cast", "Detective"],
+    "YoutubeId": "9PDJDIsLQRo"
+  },
+  {
+    "id": 145,
+    "title": "ACCA: 13-Territory Inspection Dept. ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21823-0XTjZ0Rtm7va.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Adult Cast", "Detective"],
+    "YoutubeId": "kfHlm49Fk5k"
+  },
+  {
+    "id": 146,
+    "title": "House of Five Leaves OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx7588-iXCwrmgHGJbd.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Samurai"],
+    "YoutubeId": "1XlYCe78YMg"
+  },
+  {
+    "id": 147,
+    "title": "House of Five Leaves ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx7588-iXCwrmgHGJbd.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Samurai"],
+    "YoutubeId": "https://animethemes.moe/anime/saraiya_goyou/ED1-NCDVD480"
+  },
+  {
+    "id": 148,
+    "title": "ODDTAXI OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1981/113348.jpg",
+    "genres": ["Drama", "Mystery", "Suspense"],
+    "themes": ["Adult Cast", "Anthropomorphic", "Organized Crime"],
+    "YoutubeId": "jX-Ry1VxeDQ"
+  },
+  {
+    "id": 149,
+    "title": "ODDTAXI ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1981/113348.jpg",
+    "genres": ["Drama", "Mystery", "Suspense"],
+    "themes": ["Adult Cast", "Anthropomorphic", "Organized Crime"],
+    "YoutubeId": "TnnlU1yxViI"
+  },
+  {
+    "id": 150,
+    "title": "Great Pretender OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx110349-59hhZ9CNHVdk.png",
+    "genres": ["Action", "Comedy", "Drama", "Suspense"],
+    "themes": ["Adult Cast", "Organized Crime"],
+    "YoutubeId": "Yjv_yFgHYc0"
+  },
+  {
+    "id": 151,
+    "title": "Great Pretender ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx110349-59hhZ9CNHVdk.png",
+    "genres": ["Action", "Comedy", "Drama", "Suspense"],
+    "themes": ["Adult Cast", "Organized Crime"],
+    "YoutubeId": "ug0Mc94Ye1I"
+  },
+  {
+    "id": 152,
+    "title": "Baccano! OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2251-tTQoWxVy4472.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Adult Cast", "Historical", "Organized Crime"],
+    "YoutubeId": "gfKJ13-qqK8"
+  },
+  {
+    "id": 153,
+    "title": "Baccano! ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2251-tTQoWxVy4472.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Adult Cast", "Historical", "Organized Crime"],
+    "YoutubeId": "nV_g2bFWAEI"
+  },
+  {
+    "id": 154,
+    "title": "Durarara!! OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx6746-3LTwM95Uqeoa.png",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "oikvju7vAg4"
+  },
+  {
+    "id": 155,
+    "title": "Durarara!! ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx6746-3LTwM95Uqeoa.png",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "RMD1jEJEF4k"
+  },
+  {
+    "id": 156,
+    "title": "The World's Finest Assassin Gets Reincarnated OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx129898-FRUzDtPhRigt.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Mystery", "Romance"],
+    "themes": ["Isekai", "Reincarnation"],
+    "YoutubeId": "Qnebg3Ctfzs"
+  },
+  {
+    "id": 157,
+    "title": "The World's Finest Assassin Gets Reincarnated ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx129898-FRUzDtPhRigt.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Mystery", "Romance"],
+    "themes": ["Isekai", "Reincarnation"],
+    "YoutubeId": "wkHGH-DB9xQ"
+  },
+  {
+    "id": 158,
+    "title": "Bungo Stray Dogs OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21311-hAXyT8Yoh6G9.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "tx_TZEAPI0k"
+  },
+  {
+    "id": 159,
+    "title": "Bungo Stray Dogs ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21311-hAXyT8Yoh6G9.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "LXlgpYBnXVY"
+  },
+  {
+    "id": 160,
+    "title": "The Case Study of Vanitas OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131646-cuyGfKcekZ62.jpg",
+    "genres": ["Action", "Drama", "Fantasy", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Urban Fantasy", "Vampire"],
+    "YoutubeId": "MSSZ0sqxskY"
+  },
+  {
+    "id": 161,
+    "title": "The Case Study of Vanitas ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131646-cuyGfKcekZ62.jpg",
+    "genres": ["Action", "Drama", "Fantasy", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Urban Fantasy", "Vampire"],
+    "YoutubeId": "-GHKpSeBiPY"
+  },
+  {
+    "id": 162,
+    "title": "Call of the Night OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx141391-M3ZgUKTPENUk.jpg",
+    "genres": ["Romance", "Supernatural"],
+    "themes": ["Shounen", "Vampire"],
+    "YoutubeId": "L96VbQ9ytWk"
+  },
+  {
+    "id": 163,
+    "title": "Call of the Night ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx141391-M3ZgUKTPENUk.jpg",
+    "genres": ["Romance", "Supernatural"],
+    "themes": ["Shounen", "Vampire"],
+    "YoutubeId": "R0PDayTUnRA"
+  },
+  {
+    "id": 164,
+    "title": "Seraph of the End: Vampire Reign OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1879/148979l.jpg",
+    "genres": ["Action", "Drama", "Fantasy", "Supernatural"],
+    "themes": ["Shounen", "Vampire"],
+    "YoutubeId": "aNgT6MxOURQ"
+  },
+  {
+    "id": 165,
+    "title": "Seraph of the End: Vampire Reign ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1879/148979l.jpg",
+    "genres": ["Action", "Drama", "Fantasy", "Supernatural"],
+    "themes": ["Shounen", "Vampire"],
+    "YoutubeId": "LIdpJtJPAbg"
+  },
+  {
+    "id": 166,
+    "title": "ALDNOAH.ZERO OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx20632-Mkgbtvi1kmhD.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Mecha", "Military"],
+    "YoutubeId": "https://animethemes.moe/anime/aldnoahzero/OP1-NCBD1080"
+  },
+  {
+    "id": 167,
+    "title": "ALDNOAH.ZERO ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx20632-Mkgbtvi1kmhD.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Mecha", "Military"],
+    "YoutubeId": "39svV02qtNo"
+  },
+  {
+    "id": 168,
+    "title": "ALDNOAH.ZERO ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx20632-Mkgbtvi1kmhD.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Mecha", "Military"],
+    "YoutubeId": "SIS-dQJ5-Jo"
+  },
+  {
+    "id": 169,
+    "title": "Black Butler OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1467/137783l.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Mythology"],
+    "YoutubeId": "7q0lNz_5vLo"
+  },
+  {
+    "id": 170,
+    "title": "Black Butler ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1467/137783l.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Mythology"],
+    "YoutubeId": "HiXtTy_l5U0"
   }
 ]

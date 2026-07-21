@@ -242,7 +242,11 @@ async function loadMediaForRound(youtubeId) {
     const nativePlayer = document.getElementById('native-player');
     const ytPlayerContainer = document.getElementById('yt-player-container');
 
-    document.getElementById('audio-status-text').innerText = "Synchronisation des joueurs...";
+    if (gameMode === "solo") {
+        document.getElementById('audio-status-text').innerText = "Préparation du morceau...";
+    } else {
+        document.getElementById('audio-status-text').innerText = "Synchronisation des joueurs...";
+    }
 
     // Sécurité : Si le chargement prend plus de 5 secondes, on force le démarrage
     const safetyBufferTimeout = setTimeout(() => {
