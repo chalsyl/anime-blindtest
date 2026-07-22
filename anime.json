@@ -87,7 +87,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/1899/117237l.jpg",
     "genres": ["Romance"],
     "themes": ["School", "Shounen"],
-    "YoutubeId": "https://cdn.myanimelist.net/images/anime/1108/121157l.jpg"
+    "YoutubeId": "Ovz1K5ieNCQ"
   },
   {
     "id": 11,
@@ -1528,5 +1528,374 @@
     "genres": ["Action", "Mystery", "Supernatural"],
     "themes": ["Shounen", "Historical", "Mythology"],
     "YoutubeId": "HiXtTy_l5U0"
+  },
+  {
+    "id": 171,
+    "title": "You are Ms. Servant OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx172190-i1IqizIUcKkN.jpg",
+    "genres": ["Comedy", "Romance", "Slice of Life"],
+    "themes": ["Shounen"],
+    "YoutubeId": "AD4wjqCmC98"
+  },
+  {
+    "id": 172,
+    "title": "You are Ms. Servant ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx172190-i1IqizIUcKkN.jpg",
+    "genres": ["Comedy", "Romance", "Slice of Life"],
+    "themes": ["Shounen"],
+    "YoutubeId": "IniiUUdmXBU"
+  },
+  {
+    "id": 173,
+    "title": "The Wrong Way to Use Healing Magic OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx137908-50af3lKVbst2.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Isekai"],
+    "YoutubeId": "5hJMagQq9W0"
+  },
+  {
+    "id": 174,
+    "title": "The Wrong Way to Use Healing Magic ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx137908-50af3lKVbst2.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Isekai"],
+    "YoutubeId": "Sqe6P0h6bzI"
+  },
+  {
+    "id": 175,
+    "title": "Dead Mount Death Play OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx157198-LVZ7PgxWwc6v.jpg",
+    "genres": ["Action", "Fantasy", "Supernatural", "Suspense"],
+    "themes": ["Seinen", "Reincarnation", "Urban Fantasy"],
+    "YoutubeId": "ToeO0rWl-xY"
+  },
+  {
+    "id": 176,
+    "title": "Dead Mount Death Play ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx157198-LVZ7PgxWwc6v.jpg",
+    "genres": ["Action", "Fantasy", "Supernatural", "Suspense"],
+    "themes": ["Seinen", "Reincarnation", "Urban Fantasy"],
+    "YoutubeId": "sx6ISsclqSw"
+  },
+  {
+    "id": 177,
+    "title": "Dead Mount Death Play Part 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx162803-hs0umrdl9SDN.jpg",
+    "genres": ["Action", "Fantasy", "Supernatural", "Suspense"],
+    "themes": ["Seinen", "Reincarnation", "Urban Fantasy"],
+    "YoutubeId": "-Yj-BxjG7SM"
+  },
+  {
+    "id": 178,
+    "title": "Dead Mount Death Play Part 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx162803-hs0umrdl9SDN.jpg",
+    "genres": ["Action", "Fantasy", "Supernatural", "Suspense"],
+    "themes": ["Seinen", "Reincarnation", "Urban Fantasy"],
+    "YoutubeId": "SB3MwFMZG8Q"
+  },
+  {
+    "id": 179,
+    "title": "Ragna Crimson OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1763/140359l.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Mystery"],
+    "themes": ["Shounen"],
+    "YoutubeId": "DUqKtA0CESs"
+  },
+  {
+    "id": 180,
+    "title": "Ragna Crimson ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1763/140359l.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Mystery"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "m98SPN39tLM"
+  },
+  {
+    "id": 181,
+    "title": "Undead Unluck OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154116-3ydDI9hhvPgw.png",
+    "genres": ["Action", "Comedy"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "V9baXCr--yw"
+  },
+  {
+    "id": 182,
+    "title": "Undead Unluck ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154116-3ydDI9hhvPgw.png",
+    "genres": ["Action", "Comedy"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "canptz0g5_k"
+  },
+  {
+    "id": 183,
+    "title": "Clevatess OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178869-qiEz0gQD8H5N.png",
+    "genres": ["Action", "Fantasy"],
+    "themes": [],
+    "YoutubeId": "Y9X49sAp-M8"
+  },
+  {
+    "id": 184,
+    "title": "Clevatess ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178869-qiEz0gQD8H5N.png",
+    "genres": ["Action", "Fantasy"],
+    "themes": [],
+    "YoutubeId": "d4rp4rBPQks"
+  },
+  {
+    "id": 185,
+    "title": "Sentenced to Be a Hero OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx167152-O1pm6DWwifBD.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy"],
+    "themes": ["Seinen"],
+    "YoutubeId": "h4I4frynoOo"
+  },
+  {
+    "id": 186,
+    "title": "Dragon Raja -The Blazing Dawn- OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx122511-h6FpxJGfKx3I.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": [],
+    "YoutubeId": "jVtZgESxMZc"
+  },
+  {
+    "id": 187,
+    "title": "Dragon Raja -The Blazing Dawn- ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx122511-h6FpxJGfKx3I.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": [],
+    "YoutubeId": "stpFSq0d4ec"
+  },
+  {
+    "id": 188,
+    "title": "Dragon Raja II -The Mourner's Eyes- OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1620/157883l.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": [],
+    "YoutubeId": "9WBMl0AYluc"
+  },
+  {
+    "id": 189,
+    "title": "Dragon Raja II -The Mourner's Eyes- ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1620/157883l.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": [],
+    "YoutubeId": "5AFxTbYOk0c"
+  },
+  {
+    "id": 190,
+    "title": "Takopi's Original Sin OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185407-7uzY4fA3hokP.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Shounen", "Psychological", "Time Travel"],
+    "YoutubeId": "CIxiy4d-AT8"
+  },
+  {
+    "id": 191,
+    "title": "Takopi's Original Sin ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185407-7uzY4fA3hokP.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Shounen", "Psychological", "Time Travel"],
+    "YoutubeId": "L-VmUFDk66U"
+  },
+  {
+    "id": 192,
+    "title": "Neon Genesis Evangelion OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx30-AI1zr74Dh4ye.jpg",
+    "genres": ["Action", "Drama", "Mystery", "Sci-Fi", "Avant Garde", "Suspense"],
+    "themes": ["Mecha", "Psychological"],
+    "YoutubeId": "WWWTWgyYYAk"
+  },
+  {
+    "id": 193,
+    "title": "Neon Genesis Evangelion ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx30-AI1zr74Dh4ye.jpg",
+    "genres": ["Action", "Drama", "Mystery", "Sci-Fi", "Avant Garde", "Suspense"],
+    "themes": ["Mecha", "Psychological"],
+    "YoutubeId": "z2AyJTOR_qw"
+  },
+  {
+    "id": 194,
+    "title": "Gurren Lagann OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2001-XwRnjzGeFWRQ.png",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "h6wPbJlFBUw"
+  },
+  {
+    "id": 195,
+    "title": "Gurren Lagann ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2001-XwRnjzGeFWRQ.png",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "AyFlycSVonU"
+  },
+  {
+    "id": 195,
+    "title": "Gurren Lagann ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2001-XwRnjzGeFWRQ.png",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi"],
+    "themes": ["Mecha"],
+    "YoutubeId": "4ChgP35Ehlc"
+  },
+  {
+    "id": 196,
+    "title": "FLCL ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx227-qOB9ZhVvNnqO.jpg",
+    "genres": ["Action", "Comedy", "Sci-Fi", "Avant Garde", "Suspense"],
+    "themes": ["Mecha", "Parody", "Psychological"],
+    "YoutubeId": "pmwEa3-1r6s"
+  },
+  {
+    "id": 197,
+    "title": "Gachiakuta OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg",
+    "genres": ["Action", "Drama", "Fantasy"],
+    "themes": ["Shounen"],
+    "YoutubeId": "9f89PWhv8YE"
+  },
+  {
+    "id": 198,
+    "title": "Gachiakuta ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg",
+    "genres": ["Action", "Drama", "Fantasy"],
+    "themes": ["Shounen"],
+    "YoutubeId": "EXneg1C9iLg"
+  },
+  {
+    "id": 199,
+    "title": "Gachiakuta OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg",
+    "genres": ["Action", "Drama", "Fantasy"],
+    "themes": ["Shounen"],
+    "YoutubeId": "EN2a0JGUHFM"
+  },
+  {
+    "id": 200,
+    "title": "Gachiakuta ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg",
+    "genres": ["Action", "Drama", "Fantasy"],
+    "themes": ["Shounen"],
+    "YoutubeId": "aqG2OTyXRDo"
+  },
+  {
+    "id": 201,
+    "title": "Dead Account OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx187901-T91HmZAaNwOF.jpg",
+    "genres": ["Action", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "dUkeSD48rTw"
+  },
+  {
+    "id": 202,
+    "title": "Dead Account ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx187901-T91HmZAaNwOF.jpg",
+    "genres": ["Action", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "cWTX8WtChm8"
+  },
+  {
+    "id": 203,
+    "title": "TOUGEN ANKI OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1155/147400l.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "sS6zPpbNCx8"
+  },
+  {
+    "id": 204,
+    "title": "TOUGEN ANKI ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1155/147400l.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "UVaJ-BQAQLU"
+  },
+  {
+    "id": 205,
+    "title": "TOUGEN ANKI OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177474-oHil1yLWldfl.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "yI3PSYmU8ig"
+  },
+  {
+    "id": 206,
+    "title": "TOUGEN ANKI ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177474-oHil1yLWldfl.jpg",
+    "genres": ["Action", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "WHUpja-jFVk"
+  },
+  {
+    "id": 207,
+    "title": "WIND BREAKER OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163270-wboZJp0ybwVK.jpg",
+    "genres": ["Action", "Drama"],
+    "themes": ["Shounen", "Delinquents", "School"],
+    "YoutubeId": "IuSAC8ZDf1A"
+  },
+  {
+    "id": 208,
+    "title": "WIND BREAKER ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163270-wboZJp0ybwVK.jpg",
+    "genres": ["Action", "Drama"],
+    "themes": ["Shounen", "Delinquents", "School"],
+    "YoutubeId": "Z8lRhKH6ClE"
+  },
+  {
+    "id": 209,
+    "title": "WIND BREAKER Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178680-nIAhCizY46ZU.jpg",
+    "genres": ["Action", "Comedy", "Drama"],
+    "themes": ["Shounen"],
+    "YoutubeId": "AWlUVr7Du04"
+  },
+  {
+    "id": 210,
+    "title": "WIND BREAKER Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178680-nIAhCizY46ZU.jpg",
+    "genres": ["Action", "Comedy", "Drama"],
+    "themes": ["Shounen"],
+    "YoutubeId": "ySD7YVvd6Xw"
   }
 ]

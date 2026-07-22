@@ -40,6 +40,9 @@ let roundProcessed = false;
 let mediaReady = false;
 let isRoundActive = false;
 
+// Volume global (0.0 à 1.0) et synchronisation de lecture
+let globalVolume = 1.0;
+
 async function loadDatabase() {
     try {
         const response = await fetch('anime.json');
@@ -51,7 +54,7 @@ async function loadDatabase() {
 }
 
 function getBaseAnimeName(title) {
-    return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim();
+    return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
 }
 
 function isAnimeThemes(url) {
@@ -91,6 +94,14 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
         }
     } catch (e) {}
     return null;
+}
+
+function getFranchiseKey(title) {
+    let base = title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
+    base = base.split(/ -|:| season| part| s\d+/i)[0].trim();
+    base = base.replace(/\s+(?:[ivxldcm]+)\b$/gi, '').trim();
+    base = base.replace(/\s+\d+$/g, '').trim();
+    return base;
 }
 
 function preloadImages(questionObj) {
@@ -142,8 +153,6 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
     return selected.map(correctSong => {
         const distractors = getSimilarAnime(correctSong, 3);
         const choices = [correctSong, ...distractors].sort(() => 0.5 - Math.random());
-        
-        // SÉCURITÉ FIREBASE : On force des valeurs par défaut pour éviter les "undefined" mortels
         return {
             correct: {
                 id: correctSong.id || 0,
@@ -154,21 +163,20 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
                 genres: correctSong.genres || [],
                 themes: correctSong.themes || []
             },
-            choices: choices.map(c => ({ 
-                id: c.id || 0, 
-                title: c.title || "Inconnu", 
-                image: c.image || "" 
-            }))
+            choices: choices.map(c => ({ id: c.id || 0, title: c.title || "Inconnu", image: c.image || "" }))
         };
     });
 }
 
+// CORRIGÉ : Variable list renommée en candidates pour éviter le crash en jeu
 function getSimilarAnime(correctSong, count = 3) {
-    const correctBaseName = getBaseAnimeName(correctSong.title);
+    const correctFranchise = getFranchiseKey(correctSong.title);
     const targetType = correctSong.type; 
 
-    const list = animeDatabase
-        .filter(song => getBaseAnimeName(song.title) !== correctBaseName && song.type === targetType)
+    const candidates = animeDatabase
+        .filter(song => {
+            return getFranchiseKey(song.title) !== correctFranchise && song.type === targetType;
+        })
         .map(song => {
             let similarity = 0;
             song.genres.forEach(g => { if (correctSong.genres.includes(g)) similarity += 2; });
@@ -176,53 +184,121 @@ function getSimilarAnime(correctSong, count = 3) {
             return { song: song, score: similarity };
         });
 
-    list.sort((a, b) => b.score - a.score);
-    const candidates = list.slice(0, count + 2);
-    const shuffled = candidates.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(item => item.song);
+    candidates.sort((a, b) => b.score - a.score);
+
+    const selectedDistractors = [];
+    const usedFranchises = new Set([correctFranchise]);
+
+    for (const candidate of candidates) {
+        const candidateFranchise = getFranchiseKey(candidate.song.title);
+        if (!usedFranchises.has(candidateFranchise)) {
+            selectedDistractors.push(candidate.song);
+            usedFranchises.add(candidateFranchise);
+        }
+        if (selectedDistractors.length === count) {
+            break;
+        }
+    }
+
+    if (selectedDistractors.length < count) {
+        for (const candidate of candidates) {
+            if (!selectedDistractors.includes(candidate.song)) {
+                selectedDistractors.push(candidate.song);
+            }
+            if (selectedDistractors.length === count) break;
+        }
+    }
+
+    return selectedDistractors;
 }
 
-// --- API YOUTUBE ---
+// --- API YOUTUBE (Version Ultra-Robuste) ---
 function loadYoutubeAPI() {
     return new Promise((resolve) => {
+        // CORRECTION : Si l'API est déjà prête dans le navigateur (cache actif), on initialise directement
+        if (window.YT && window.YT.Player) {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '100%',
+                width: '100%',
+                videoId: '',
+                playerVars: {
+                    'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1,
+                    'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3
+                },
+                events: {
+                    'onReady': () => resolve(),
+                    'onStateChange': (event) => handleYoutubeStateChange(event),
+                    'onError': (event) => handleYoutubeError(event)
+                }
+            });
+            return;
+        }
+
+        // Sinon, on définit le callback standard attendu par YouTube
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('yt-player', {
                 height: '100%',
                 width: '100%',
                 videoId: '',
                 playerVars: {
-                    'autoplay': 0, 'controls': 0, 'disablekb': 1, 'fs': 0,
-                    'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3
+                    'autoplay': 0, 
+                    'controls': 1, // Active les contrôles officiels
+                    'disablekb': 1, 
+                    'fs': 1,        // Active le bouton plein écran officiel
+                    'modestbranding': 1, 
+                    'rel': 0, 
+                    'showinfo': 0, 
+                    'iv_load_policy': 3
                 },
                 events: {
                     'onReady': () => resolve(),
-                    'onStateChange': (event) => {
-                        // Lorsque la vidéo YouTube est chargée et tente de démarrer
-                        if (event.data === YT.PlayerState.PLAYING) {
-                            clearTimeout(ytWatchdog);
-                            if (!mediaReady) {
-                                mediaReady = true;
-                                ytPlayer.pauseVideo(); // On la met en pause instantanément !
-                                signalMediaReady();    // On signale au serveur qu'on est prêt
-                            }
-                        }
-                    },
-                    'onError': (event) => {
-                        clearTimeout(ytWatchdog);
-                        // En cas d'erreur de chargement (Ex: vidéo bloquée), on signale qu'on est prêt pour ne pas bloquer le jeu
-                        if (!mediaReady) {
-                            mediaReady = true;
-                            signalMediaReady();
-                        }
-                    }
+                    'onStateChange': (event) => handleYoutubeStateChange(event),
+                    'onError': (event) => handleYoutubeError(event)
                 }
             });
         };
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Injection sécurisée sans doublon
+        if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            if (firstScriptTag) {
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            } else {
+                document.head.appendChild(tag);
+            }
+        }
     });
+}
+
+function handleYoutubeStateChange(event) {
+    if (event.data === YT.PlayerState.PLAYING) {
+        clearTimeout(ytWatchdog);
+        if (!mediaReady) {
+            mediaReady = true;
+            if (gameMode === "multi") {
+                ytPlayer.pauseVideo(); 
+            }
+            signalMediaReady();
+        }
+    }
+}
+
+function handleYoutubeError(event) {
+    clearTimeout(ytWatchdog);
+    if (gameMode === "multi" && !mediaReady) {
+        mediaReady = true;
+        signalMediaReady();
+    } else if (gameMode === "solo" && ytRetryCount < 2) {
+        ytRetryCount++;
+        setTimeout(() => {
+            if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
+                ytPlayer.loadVideoById(ytPlayer.getVideoData().video_id);
+                ytPlayer.playVideo();
+            }
+        }, 500);
+    }
 }
 
 function unlockNativePlayer() {
@@ -233,7 +309,24 @@ function unlockNativePlayer() {
     }
 }
 
-// --- PHASE 1 : CHARGEMENT SILENCIEUX (SYNC) ---
+// --- GESTION DU VOLUME GLOBAL ---
+function applyGlobalVolume() {
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.volume = globalVolume;
+        nativePlayer.muted = (globalVolume === 0);
+    }
+    if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+        ytPlayer.setVolume(globalVolume * 100);
+        if (globalVolume === 0) {
+            ytPlayer.mute();
+        } else {
+            ytPlayer.unMute();
+        }
+    }
+}
+
+// --- CHARGEMENT SILENCIEUX (SYNC) ---
 async function loadMediaForRound(youtubeId) {
     clearTimeout(ytWatchdog);
     mediaReady = false;
@@ -248,10 +341,8 @@ async function loadMediaForRound(youtubeId) {
         document.getElementById('audio-status-text').innerText = "Synchronisation des joueurs...";
     }
 
-    // Sécurité : Si le chargement prend plus de 5 secondes, on force le démarrage
     const safetyBufferTimeout = setTimeout(() => {
         if (!mediaReady) {
-            console.warn("Délai de synchronisation dépassé, démarrage forcé.");
             mediaReady = true;
             signalMediaReady();
         }
@@ -259,48 +350,35 @@ async function loadMediaForRound(youtubeId) {
 
     if (isAnimeThemes(youtubeId)) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
-        if (nativePlayerContainer) nativePlayerContainer.style.display = 'block';
-        
-        nativePlayer.muted = true; // Sourdine stricte pendant le chargement
-        nativePlayer.src = "";
-        
-        const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
-        let directUrl = currentQuestion.resolvedUrl;
+        if (nativePlayerContainer) {
+            nativePlayerContainer.style.display = 'block';
+            nativePlayer.src = ""; 
+            nativePlayer.muted = true; 
+            
+            const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+            let directUrl = currentQuestion.resolvedUrl;
 
-        if (!directUrl) {
-            directUrl = await getAnimeThemesVideoUrl(youtubeId);
-        }
-        
-        if (directUrl) {
-            nativePlayer.src = directUrl;
-            nativePlayer.load();
+            if (!directUrl) directUrl = await getAnimeThemesVideoUrl(youtubeId);
             
-            // Quand la vidéo native a fini de télécharger un extrait suffisant pour jouer sans coupure :
-            nativePlayer.oncanplaythrough = () => {
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            };
-            
-            // Backup pour les navigateurs capricieux
-            nativePlayer.play().then(() => {
-                nativePlayer.pause();
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            }).catch(e => {
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            });
-        } else {
-            if (!mediaReady) { mediaReady = true; signalMediaReady(); }
+            if (directUrl) {
+                nativePlayer.src = directUrl;
+                nativePlayer.load();
+                nativePlayer.oncanplaythrough = () => {
+                    if (!mediaReady) {
+                        mediaReady = true;
+                        clearTimeout(safetyBufferTimeout);
+                        signalMediaReady();
+                    }
+                };
+                nativePlayer.play().then(() => {
+                    nativePlayer.pause();
+                    if (!mediaReady) { mediaReady = true; clearTimeout(safetyBufferTimeout); signalMediaReady(); }
+                }).catch(e => {
+                    if (!mediaReady) { mediaReady = true; clearTimeout(safetyBufferTimeout); signalMediaReady(); }
+                });
+            } else {
+                if (!mediaReady) { mediaReady = true; signalMediaReady(); }
+            }
         }
     } else {
         if (nativePlayerContainer) {
@@ -310,9 +388,9 @@ async function loadMediaForRound(youtubeId) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
 
         if (typeof ytPlayer.loadVideoById === "function") {
-            ytPlayer.mute(); // YouTube muet
+            ytPlayer.mute(); 
             ytPlayer.loadVideoById(youtubeId);
-            ytPlayer.playVideo(); // Force le chargement, sera mis en pause dans onStateChange
+            ytPlayer.playVideo(); 
             
             ytWatchdog = setTimeout(() => {
                 if (!mediaReady) {
@@ -325,44 +403,16 @@ async function loadMediaForRound(youtubeId) {
     }
 }
 
-// Fonction qui avertit Firebase que ce joueur a fini de charger
 function signalMediaReady() {
     if (gameMode === "solo") {
-        startRound(); // En solo, on démarre direct
+        startRound();
     } else {
-        update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
-            isReady: true
-        });
+        update(ref(db, `rooms/${roomCode}/players/${myRole}`), { isReady: true });
     }
 }
 
-// --- PHASE 2 : DÉMARRAGE SYNCHRONISÉ DU CHRONO ET DU SON ---
-function startRound() {
-    isRoundActive = true;
-    document.getElementById('audio-status-text').innerText = "Écoutez attentivement...";
-    
-    // On libère les cartes pour que le joueur puisse cliquer
-    document.querySelectorAll('.choice-card').forEach(card => card.classList.remove('disabled'));
-
-    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
-
-    // Démarrage de la vidéo avec le son réactivé
-    if (isAnimeThemes(currentQuestion.YoutubeId)) {
-        const nativePlayer = document.getElementById('native-player');
-        nativePlayer.muted = false;
-        nativePlayer.volume = 1.0;
-        nativePlayer.play().catch(e => {
-            nativePlayer.muted = true;
-            nativePlayer.play();
-        });
-    } else {
-        if (ytPlayer && typeof ytPlayer.unMute === "function") {
-            ytPlayer.unMute();
-            ytPlayer.playVideo();
-        }
-    }
-
-    // Démarrage strict du chronomètre
+// --- DÉMARRAGE DU CHRONO (Solo & Multi) ---
+function startTimer(currentQuestion) {
     currentTimer = 20;
     document.getElementById('timer-sec').innerText = currentTimer;
     
@@ -391,6 +441,37 @@ function startRound() {
     }, 1000);
 }
 
+// --- DÉMARRAGE DU SON ET CHRONO (Multi) ---
+function startRound() {
+    isRoundActive = true;
+    document.getElementById('audio-status-text').innerText = "Écoutez attentivement...";
+    document.querySelectorAll('.choice-card').forEach(card => card.classList.remove('disabled'));
+
+    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+
+    if (isAnimeThemes(currentQuestion.YoutubeId)) {
+        const nativePlayer = document.getElementById('native-player');
+        nativePlayer.muted = (globalVolume === 0);
+        nativePlayer.volume = globalVolume;
+        nativePlayer.play().catch(e => {
+            nativePlayer.muted = true;
+            nativePlayer.play();
+        });
+    } else {
+        if (ytPlayer && typeof ytPlayer.unMute === "function") {
+            if (globalVolume === 0) {
+                ytPlayer.mute();
+            } else {
+                ytPlayer.unMute();
+                ytPlayer.setVolume(globalVolume * 100);
+            }
+            ytPlayer.playVideo();
+        }
+    }
+
+    startTimer(currentQuestion);
+}
+
 function stopAudio() {
     clearTimeout(ytWatchdog);
     if (ytPlayer && typeof ytPlayer.stopVideo === "function") ytPlayer.stopVideo();
@@ -405,14 +486,39 @@ function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
     document.getElementById('yt-player-container').classList.add('reveal');
     document.getElementById('native-player-container').classList.add('reveal');
+
+    if (gameMode === "solo") {
+        const manualCb = document.getElementById('manual-progress-checkbox');
+        manualProgress = manualCb ? manualCb.checked : false;
+    }
+
+    // Si le passage manuel est actif, on libère les contrôles et les clics
+    if (manualProgress) {
+        document.getElementById('yt-player-container').classList.add('interactive');
+        document.getElementById('native-player-container').classList.add('interactive');
+        
+        const nativePlayer = document.getElementById('native-player');
+        if (nativePlayer) {
+            nativePlayer.setAttribute('controls', 'true');
+        }
+    }
 }
 
 function resetVideoVisibility() {
     document.getElementById('placeholder-container').style.opacity = '1';
-    document.getElementById('yt-player-container').classList.remove('reveal');
-    document.getElementById('native-player-container').classList.remove('reveal');
+    
+    const ytContainer = document.getElementById('yt-player-container');
+    const nativeContainer = document.getElementById('native-player-container');
+    
+    // Nettoie l'effet de révélation et l'interactivité
+    ytContainer.classList.remove('reveal', 'interactive');
+    nativeContainer.classList.remove('reveal', 'interactive');
+    
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.removeAttribute('controls');
+    }
 }
-
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById(screenId).classList.remove('hidden');
@@ -459,46 +565,11 @@ function animateScoreFusion(earnedPoints, nextScoreValue) {
     }, 2500);
 }
 
-// --- LOGIQUE DE JEU INITIALE ---
-function startSoloGame() {
-    if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
-        alert("Le lecteur se prépare... Veuillez patienter une seconde.");
-        return;
-    }
-    if (animeDatabase.length === 0) {
-        alert("La base de données des animés est vide ou n'a pas pu charger.");
-        return;
-    }
-    unlockNativePlayer();
-    
-    gameMode = "solo";
-    currentQuestionIndex = 0;
-    score = 0;
-    playedHistory = [];
-
-    // LECTURE SÉCURISÉE DES RÉGLAGES DU MENU
-    const lenInput = document.getElementById('quiz-length-input');
-    totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
-    
-    const typeSelect = document.getElementById('music-type-select');
-    const musicType = typeSelect ? typeSelect.value : "Mix";
-
-    questionsPlaylist = generatePlaylist(totalQuestions, musicType);
-    if (questionsPlaylist.length === 0) return; // Arrêt si aucun morceau trouvé
-    
-    preloadImages(questionsPlaylist[0]);
-
-    document.getElementById('total-questions-num').innerText = totalQuestions;
-    document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
-    
-    showScreen('screen-game');
-    loadQuestion();
-}
-
+// --- INITIALISATION DE LA QUESTION ---
 function loadQuestion() {
     hasAnsweredCurrent = false;
     roundProcessed = false;
-    isRoundActive = false; // Initialisation du verrou de sécurité
+    isRoundActive = false; 
     ytRetryCount = 0;
     stopAudio();
     resetVideoVisibility();
@@ -506,7 +577,6 @@ function loadQuestion() {
     document.getElementById('btn-next-question').classList.add('hidden');
     document.getElementById('round-overlay').classList.add('hidden');
 
-    // On prépare l'interface en mode "Attente"
     const timerBar = document.getElementById('timer-bar');
     timerBar.style.width = '100%';
     timerBar.classList.remove('warning');
@@ -527,12 +597,11 @@ function loadQuestion() {
 
     document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
 
-    // Affiche les cartes mais les grise pour empêcher le clic avant le top départ
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
     choices.forEach((song, index) => {
         const card = document.createElement('div');
-        card.className = "choice-card disabled"; // Désactivé par défaut
+        card.className = gameMode === "multi" ? "choice-card disabled" : "choice-card"; 
         card.innerHTML = `
             <div class="choice-number">${index + 1}</div>
             <img src="${song.image}" alt="${song.title}">
@@ -554,7 +623,7 @@ function loadQuestion() {
     }
 
     preloadNextVideo();
-    loadMediaForRound(currentQuestion.YoutubeId); // Lance le chargement silencieux
+    loadMediaForRound(currentQuestion.YoutubeId); // Lance le chargement unifié (Solo et Multi)
 }
 
 function handleChoice(selectedCard, chosenSong, correctQuestion) {
@@ -676,7 +745,7 @@ function moveToNextRound() {
             if (nextIndex < questionsPlaylist.length) {
                 update(ref(db, `rooms/${roomCode}`), {
                     currentQuestionIndex: nextIndex,
-                    roundStatus: "loading", // On repasse en mode chargement pour la synchro
+                    roundStatus: "loading",
                     roundWinner: "none",
                     "players/p1/hasAnswered": false,
                     "players/p1/isCorrect": false,
@@ -756,7 +825,7 @@ function endGame() {
     document.getElementById('btn-play-again').classList.remove('hidden');
     document.getElementById('play-again-msg').classList.add('hidden');
 
-    // --- CALCUL DU RÉSULTAT EXACT (Trouvés / Total) ---
+    // --- CALCUL DES TROUVÉS SUR LE TOTAL ---
     const correctGuesses = playedHistory.filter(item => item.success).length;
     document.getElementById('average-score-display').innerText = `Trouvés : ${correctGuesses}/${totalQuestions}`;
 
@@ -783,8 +852,17 @@ document.getElementById('btn-play-again').addEventListener('click', () => {
     document.getElementById('btn-play-again').disabled = true;
 
     if (gameMode === "solo") {
-        const musicType = document.getElementById('music-type-select').value;
+        const lenInput = document.getElementById('quiz-length-input');
+        totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
+        const typeSelect = document.getElementById('music-type-select');
+        const musicType = typeSelect ? typeSelect.value : "Mix";
+        
         questionsPlaylist = generatePlaylist(totalQuestions, musicType);
+        if (questionsPlaylist.length === 0) {
+            document.getElementById('btn-play-again').disabled = false;
+            return;
+        }
+
         score = 0;
         currentQuestionIndex = 0;
         playedHistory = [];
@@ -824,28 +902,48 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-// --- MULTIJOUEUR ---
-function createRoom() {
+// --- MENUS ---
+function startSoloGame() {
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
         return;
     }
-    if (animeDatabase.length === 0) {
-        alert("La base de données est vide.");
-        return;
-    }
+    if (animeDatabase.length === 0) return alert("Base de données vide.");
     unlockNativePlayer();
     
-    // LECTURE SÉCURISÉE DES VALEURS DU MENU
-    const userInp = document.getElementById('username');
-    const username = userInp && userInp.value.trim() !== "" ? userInp.value.trim() : "Joueur 1";
-    
-    const typeSelect = document.getElementById('music-type-select');
-    const musicType = typeSelect ? typeSelect.value : "Mix";
-    
+    gameMode = "solo";
+    currentQuestionIndex = 0;
+    score = 0;
+    playedHistory = [];
+
     const lenInput = document.getElementById('quiz-length-input');
     totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
+    const typeSelect = document.getElementById('music-type-select');
+    const musicType = typeSelect ? typeSelect.value : "Mix";
+
+    questionsPlaylist = generatePlaylist(totalQuestions, musicType);
+    if (questionsPlaylist.length === 0) return;
     
+    preloadImages(questionsPlaylist[0]);
+
+    document.getElementById('total-questions-num').innerText = totalQuestions;
+    document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
+    
+    showScreen('screen-game');
+    loadQuestion();
+}
+
+function createRoom() {
+    if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") return alert("Patientez...");
+    if (animeDatabase.length === 0) return;
+    unlockNativePlayer();
+    
+    const userInp = document.getElementById('username');
+    const username = userInp && userInp.value.trim() !== "" ? userInp.value.trim() : "Joueur 1";
+    const typeSelect = document.getElementById('music-type-select');
+    const musicType = typeSelect ? typeSelect.value : "Mix";
+    const lenInput = document.getElementById('quiz-length-input');
+    totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
     const manualCb = document.getElementById('manual-progress-checkbox');
     manualProgress = manualCb ? manualCb.checked : false;
 
@@ -860,7 +958,7 @@ function createRoom() {
     set(ref(db, `rooms/${roomCode}`), {
         status: "waiting",
         currentQuestionIndex: 0,
-        roundStatus: "loading", 
+        roundStatus: "loading",
         roundWinner: "none",
         musicType: musicType,
         totalQuestions: totalQuestions,
@@ -890,26 +988,18 @@ function createRoom() {
             });
         }
         listenToRoom();
-    }).catch(error => {
-        console.error("Firebase Error:", error);
-        alert("Erreur Firebase : Impossible de créer la partie (Vérifiez la console).");
     });
 }
 
 function joinRoom() {
-    if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
-        alert("Le lecteur se prépare... Veuillez patienter une seconde.");
-        return;
-    }
+    if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") return alert("Patientez...");
     if (animeDatabase.length === 0) return;
     unlockNativePlayer();
     
     const userInp = document.getElementById('username');
     const username = userInp && userInp.value.trim() !== "" ? userInp.value.trim() : "Joueur 2";
-    
     const codeInp = document.getElementById('room-code-input');
     roomCode = codeInp ? codeInp.value.trim() : "";
-    
     myRole = "p2";
     gameMode = "multi";
     playedHistory = [];
@@ -917,8 +1007,7 @@ function joinRoom() {
     if (!roomCode) return alert("Veuillez entrer un code");
 
     get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
-        if (!snapshot.exists()) return alert("Partie introuvable ! Vérifiez le code.");
-        
+        if (!snapshot.exists()) return alert("Partie introuvable !");
         const roomData = snapshot.val();
         if (roomData.players.p2) return alert("La partie est déjà pleine !");
 
@@ -931,8 +1020,8 @@ function joinRoom() {
             isReady: false
         }).then(() => {
             document.getElementById('display-room-code').innerText = roomCode;
-            document.getElementById('display-room-mode').innerText = roomData.musicType || "Mix";
-            document.getElementById('display-room-length').innerText = roomData.totalQuestions || 10;
+            document.getElementById('display-room-mode').innerText = roomData.musicType;
+            document.getElementById('display-room-length').innerText = roomData.totalQuestions;
             document.getElementById('lobby-p1').innerText = roomData.players.p1.name;
             document.getElementById('lobby-p2').innerText = username;
             document.getElementById('btn-start-game').classList.add('hidden');
@@ -950,13 +1039,7 @@ function joinRoom() {
                 });
             }
             listenToRoom();
-        }).catch(error => {
-            console.error("Firebase Error:", error);
-            alert("Erreur lors de la connexion au salon.");
         });
-    }).catch(error => {
-        console.error("Firebase Get Error:", error);
-        alert("Erreur de connexion à Firebase.");
     });
 }
 
@@ -973,23 +1056,25 @@ function listenToRoom() {
         if (room.status === "finished") {
             if (myRole === "p1" && room.players.p1.playAgain && room.players.p2 && room.players.p2.playAgain) {
                 const newPlaylist = generatePlaylist(room.totalQuestions, room.musicType);
-                update(ref(db, `rooms/${roomCode}`), {
-                    status: "playing",
-                    currentQuestionIndex: 0,
-                    roundStatus: "loading",
-                    roundWinner: "none",
-                    playlist: newPlaylist,
-                    "players/p1/score": 0,
-                    "players/p1/hasAnswered": false,
-                    "players/p1/isCorrect": false,
-                    "players/p1/playAgain": false,
-                    "players/p1/isReady": false,
-                    "players/p2/score": 0,
-                    "players/p2/hasAnswered": false,
-                    "players/p2/isCorrect": false,
-                    "players/p2/playAgain": false,
-                    "players/p2/isReady": false
-                });
+                if (newPlaylist.length > 0) {
+                    update(ref(db, `rooms/${roomCode}`), {
+                        status: "playing",
+                        currentQuestionIndex: 0,
+                        roundStatus: "loading",
+                        roundWinner: "none",
+                        playlist: newPlaylist,
+                        "players/p1/score": 0,
+                        "players/p1/hasAnswered": false,
+                        "players/p1/isCorrect": false,
+                        "players/p1/playAgain": false,
+                        "players/p1/isReady": false,
+                        "players/p2/score": 0,
+                        "players/p2/hasAnswered": false,
+                        "players/p2/isCorrect": false,
+                        "players/p2/playAgain": false,
+                        "players/p2/isReady": false
+                    });
+                }
             }
         }
 
@@ -1016,15 +1101,12 @@ function listenToRoom() {
                 loadQuestion();
             }
 
-            // --- SYNCHRONISATION MULTIJOUEUR ---
             if (room.roundStatus === "loading") {
-                // L'hôte surveille que les deux joueurs ont bien chargé la vidéo
                 if (myRole === "p1" && room.players.p1.isReady && room.players.p2 && room.players.p2.isReady) {
                     update(ref(db, `rooms/${roomCode}`), { roundStatus: "guessing" });
                 }
             }
 
-            // Top départ pour les deux joueurs !
             if (room.roundStatus === "guessing" && !isRoundActive) {
                 startRound();
             }
@@ -1085,6 +1167,16 @@ function launchGame() {
 
 async function init() {
     await loadDatabase();
+    
+    // Écouteur pour la barre de volume
+    const volumeSlider = document.getElementById('volume-slider');
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', (e) => {
+            globalVolume = parseFloat(e.target.value);
+            applyGlobalVolume();
+        });
+    }
+
     document.getElementById('btn-solo').addEventListener('click', startSoloGame);
     document.getElementById('btn-create-room').addEventListener('click', createRoom);
     document.getElementById('btn-join-room').addEventListener('click', joinRoom);
@@ -1103,7 +1195,9 @@ async function init() {
 
     document.body.addEventListener('click', () => {
         const nativePlayer = document.getElementById('native-player');
-        if (nativePlayer && nativePlayer.muted) nativePlayer.muted = false;
+        if (nativePlayer && nativePlayer.muted && document.getElementById('native-player-container').style.display !== 'none') {
+            nativePlayer.muted = false;
+        }
     });
 
     loadYoutubeAPI();
