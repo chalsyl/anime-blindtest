@@ -33,6 +33,12 @@
                     <input type="checkbox" id="manual-progress-checkbox">
                     <label for="manual-progress-checkbox">Passage manuel à la question suivante</label>
                 </div>
+
+                <!-- NOUVELLE OPTION DE DÉMARRAGE ALÉATOIRE -->
+                <div class="setting-item checkbox-item">
+                    <input type="checkbox" id="random-start-checkbox" checked>
+                    <label for="random-start-checkbox">Démarrage aléatoire (25s ou 50s)</label>
+                </div>
             </div>
 
             <div class="menu-buttons">
@@ -95,11 +101,12 @@
                         <div id="yt-player"></div>
                     </div>
                     
+                                        <!-- Double Lecteur Buffering pour AnimeThemes (Alternance A / B) -->
                     <div id="native-player-container" style="display:none;">
-                        <video id="native-player" playsinline style="width:100%; height:100%;"></video>
+                        <video id="native-player-a" playsinline style="width:100%; height:100%; display:none;"></video>
+                        <video id="native-player-b" playsinline style="width:100%; height:100%; display:none;"></video>
                     </div>
                     
-                    <video id="preloader-player" preload="auto" muted style="display:none;"></video>
                 </div>
 
                 <!-- Contrôle de volume vertical à droite de la vidéo -->

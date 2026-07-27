@@ -42,6 +42,16 @@ let isRoundActive = false;
 
 // Volume global (0.0 à 1.0) et synchronisation de lecture
 let globalVolume = 1.0;
+let randomStart = false;
+let activePlayerIndex = 0; // 0 = Lecteur A, 1 = Lecteur B
+
+function getActivePlayer() {
+    return document.getElementById(activePlayerIndex === 0 ? 'native-player-a' : 'native-player-b');
+}
+
+function getIdlePlayer() {
+    return document.getElementById(activePlayerIndex === 0 ? 'native-player-b' : 'native-player-a');
+}
 
 async function loadDatabase() {
     try {
@@ -98,7 +108,10 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
 
 function getFranchiseKey(title) {
     let base = title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
-    base = base.split(/ -|:| season| part| s\d+/i)[0].trim();
+    
+    // Gère et supprime " 2nd season", " 3rd season", " s1", " s2", " part", etc.
+    base = base.split(/ -|:| \d*(?:st|nd|rd|th)?\s*season| s\d+| part/i)[0].trim();
+    
     base = base.replace(/\s+(?:[ivxldcm]+)\b$/gi, '').trim();
     base = base.replace(/\s+\d+$/g, '').trim();
     return base;
@@ -117,6 +130,7 @@ async function preloadNextVideo() {
     if (nextIndex < questionsPlaylist.length) {
         const nextQuestionObj = questionsPlaylist[nextIndex];
         const nextQuestion = nextQuestionObj.correct;
+        const offset = nextQuestion.startOffset || 0;
         
         preloadImages(nextQuestionObj);
         
@@ -124,17 +138,26 @@ async function preloadNextVideo() {
             const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
             if (directUrl) {
                 questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
-                const preloader = document.getElementById('preloader-player');
-                if (preloader) {
-                    preloader.src = directUrl;
-                    preloader.load(); 
+                
+                // On utilise le lecteur inactif pour préparer la suite en tâche de fond
+                const idlePlayer = getIdlePlayer();
+                if (idlePlayer) {
+                    idlePlayer.style.display = 'none';
+                    idlePlayer.muted = true;
+                    idlePlayer.src = directUrl;
+                    
+                    idlePlayer.onloadedmetadata = () => {
+                        idlePlayer.onloadedmetadata = null;
+                        idlePlayer.currentTime = offset; // Prépare le saut à 25s ou 50s en avance !
+                    };
+                    idlePlayer.load(); 
                 }
             }
         }
     }
 }
 
-function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
+function generatePlaylist(length = 10, musicTypeChoice = "Mix", randomStartChoice = false) {
     let availableSongs = animeDatabase.filter(song => {
         if (!song.type) return false;
         if (musicTypeChoice === "OP") return song.type.toUpperCase() === "OP";
@@ -153,6 +176,10 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
     return selected.map(correctSong => {
         const distractors = getSimilarAnime(correctSong, 3);
         const choices = [correctSong, ...distractors].sort(() => 0.5 - Math.random());
+        
+        // Détermine l'offset de départ (0, 25 ou 50 secondes)
+        const startOffset = randomStartChoice ? (Math.random() < 0.5 ? 25 : 50) : 0;
+
         return {
             correct: {
                 id: correctSong.id || 0,
@@ -161,7 +188,8 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix") {
                 YoutubeId: correctSong.YoutubeId || "",
                 type: correctSong.type || "",
                 genres: correctSong.genres || [],
-                themes: correctSong.themes || []
+                themes: correctSong.themes || [],
+                startOffset: startOffset // On stocke l'offset de cette question
             },
             choices: choices.map(c => ({ id: c.id || 0, title: c.title || "Inconnu", image: c.image || "" }))
         };
@@ -302,27 +330,25 @@ function handleYoutubeError(event) {
 }
 
 function unlockNativePlayer() {
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        nativePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-        nativePlayer.play().catch(() => {});
-    }
+    const playerA = document.getElementById('native-player-a');
+    const playerB = document.getElementById('native-player-b');
+    const silentSrc = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    
+    if (playerA) { playerA.src = silentSrc; playerA.play().catch(() => {}); }
+    if (playerB) { playerB.src = silentSrc; playerB.play().catch(() => {}); }
 }
 
 // --- GESTION DU VOLUME GLOBAL ---
 function applyGlobalVolume() {
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        nativePlayer.volume = globalVolume;
-        nativePlayer.muted = (globalVolume === 0);
+    const activePlayer = getActivePlayer();
+    if (activePlayer) {
+        activePlayer.volume = globalVolume;
+        activePlayer.muted = (globalVolume === 0);
     }
     if (ytPlayer && typeof ytPlayer.setVolume === "function") {
         ytPlayer.setVolume(globalVolume * 100);
-        if (globalVolume === 0) {
-            ytPlayer.mute();
-        } else {
-            ytPlayer.unMute();
-        }
+        if (globalVolume === 0) ytPlayer.mute();
+        else ytPlayer.unMute();
     }
 }
 
@@ -332,7 +358,6 @@ async function loadMediaForRound(youtubeId) {
     mediaReady = false;
     
     const nativePlayerContainer = document.getElementById('native-player-container');
-    const nativePlayer = document.getElementById('native-player');
     const ytPlayerContainer = document.getElementById('yt-player-container');
 
     if (gameMode === "solo") {
@@ -348,48 +373,67 @@ async function loadMediaForRound(youtubeId) {
         }
     }, 5000);
 
+    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+    const offset = currentQuestion.startOffset || 0;
+
     if (isAnimeThemes(youtubeId)) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
         if (nativePlayerContainer) {
             nativePlayerContainer.style.display = 'block';
-            nativePlayer.src = ""; 
-            nativePlayer.muted = true; 
             
-            const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
-            let directUrl = currentQuestion.resolvedUrl;
+            const activePlayer = getActivePlayer();
+            const idlePlayer = getIdlePlayer();
+            
+            // On masque le lecteur passif et on affiche le lecteur actif
+            if (idlePlayer) idlePlayer.style.display = 'none';
+            if (activePlayer) activePlayer.style.display = 'block';
 
+            let directUrl = currentQuestion.resolvedUrl;
             if (!directUrl) directUrl = await getAnimeThemesVideoUrl(youtubeId);
-            
+
             if (directUrl) {
-                nativePlayer.src = directUrl;
-                nativePlayer.load();
-                nativePlayer.oncanplaythrough = () => {
+                // Si la vidéo n'a pas eu le temps d'être préchargée (ex: 1ère question)
+                if (activePlayer.src !== directUrl) {
+                    activePlayer.src = directUrl;
+                    activePlayer.load();
+                    activePlayer.onloadedmetadata = () => {
+                        activePlayer.onloadedmetadata = null;
+                        activePlayer.currentTime = offset;
+                    };
+                }
+
+                activePlayer.muted = true;
+                activePlayer.play().then(() => {
+                    if (!isRoundActive) activePlayer.pause();
                     if (!mediaReady) {
                         mediaReady = true;
                         clearTimeout(safetyBufferTimeout);
                         signalMediaReady();
                     }
-                };
-                nativePlayer.play().then(() => {
-                    nativePlayer.pause();
-                    if (!mediaReady) { mediaReady = true; clearTimeout(safetyBufferTimeout); signalMediaReady(); }
                 }).catch(e => {
-                    if (!mediaReady) { mediaReady = true; clearTimeout(safetyBufferTimeout); signalMediaReady(); }
+                    if (!mediaReady) {
+                        mediaReady = true;
+                        clearTimeout(safetyBufferTimeout);
+                        signalMediaReady();
+                    }
                 });
             } else {
                 if (!mediaReady) { mediaReady = true; signalMediaReady(); }
             }
         }
     } else {
-        if (nativePlayerContainer) {
-            nativePlayerContainer.style.display = 'none';
-            nativePlayer.pause();
-        }
+        const activePlayer = getActivePlayer();
+        if (activePlayer) activePlayer.pause();
+        
+        if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
 
         if (typeof ytPlayer.loadVideoById === "function") {
             ytPlayer.mute(); 
-            ytPlayer.loadVideoById(youtubeId);
+            ytPlayer.loadVideoById({
+                videoId: youtubeId,
+                startSeconds: offset
+            });
             ytPlayer.playVideo(); 
             
             ytWatchdog = setTimeout(() => {
@@ -441,6 +485,54 @@ function startTimer(currentQuestion) {
     }, 1000);
 }
 
+// Fondu sonore progressif sur 1 seconde de 50% à 100% du volume configuré
+function fadeInAudio() {
+    const duration = 1000;
+    const steps = 20;
+    const stepTime = duration / steps;
+    
+    const targetVolume = globalVolume;
+    const startVolume = targetVolume / 2;
+    let currentStep = 0;
+
+    const activePlayer = getActivePlayer(); // <--- Cible le bon lecteur A ou B !
+
+    if (activePlayer) {
+        activePlayer.volume = startVolume;
+        activePlayer.muted = (startVolume === 0);
+    }
+    if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+        ytPlayer.setVolume(startVolume * 100);
+        if (startVolume === 0) ytPlayer.mute();
+        else ytPlayer.unMute();
+    }
+
+    const fadeInterval = setInterval(() => {
+        currentStep++;
+        const currentVol = startVolume + (currentStep / steps) * startVolume;
+
+        if (activePlayer) {
+            activePlayer.volume = currentVol;
+        }
+        if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+            ytPlayer.setVolume(currentVol * 100);
+        }
+
+        if (currentStep >= steps) {
+            clearInterval(fadeInterval);
+            if (activePlayer) {
+                activePlayer.volume = targetVolume;
+                activePlayer.muted = (targetVolume === 0);
+            }
+            if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+                ytPlayer.setVolume(targetVolume * 100);
+                if (targetVolume === 0) ytPlayer.mute();
+                else ytPlayer.unMute();
+            }
+        }
+    }, stepTime);
+}
+
 // --- DÉMARRAGE DU SON ET CHRONO (Multi) ---
 function startRound() {
     isRoundActive = true;
@@ -448,24 +540,29 @@ function startRound() {
     document.querySelectorAll('.choice-card').forEach(card => card.classList.remove('disabled'));
 
     const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+    const hasOffset = (currentQuestion.startOffset || 0) > 0;
 
     if (isAnimeThemes(currentQuestion.YoutubeId)) {
-        const nativePlayer = document.getElementById('native-player');
-        nativePlayer.muted = (globalVolume === 0);
-        nativePlayer.volume = globalVolume;
-        nativePlayer.play().catch(e => {
-            nativePlayer.muted = true;
-            nativePlayer.play();
-        });
-    } else {
-        if (ytPlayer && typeof ytPlayer.unMute === "function") {
-            if (globalVolume === 0) {
-                ytPlayer.mute();
+        const activePlayer = getActivePlayer();
+        if (activePlayer) {
+            if (hasOffset) {
+                activePlayer.play().then(() => fadeInAudio()).catch(e => { activePlayer.muted = true; activePlayer.play(); });
             } else {
-                ytPlayer.unMute();
-                ytPlayer.setVolume(globalVolume * 100);
+                activePlayer.muted = (globalVolume === 0);
+                activePlayer.volume = globalVolume;
+                activePlayer.play().catch(e => { activePlayer.muted = true; activePlayer.play(); });
             }
-            ytPlayer.playVideo();
+        }
+    } else {
+        if (ytPlayer && typeof ytPlayer.playVideo === "function") {
+            if (hasOffset) {
+                ytPlayer.playVideo();
+                fadeInAudio();
+            } else {
+                if (globalVolume === 0) ytPlayer.mute();
+                else { ytPlayer.unMute(); ytPlayer.setVolume(globalVolume * 100); }
+                ytPlayer.playVideo();
+            }
         }
     }
 
@@ -475,11 +572,12 @@ function startRound() {
 function stopAudio() {
     clearTimeout(ytWatchdog);
     if (ytPlayer && typeof ytPlayer.stopVideo === "function") ytPlayer.stopVideo();
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        nativePlayer.pause();
-        nativePlayer.src = "";
-    }
+    
+    // On met en pause les deux lecteurs par sécurité
+    const playerA = document.getElementById('native-player-a');
+    const playerB = document.getElementById('native-player-b');
+    if (playerA) playerA.pause();
+    if (playerB) playerB.pause();
 }
 
 function revealVideo() {
@@ -492,14 +590,14 @@ function revealVideo() {
         manualProgress = manualCb ? manualCb.checked : false;
     }
 
-    // Si le passage manuel est actif, on libère les contrôles et les clics
     if (manualProgress) {
         document.getElementById('yt-player-container').classList.add('interactive');
         document.getElementById('native-player-container').classList.add('interactive');
         
-        const nativePlayer = document.getElementById('native-player');
-        if (nativePlayer) {
-            nativePlayer.setAttribute('controls', 'true');
+        // Active les contrôles natifs sur le lecteur A ou B actif
+        const activePlayer = getActivePlayer();
+        if (activePlayer) {
+            activePlayer.controls = true;
         }
     }
 }
@@ -510,14 +608,14 @@ function resetVideoVisibility() {
     const ytContainer = document.getElementById('yt-player-container');
     const nativeContainer = document.getElementById('native-player-container');
     
-    // Nettoie l'effet de révélation et l'interactivité
     ytContainer.classList.remove('reveal', 'interactive');
     nativeContainer.classList.remove('reveal', 'interactive');
     
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        nativePlayer.removeAttribute('controls');
-    }
+    // Désactive les contrôles sur les deux lecteurs pour la manche suivante
+    const playerA = document.getElementById('native-player-a');
+    const playerB = document.getElementById('native-player-b');
+    if (playerA) playerA.controls = false;
+    if (playerB) playerB.controls = false;
 }
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
@@ -571,6 +669,8 @@ function loadQuestion() {
     roundProcessed = false;
     isRoundActive = false; 
     ytRetryCount = 0;
+
+    activePlayerIndex = 1 - activePlayerIndex;
     stopAudio();
     resetVideoVisibility();
     clearInterval(timerInterval);
@@ -856,8 +956,10 @@ document.getElementById('btn-play-again').addEventListener('click', () => {
         totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
         const typeSelect = document.getElementById('music-type-select');
         const musicType = typeSelect ? typeSelect.value : "Mix";
+        const randomStartCb = document.getElementById('random-start-checkbox');
+        randomStart = randomStartCb ? randomStartCb.checked : false;
         
-        questionsPlaylist = generatePlaylist(totalQuestions, musicType);
+        questionsPlaylist = generatePlaylist(totalQuestions, musicType, randomStart);
         if (questionsPlaylist.length === 0) {
             document.getElementById('btn-play-again').disabled = false;
             return;
@@ -920,8 +1022,11 @@ function startSoloGame() {
     totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
     const typeSelect = document.getElementById('music-type-select');
     const musicType = typeSelect ? typeSelect.value : "Mix";
+    
+    const randomStartCb = document.getElementById('random-start-checkbox');
+    randomStart = randomStartCb ? randomStartCb.checked : false;
 
-    questionsPlaylist = generatePlaylist(totalQuestions, musicType);
+    questionsPlaylist = generatePlaylist(totalQuestions, musicType, randomStart);
     if (questionsPlaylist.length === 0) return;
     
     preloadImages(questionsPlaylist[0]);
@@ -952,7 +1057,10 @@ function createRoom() {
     gameMode = "multi";
     playedHistory = [];
 
-    const playlist = generatePlaylist(totalQuestions, musicType);
+    const randomStartCb = document.getElementById('random-start-checkbox');
+    randomStart = randomStartCb ? randomStartCb.checked : false;
+
+    const playlist = generatePlaylist(totalQuestions, musicType, randomStart);
     if (playlist.length === 0) return;
 
     set(ref(db, `rooms/${roomCode}`), {
@@ -963,6 +1071,7 @@ function createRoom() {
         musicType: musicType,
         totalQuestions: totalQuestions,
         manualProgress: manualProgress,
+        randomStart: randomStart,
         playlist: playlist,
         players: {
             p1: { name: username, score: 0, hasAnswered: false, isCorrect: false, playAgain: false, isReady: false }
@@ -1055,7 +1164,7 @@ function listenToRoom() {
 
         if (room.status === "finished") {
             if (myRole === "p1" && room.players.p1.playAgain && room.players.p2 && room.players.p2.playAgain) {
-                const newPlaylist = generatePlaylist(room.totalQuestions, room.musicType);
+                const newPlaylist = generatePlaylist(room.totalQuestions, room.musicType, room.randomStart);
                 if (newPlaylist.length > 0) {
                     update(ref(db, `rooms/${roomCode}`), {
                         status: "playing",
@@ -1091,6 +1200,7 @@ function listenToRoom() {
             questionsPlaylist = room.playlist;
             totalQuestions = room.totalQuestions;
             manualProgress = room.manualProgress;
+            randomStart = room.randomStart || false;
             document.getElementById('total-questions-num').innerText = totalQuestions;
             showScreen('screen-game');
         }
@@ -1194,9 +1304,9 @@ async function init() {
     });
 
     document.body.addEventListener('click', () => {
-        const nativePlayer = document.getElementById('native-player');
-        if (nativePlayer && nativePlayer.muted && document.getElementById('native-player-container').style.display !== 'none') {
-            nativePlayer.muted = false;
+        const activePlayer = getActivePlayer();
+        if (activePlayer && activePlayer.muted && document.getElementById('native-player-container').style.display !== 'none') {
+            activePlayer.muted = false;
         }
     });
 
