@@ -940,7 +940,7 @@
     "title": "The Promised Neverland OP 1",
     "type": "OP",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
-    "genres": ["Horror", "Mystery", "Psychological", "Suspense"],
+    "genres": ["Horror", "Mystery", "Suspense"],
     "themes": ["Shounen", "Psychological", "Survival"],
     "YoutubeId": "yB2t5y7ujlg"
   },
@@ -949,7 +949,7 @@
     "title": "The Promised Neverland ED 1",
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101759-8UR7r9MNVpz2.jpg",
-    "genres": ["Horror", "Mystery", "Psychological", "Suspense"],
+    "genres": ["Horror", "Mystery", "Suspense"],
     "themes": ["Shounen", "Psychological", "Survival"],
     "YoutubeId": "-7VRXvj4A84"
   },
@@ -1794,7 +1794,7 @@
     "id": 199,
     "title": "Gachiakuta OP 2",
     "type": "OP",
-    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/1982/153955l.jpg",
     "genres": ["Action", "Drama", "Fantasy"],
     "themes": ["Shounen"],
     "YoutubeId": "EN2a0JGUHFM"
@@ -1803,7 +1803,7 @@
     "id": 200,
     "title": "Gachiakuta ED 2",
     "type": "ED",
-    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/1982/153955l.jpg",
     "genres": ["Action", "Drama", "Fantasy"],
     "themes": ["Shounen"],
     "YoutubeId": "aqG2OTyXRDo"
@@ -1967,7 +1967,781 @@
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx141911-o6Jwav7hRPPM.jpg",
     "genres": ["Comedy", "Romance", "Slice of Life"],
-    "themes": ["Seinen",  "School"],
+    "themes": ["Seinen", "School"],
     "YoutubeId": "OT553CVWyO8"
+  },
+  {
+    "id": 219,
+    "title": "Urusei Yatsura (2022) Seasons 1 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "pEVhv4eB8Q8"
+  },
+  {
+    "id": 220,
+    "title": "Urusei Yatsura (2022) Seasons 1 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 221,
+    "title": "Urusei Yatsura (2022) Seasons 1 OP ",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "stb-BpPpJ7U"
+  },
+  {
+    "id": 222,
+    "title": "Urusei Yatsura (2022) Seasons 1 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 223,
+    "title": "Urusei Yatsura (2022) Seasons 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 224,
+    "title": "Urusei Yatsura (2022) Seasons 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 225,
+    "title": "JoJo's Bizarre Adventure: Golden Wind OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102883-S9KzdMJhDswJ.png",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Organized Crime", "Super Power"],
+    "YoutubeId": "xgWr4cKD4AU"
+  },
+  {
+    "id": 226,
+    "title": "JoJo's Bizarre Adventure: Golden Wind ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102883-S9KzdMJhDswJ.png",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Organized Crime", "Super Power"],
+    "YoutubeId": "mcYecVs4OVs"
+  },
+  {
+    "id": 227,
+    "title": "JoJo's Bizarre Adventure: Golden Wind OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102883-S9KzdMJhDswJ.png",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Organized Crime", "Super Power"],
+    "YoutubeId": "kbjr3JIuOtY"
+  },
+  {
+    "id": 228,
+    "title": "JoJo's Bizarre Adventure OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/3/40409l.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Horror", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Vampire"],
+    "YoutubeId": "BW4H15rK6iI"
+  },
+  {
+    "id": 229,
+    "title": "JoJo's Bizarre Adventure ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/3/40409l.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Horror", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Vampire"],
+    "YoutubeId": "DdGEcJnyVsU"
+  },
+  {
+    "id": 230,
+    "title": "JoJo's Bizarre Adventure OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/5/44177l.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Horror", "Supernatural"],
+    "themes": ["Shounen", "Historical", "Vampire"],
+    "YoutubeId": "e0yrZXSXTSg"
+  },
+  {
+    "id": 231,
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "dfFfMRC3E1g"
+  },
+  {
+    "id": 232,
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "YagdayNkfho"
+  },
+  {
+    "id": 233,
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "JlVpQucPS-o"
+  },
+  {
+    "id": 234,
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "KIQWQRa_OqA"
+  },
+  {
+    "id": 235,
+    "title": "JoJo's Bizarre Adventure: Diamond is Unbreakable OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21450-D7XFwEQjZ5GA.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "FrI_31R-EfM"
+  },
+  {
+    "id": 236,
+    "title": "JoJo's Bizarre Adventure: Diamond is Unbreakable ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21450-D7XFwEQjZ5GA.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "jJF7tVgD4zw"
+  },
+  {
+    "id": 237,
+    "title": "JoJo's Bizarre Adventure: Diamond is Unbreakable OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21450-D7XFwEQjZ5GA.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "bFFtHGDGpXc"
+  },
+  {
+    "id": 238,
+    "title": "JoJo's Bizarre Adventure: Diamond is Unbreakable OP 3",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21450-D7XFwEQjZ5GA.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "Zx_rFZhJCB0"
+  },
+  {
+    "id": 239,
+    "title": "JoJo's Bizarre Adventure: STONE OCEAN OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131942-rermlZ9lplHX.png",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "mgxDyrEnnoE"
+  },
+  {
+    "id": 240,
+    "title": "JoJo's Bizarre Adventure: STONE OCEAN ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131942-rermlZ9lplHX.png",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "IvS1TDS_DYc"
+  },
+  {
+    "id": 241,
+    "title": "JoJo's Bizarre Adventure: STONE OCEAN OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131942-rermlZ9lplHX.png",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "RTacFlYONhY"
+  },
+  {
+    "id": 242,
+    "title": "Mecha Ude: Mechanical Arms OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154673-SCp0Qo62N1Q6.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": [],
+    "YoutubeId": "uyOtJLa2ZWk"
+  },
+  {
+    "id": 243,
+    "title": "Mecha Ude: Mechanical Arms ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154673-SCp0Qo62N1Q6.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": [],
+    "YoutubeId": "qceCQ4zUHlU"
+  },
+  {
+    "id": 244,
+    "title": "My Hero Academia: Vigilantes Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx195322-hqBf19mBtM5K.jpg",
+    "genres": ["Action"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "bJFqYBcIMcc"
+  },
+  {
+    "id": 245,
+    "title": "My Hero Academia: Vigilantes Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx195322-hqBf19mBtM5K.jpg",
+    "genres": ["Action"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "S3HQmsf7BSY"
+  },
+  {
+    "id": 246,
+    "title": "My Hero Academia: Vigilantes OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185736-Ci6AiGwjKKtp.jpg",
+    "genres": ["Action"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "PaXXwyA9aYE"
+  },
+  {
+    "id": 247,
+    "title": "My Hero Academia: Vigilantes ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185736-Ci6AiGwjKKtp.jpg",
+    "genres": ["Action"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "aUDgQs0lvRM"
+  },
+  {
+    "id": 248,
+    "title": "Go! Go! Loser Ranger! OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx158417-Ii0DOFwNim0A.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Sci-Fi"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "bG0cGW35-TI"
+  },
+  {
+    "id": 249,
+    "title": "Go! Go! Loser Ranger! ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx158417-Ii0DOFwNim0A.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Sci-Fi"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "2hbv4s7m1s0"
+  },
+  {
+    "id": 250,
+    "title": "Go! Go! Loser Ranger! Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178781-pbk5FgfiAJxS.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Sci-Fi"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "TGgGPPQmtk4"
+  },
+  {
+    "id": 251,
+    "title": "Go! Go! Loser Ranger! Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178781-pbk5FgfiAJxS.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Sci-Fi"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "e0Wv9Iu4EhE"
+  },
+  {
+    "id": 252,
+    "title": "YOUR FORMA OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx167142-dJwdHptpILkF.jpg",
+    "genres": ["Drama", "Mystery", "Sci-Fi"],
+    "themes": [" Adult Cast", "Detective"],
+    "YoutubeId": "Pluy1WKI-Vw"
+  },
+  {
+    "id": 253,
+    "title": "YOUR FORMA ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx167142-dJwdHptpILkF.jpg",
+    "genres": ["Drama", "Mystery", "Sci-Fi"],
+    "themes": [" Adult Cast", "Detective"],
+    "YoutubeId": "fIPWSCZeVtM"
+  },
+  {
+    "id": 254,
+    "title": "The Summer Hikaru Died OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177689-d0mB5nYgdnhi.jpg",
+    "genres": ["Horror", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Seinen", "Psychological"],
+    "YoutubeId": "UP7la6a1H1g"
+  },
+  {
+    "id": 255,
+    "title": "The Summer Hikaru Died ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177689-d0mB5nYgdnhi.jpg",
+    "genres": ["Horror", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Seinen", "Psychological"],
+    "YoutubeId": "_dq21OHPJTk"
+  },
+  {
+    "id": 256,
+    "title": "Orb: On the Movements of the Earth OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151514-Y0d82Ah2ZOHX.jpg",
+    "genres": ["Drama"],
+    "themes": ["Seinen", "Historical"],
+    "YoutubeId": "eZAocot63s8"
+  },
+  {
+    "id": 257,
+    "title": "Orb: On the Movements of the Earth ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151514-Y0d82Ah2ZOHX.jpg",
+    "genres": ["Drama"],
+    "themes": ["Seinen", "Historical"],
+    "YoutubeId": "F541MRFhXX8"
+  },
+  {
+    "id": 258,
+    "title": "Orb: On the Movements of the Earth ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1546/147461l.jpg",
+    "genres": ["Drama"],
+    "themes": ["Seinen", "Historical"],
+    "YoutubeId": "aJel-zCuABs"
+  },
+  {
+    "id": 259,
+    "title": "SHOSHIMIN: How to Become Ordinary OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx173295-5DIOnrTYiF0a.jpg",
+    "genres": ["Mystery", "Slice of Life"],
+    "themes": ["School"],
+    "YoutubeId": "kk6meRqr-o4"
+  },
+  {
+    "id": 260,
+    "title": "SHOSHIMIN: How to Become Ordinary ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx173295-5DIOnrTYiF0a.jpg",
+    "genres": ["Mystery", "Slice of Life"],
+    "themes": ["School"],
+    "YoutubeId": "UxoqXIo82Xo"
+  },
+  {
+    "id": 261,
+    "title": "SHOSHIMIN: How to become Ordinary Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx181182-lnlfAByYD7X6.png",
+    "genres": ["Mystery", "Slice of Life"],
+    "themes": ["Psychological"],
+    "YoutubeId": "Tvusi5PSzo0"
+  },
+  {
+    "id": 262,
+    "title": "SHOSHIMIN: How to become Ordinary Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx181182-lnlfAByYD7X6.png",
+    "genres": ["Mystery", "Slice of Life"],
+    "themes": ["Psychological"],
+    "YoutubeId": "P4jTLEnAUEs"
+  },
+  {
+    "id": 263,
+    "title": "Senpai is an Otokonoko OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163133-bdr9S2bdLoyj.jpg",
+    "genres": ["Comedy", "Drama", "Romance"],
+    "themes": ["Josei", "Love Polygon", "School"],
+    "YoutubeId": "KV8HGbACPzM"
+  },
+  {
+    "id": 264,
+    "title": "Senpai is an Otokonoko ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163133-bdr9S2bdLoyj.jpg",
+    "genres": ["Comedy", "Drama", "Romance"],
+    "themes": ["Josei", "Love Polygon", "School"],
+    "YoutubeId": "EaNlGbuTcA"
+  },
+  {
+    "id": 265,
+    "title": "Makeine: Too Many Losing Heroines! OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx171457-nmMIk0gNiWsm.jpg",
+    "genres": ["Comedy", "Romance", "Slice of Life"],
+    "themes": ["School"],
+    "YoutubeId": "7GJOBkIgWHc"
+  },
+  {
+    "id": 266,
+    "title": "Makeine: Too Many Losing Heroines! ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1875/144628l.jpg",
+    "genres": ["Comedy", "Romance", "Slice of Life"],
+    "themes": ["School"],
+    "YoutubeId": "2czbGCYz6gk"
+  },
+  {
+    "id": 267,
+    "title": "Makeine: Too Many Losing Heroines! ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1705/145056l.jpg",
+    "genres": ["Comedy", "Romance", "Slice of Life"],
+    "themes": ["School"],
+    "YoutubeId": "GyckNS-qOcM"
+  },
+  {
+    "id": 268,
+    "title": "Makeine: Too Many Losing Heroines! ED 3",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1149/145682l.jpg",
+    "genres": ["Comedy", "Romance", "Slice of Life"],
+    "themes": ["School"],
+    "YoutubeId": "FYuKV7m_CqM"
+  },
+  {
+    "id": 269,
+    "title": "Oblivion Battery OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx167927-eHWavr99BeTj.png",
+    "genres": ["Comedy", "Sports"],
+    "themes": ["Shounen", "School", "Team Sports"],
+    "YoutubeId": "Bcy8yp6iYGI"
+  },
+  {
+    "id": 270,
+    "title": "Oblivion Battery ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx167927-eHWavr99BeTj.png",
+    "genres": ["Comedy", "Sports"],
+    "themes": ["Shounen", "School", "Team Sports"],
+    "YoutubeId": "ry9Mlnj3lnc"
+  },
+  {
+    "id": 271,
+    "title": "WITCH WATCH OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1988/148017l.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life", "Supernatural"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "a_NB6QkfzAM"
+  },
+  {
+    "id": 272,
+    "title": "WITCH WATCH ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1988/148017l.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life", "Supernatural"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "n9sb98NNmTI"
+  },
+  {
+    "id": 274,
+    "title": "WITCH WATCH OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1988/148017l.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life", "Supernatural"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "L9YhOussuh8"
+  },
+  {
+    "id": 275,
+    "title": "WITCH WATCH ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1988/148017l.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life", "Supernatural"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "YQ0hXVdBTAQ"
+  },
+  {
+    "id": 276,
+    "title": "WITCH WATCH OP 3",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1988/148017l.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life", "Supernatural"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "X3yirXygazg"
+  },
+  {
+    "id": 277,
+    "title": "WITCH WATCH ED 3",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1988/148017l.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life", "Supernatural"],
+    "themes": ["Shounen", "Urban Fantasy"],
+    "YoutubeId": "Ptmfh5b-1QU"
+  },
+  {
+    "id": 278,
+    "title": "DAN DA DAN OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx171018-60q1B6GK2Ghb.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "a4na2opArGY"
+  },
+  {
+    "id": 279,
+    "title": "DAN DA DAN ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx171018-60q1B6GK2Ghb.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "ovW7yRi1iJ8"
+  },
+  {
+    "id": 280,
+    "title": "DAN DA DAN Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185660-uB8RUMBGovGr.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "ZWjbvYWUMHo"
+  },
+  {
+    "id": 281,
+    "title": "DAN DA DAN Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185660-uB8RUMBGovGr.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "AhNYcpN1pEU"
+  },
+  {
+    "id": 282,
+    "title": "Kaiju No. 8 OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1370/140362l.jpg",
+    "genres": ["Action", "Sci-Fi", "Fantasy"],
+    "themes": ["Shounen", "Adult Cast", "Military", "Urban Fantasy"],
+    "YoutubeId": "CFjI21M9wZs"
+  },
+  {
+    "id": 283,
+    "title": "Kaiju No. 8 ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1370/140362l.jpg",
+    "genres": ["Action", "Sci-Fi", "Fantasy"],
+    "themes": ["Shounen", "Adult Cast", "Military", "Urban Fantasy"],
+    "YoutubeId": "aiCMXJ4zKWA"
+  },
+  {
+    "id": 284,
+    "title": "Kaiju No. 8 Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178754-Dgrub8xgC03M.jpg",
+    "genres": ["Action", "Sci-Fi", "Fantasy"],
+    "themes": ["Shounen", "Adult Cast", "Military", "Urban Fantasy"],
+    "YoutubeId": "rH8FCwzOdpI"
+  },
+  {
+    "id": 285,
+    "title": "Kaiju No. 8 Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178754-Dgrub8xgC03M.jpg",
+    "genres": ["Action", "Sci-Fi", "Fantasy"],
+    "themes": ["Shounen", "Adult Cast", "Military", "Urban Fantasy"],
+    "YoutubeId": "R5AHlP2cny0"
+  },
+  {
+    "id": 286,
+    "title": "The Apothecary Diaries OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx161645-QLbzHXiYRgV2.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "EQ-DKvLQlyQ"
+  },
+  {
+    "id": 287,
+    "title": "The Apothecary Diaries ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx161645-QLbzHXiYRgV2.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "MuVVmOm5FYY"
+  },
+  {
+    "id": 288,
+    "title": "The Apothecary Diaries OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx161645-QLbzHXiYRgV2.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "29pmd1QiK-4"
+  },
+  {
+    "id": 289,
+    "title": "The Apothecary Diaries ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx161645-QLbzHXiYRgV2.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "bYNlZ0KkPuo"
+  },
+  {
+    "id": 290,
+    "title": "The Apothecary Diaries Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176301-TIGmldLffQGX.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "wOleNo7T6_4"
+  },
+  {
+    "id": 291,
+    "title": "The Apothecary Diaries Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176301-TIGmldLffQGX.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "WDL0jSFr6e8"
+  },
+  {
+    "id": 292,
+    "title": "The Apothecary Diaries Season 2 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176301-TIGmldLffQGX.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "HrRxvh4bkHE"
+  },
+  {
+    "id": 293,
+    "title": "The Apothecary Diaries Season 2 ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176301-TIGmldLffQGX.jpg",
+    "genres": ["Drama", "Mystery"],
+    "themes": ["Seinen", "Historical", "Medical"],
+    "YoutubeId": "2ujbjT7k6ak"
+  },
+  {
+    "id": 294,
+    "title": "Call of the Night Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx175914-VsbL90WzuqoM.jpg",
+    "genres": ["Romance", "Supernatural"],
+    "themes": ["Shounen", "Vampire"],
+    "YoutubeId": "qA6ttnGzSUM"
+  },
+  {
+    "id": 295,
+    "title": "Call of the Night Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx175914-VsbL90WzuqoM.jpg",
+    "genres": ["Romance", "Supernatural"],
+    "themes": ["Shounen", "Vampire"],
+    "YoutubeId": "qsxr0PZWHj0"
+  },
+  {
+    "id": 296,
+    "title": "Hell’s Paradise OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128893-Gc2t8b8M0mVu.jpg",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Gore", "Historical", "Samurai"],
+    "YoutubeId": "RS94j08yIHs"
+  },
+  {
+    "id": 297,
+    "title": "Hell’s Paradise ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128893-Gc2t8b8M0mVu.jpg",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Gore", "Historical", "Samurai"],
+    "YoutubeId": "pyvpg2mK5Do"
+  },
+  {
+    "id": 298,
+    "title": "Hell’s Paradise Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166613-uHB8q3D4qbon.jpg",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Gore", "Historical", "Samurai"],
+    "YoutubeId": "gHIA3Mhc618"
+  },
+  {
+    "id": 299,
+    "title": "Hell’s Paradise Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166613-uHB8q3D4qbon.jpg",
+    "genres": ["Action", "Adventure", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Gore", "Historical", "Samurai"],
+    "YoutubeId": "N-Go4JtUw6U"
+  },
+  {
+    "id": 300,
+    "title": "Medalist OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx165171-an9pyRXwVxJS.jpg",
+    "genres": ["Drama", "Sports"],
+    "themes": ["Seinen", "Performing Arts"],
+    "YoutubeId": "H3SUAiwfyp0"
+  },
+  {
+    "id": 301,
+    "title": "Medalist ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx165171-an9pyRXwVxJS.jpg",
+    "genres": ["Drama", "Sports"],
+    "themes": ["Seinen", "Performing Arts"],
+    "YoutubeId": "2R8GebiQcds"
+  },
+  {
+    "id": 302,
+    "title": "Medalist Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx189275-eHsK0lNnFfXH.jpg",
+    "genres": ["Drama", "Sports"],
+    "themes": ["Seinen", "Performing Arts"],
+    "YoutubeId": "-hPpXrlgncE"
+  },
+  {
+    "id": 303,
+    "title": "Medalist Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx189275-eHsK0lNnFfXH.jpg",
+    "genres": ["Drama", "Sports"],
+    "themes": ["Seinen", "Performing Arts"],
+    "YoutubeId": "o076YrFjZsA"
+  },
+  {
+    "id": 304,
+    "title": "Undead Unluck OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154116-3ydDI9hhvPgw.png",
+    "genres": ["Action", "Comedy"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "tR4OVXK6tG8"
+  },
+  {
+    "id": 305,
+    "title": "Undead Unluck ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154116-3ydDI9hhvPgw.png",
+    "genres": ["Action", "Comedy"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "cyyDwLLW8ho"
   }
 ]
