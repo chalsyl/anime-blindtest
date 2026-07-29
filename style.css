@@ -140,19 +140,101 @@ hr {
 /* --- SOUS-CARTE MULTIJOUEUR --- */
 .multiplayer-box {
     width: 100%;
-    background: rgba(15, 23, 42, 0.4);
-    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
     padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
     margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Espacement vertical uniforme */
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .multiplayer-box h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 800;
-    margin-bottom: 15px;
     color: var(--text-color);
+    margin-bottom: 2px;
     letter-spacing: 0.5px;
+    text-align: center;
+}
+
+/* Regroupement Label + Select du mode 2 Joueurs */
+.multiplayer-box .setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.multiplayer-box .setting-item label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* Remplacement du rectangle blanc par un select sombre & néon */
+.multiplayer-box select {
+    width: 100%;
+    height: 45px;
+    padding: 0 35px 0 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background-color: #0f172a;
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Supprime la flèche blanche moche du navigateur */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Ajoute une flèche SVG personnalisée blanche */
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.multiplayer-box select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(233, 69, 96, 0.35);
+}
+
+/* Options internes du menu déroulant */
+.multiplayer-box select option {
+    background-color: #0f172a;
+    color: white;
+    padding: 10px;
+}
+
+/* Homogénéisation des champs de texte et boutons */
+.multiplayer-box input[type="text"] {
+    margin-bottom: 0;
+    height: 45px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #0f172a;
+    font-size: 0.95rem;
+}
+
+.multiplayer-box input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(233, 69, 96, 0.35);
+}
+
+.multiplayer-box .btn {
+    margin: 0;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 input[type="text"], input[type="number"] {
@@ -177,7 +259,261 @@ input[type="text"]:focus, input[type="number"]:focus {
 .join-box {
     display: flex;
     gap: 10px;
-    margin-top: 5px;
+    width: 100%;
+    align-items: center;
+    margin-top: 2px;
+}
+
+.join-box input {
+    flex: 1.2;
+}
+
+.join-box .btn {
+    flex: 1;
+}
+
+/* --- SÉLECTION MODE DÉFI --- */
+.selection-controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.selection-controls input {
+    margin-bottom: 0;
+    flex-grow: 1;
+}
+
+.selection-controls button {
+    width: auto;
+    margin: 0;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.selection-counter-bar {
+    background: rgba(15, 52, 96, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.selection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 15px;
+}
+
+.selection-card {
+    background: #0f3460;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.selection-card:hover {
+    border-color: rgba(233, 69, 96, 0.5);
+}
+
+.selection-card.selected {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.selection-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+.selection-card span {
+    font-size: 0.68rem;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.4em;
+}
+
+/* --- ÉCRAN D'ATTENTE EN DIRECT --- */
+.waiting-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Boîtier vidéo de l'écran d'attente */
+.waiting-video-box {
+    position: relative;
+    width: 80%;
+    max-width: 440px;
+    aspect-ratio: 16 / 9;
+    margin: 10px auto 15px auto;
+    background: #0b111e;
+    border-radius: 10px;
+    border: 2px solid #233554;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.waiting-video-box iframe, 
+.waiting-video-box video {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+}
+
+.opponent-progress-bar-container {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.opponent-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--warning));
+    transition: width 0.5s ease;
+}
+
+/* --- BILAN DUEL & PIÈGE PARFAIT --- */
+.duel-summary-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.duel-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.duel-player-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: bold;
+}
+
+.duel-score-val {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--success);
+}
+
+.duel-vs {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--accent);
+}
+
+.trap-badge-container {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(241, 196, 15, 0.15), rgba(233, 69, 96, 0.15));
+    border: 2px solid var(--warning);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2);
+}
+
+.trap-badge-header {
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--warning);
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.trap-badge-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.trap-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.4);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.trap-item img {
+    width: 40px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.trap-item-details {
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.trap-badge-content img {
+    width: 45px;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.trap-badge-details {
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+@media (max-width: 550px) {
+    .selection-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 250px;
+    }
 }
 
 /* --- BOITE DE RÉGLAGES (SETTING BOX) --- */
@@ -436,15 +772,18 @@ input[type="text"]:focus, input[type="number"]:focus {
     width: 100%;
     height: 100%;
     opacity: 0;
+    visibility: hidden; /* Masquage total instantané au niveau du navigateur */
     pointer-events: none;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    transform: scale(0.95);
     z-index: 2;
+    transform: scale(0.95);
+    transition: none !important; /* AUCUNE transition à la fermeture -> Coupure à 0ms ! */
 }
 
 #yt-player-container.reveal, #native-player-container.reveal {
     opacity: 1;
+    visibility: visible;
     transform: scale(1);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 #yt-player-container.interactive, #native-player-container.interactive {

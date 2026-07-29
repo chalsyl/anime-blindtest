@@ -46,6 +46,13 @@
                 <hr>
                 <div class="multiplayer-box">
                     <h3>Mode 2 Joueurs</h3>
+                    <div class="setting-item">
+                        <label for="multi-mode-select">Format 2 Joueurs :</label>
+                        <select id="multi-mode-select">
+                            <option value="draft">Mode Défi (Sélection de morceaux)</option>
+                            <option value="classic">Mode Classique (Aléatoire synchro)</option>
+                        </select>
+                    </div>
                     <input type="text" id="username" placeholder="Votre pseudo" max-length="12">
                     <button id="btn-create-room" class="btn">Créer une partie</button>
                     <div class="join-box">
@@ -73,6 +80,43 @@
             <p id="waiting-msg" class="info-msg">En attente de l'hôte pour démarrer...</p>
         </div>
 
+        <!-- 2B. ÉCRAN DE SÉLECTION (MODE DÉFI) -->
+        <div id="screen-selection" class="screen hidden">
+            <h2>Composez le défi</h2>
+            <p id="selection-instruction">Choisissez les morceaux que votre adversaire devra deviner !</p>
+            
+            <div class="selection-controls">
+                <input type="text" id="selection-search" placeholder="🔍 Rechercher un animé...">
+                <button id="btn-auto-fill" class="btn secondary">🎲 Remplir le reste au hasard</button>
+            </div>
+
+            <div class="selection-counter-bar">
+                Morceaux choisis : <span id="selection-count">0</span> / <span id="selection-target">10</span>
+            </div>
+
+            <div id="selection-grid" class="selection-grid"></div>
+
+            <button id="btn-confirm-selection" class="btn" disabled>Valider ma sélection</button>
+            <p id="selection-waiting-msg" class="info-msg hidden" style="color:var(--warning); margin-top:10px;">Sélection validée ! En attente de l'adversaire...</p>
+        </div>
+
+        <!-- 2C. ÉCRAN D'ATTENTE DYNAMIQUE DE L'ADVERSAIRE -->
+        <div id="screen-waiting-opponent" class="screen hidden">
+            <h2>Manche terminée !</h2>
+            <p>Vous avez répondu à toutes vos questions.</p>
+
+            <!-- LECTEUR VIDÉO DU DERNIER MORCEAU JOUÉ -->
+            <div id="waiting-video-container" class="waiting-video-box"></div>
+
+            <div class="waiting-card">
+                <h3 id="opponent-progress-name">En attente de l'adversaire...</h3>
+                <div class="opponent-progress-bar-container">
+                    <div id="opponent-progress-bar" class="opponent-progress-bar"></div>
+                </div>
+                <p id="opponent-progress-text">L'adversaire est à la question 0/10...</p>
+            </div>
+        </div>
+
         <!-- 3. ZONE DE JEU -->
         <div id="screen-game" class="screen hidden">
             <div class="game-header">
@@ -89,25 +133,28 @@
             <!-- Section Média Unifiée (Vidéo + Volume à droite) -->
             <div class="game-media-section">
                 <div class="audio-status">
-                    <div id="placeholder-container">
-                        <div class="music-icon">🎵</div>
-                        <div class="timer-bar-container">
-                            <div id="timer-bar" class="timer-bar"></div>
-                        </div>
-                        <p id="audio-status-text">Écoutez attentivement...</p>
-                    </div>
-                    
-                    <div id="yt-player-container">
-                        <div id="yt-player"></div>
-                    </div>
-                    
-                                        <!-- Double Lecteur Buffering pour AnimeThemes (Alternance A / B) -->
-                    <div id="native-player-container" style="display:none;">
-                        <video id="native-player-a" playsinline style="width:100%; height:100%; display:none;"></video>
-                        <video id="native-player-b" playsinline style="width:100%; height:100%; display:none;"></video>
-                    </div>
-                    
-                </div>
+    <div id="placeholder-container">
+        <div class="music-icon">🎵</div>
+        <div class="timer-bar-container">
+            <div id="timer-bar" class="timer-bar"></div>
+        </div>
+        <p id="audio-status-text">Écoutez attentivement...</p>
+    </div>
+
+    <!-- Lecteur Audio Ultra-Rapide pour la phase de devinette -->
+    <audio id="game-audio-player" preload="auto"></audio>
+
+    <div id="yt-player-container">
+        <div id="yt-player"></div>
+    </div>
+    
+    <div id="native-player-container" style="display:none;">
+        <video id="native-player" playsinline style="width:100%; height:100%;"></video>
+    </div>
+    
+    <video id="preloader-player" preload="auto" muted style="display:none;"></video>
+</div>
+        
 
                 <!-- Contrôle de volume vertical à droite de la vidéo -->
                 <div class="volume-slider-container">
@@ -131,8 +178,28 @@
 
         <!-- 4. ÉCRAN DE FIN -->
         <div id="screen-results" class="screen hidden">
-            <h2>Partie terminée !</h2>
+            <h2>Bilan de la Partie</h2>
             <div id="winner-announcement"></div>
+
+            <!-- COMPARATIF DUEL MULTIJOUEUR -->
+            <div id="duel-summary-box" class="duel-summary-box hidden">
+                <div class="duel-stat-card">
+                    <span class="duel-player-name" id="duel-p1-name">Moi</span>
+                    <span class="duel-score-val" id="duel-p1-val">0/10</span>
+                </div>
+                <div class="duel-vs">VS</div>
+                <div class="duel-stat-card">
+                    <span class="duel-player-name" id="duel-p2-name">Adversaire</span>
+                    <span class="duel-score-val" id="duel-p2-val">0/10</span>
+                </div>
+            </div>
+
+            <!-- BADGE LE PIÈGE PARFAIT -->
+            <div id="trap-badge-container" class="trap-badge-container hidden">
+                <div class="trap-badge-header">😈 LE PIÈGE PARFAIT</div>
+                <div id="trap-badge-content" class="trap-badge-content"></div>
+            </div>
+
             <div class="final-scores">
                 <p id="final-p1">Joueur 1 : 0 pts</p>
                 <p id="final-p2" class="hidden">Joueur 2 : 0 pts</p>
@@ -142,11 +209,9 @@
             <div class="history-section">
                 <div class="history-header">
                     <h3>Historique des morceaux</h3>
-                    <span id="average-score-display" class="average-badge">Moyenne : 0/10</span>
+                    <span id="average-score-display" class="average-badge">Trouvés : 0/10</span>
                 </div>
-                <div id="quiz-history-container">
-                    <!-- Généré dynamiquement -->
-                </div>
+                <div id="quiz-history-container"></div>
             </div>
 
             <!-- BOUTONS D'ACTION FINAUX -->

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, update, get, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDejimWjgsbqP2cmrfL_Oa_sotz8h-sBKg",
@@ -18,11 +18,13 @@ const db = getDatabase(app);
 let animeDatabase = []; 
 let ytPlayer = null;
 let gameMode = "solo";
+let multiGameType = "draft";
 let myRole = "";
 let roomCode = "";
 let currentQuestionIndex = 0;
 let totalQuestions = 10; 
 let manualProgress = false; 
+let randomStart = false;
 let score = 0;
 let opponentScore = 0;
 let questionsPlaylist = [];
@@ -36,21 +38,21 @@ let ytRetryCount = 0;
 let progressionTimeout = null;
 let roundProcessed = false;
 
-// Variables pour la synchronisation parfaite
 let mediaReady = false;
 let isRoundActive = false;
-
-// Volume global (0.0 à 1.0) et synchronisation de lecture
 let globalVolume = 1.0;
-let randomStart = false;
-let activePlayerIndex = 0; // 0 = Lecteur A, 1 = Lecteur B
+let controlsInterval = null; 
 
-function getActivePlayer() {
-    return document.getElementById(activePlayerIndex === 0 ? 'native-player-a' : 'native-player-b');
-}
+let selectedSongIds = [];
 
-function getIdlePlayer() {
-    return document.getElementById(activePlayerIndex === 0 ? 'native-player-b' : 'native-player-a');
+// NETTOYEUR DE TIMERS FANTÔMES (Empêche les sauts d'écran intempestifs)
+function clearAllTimers() {
+    clearInterval(timerInterval);
+    clearTimeout(ytWatchdog);
+    clearTimeout(progressionTimeout);
+    timerInterval = null;
+    ytWatchdog = null;
+    progressionTimeout = null;
 }
 
 async function loadDatabase() {
@@ -67,8 +69,32 @@ function getBaseAnimeName(title) {
     return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
 }
 
-function isAnimeThemes(url) {
-    return url.startsWith('http') && url.includes('animethemes.moe');
+// Détecte si l'entrée est un lien vidéo externe (HTTP/HTTPS) ou un ID YouTube
+function isDirectVideoUrl(url) {
+    return url && url.startsWith('http');
+}
+
+// Convertit un lien vidéo AnimeThemes en lien Audio ultra-légers (.ogg sur a.animethemes.moe)
+function getAudioUrl(url) {
+    if (!url) return "";
+    if (url.includes('v.animethemes.moe')) {
+        return url.replace('v.animethemes.moe', 'a.animethemes.moe')
+                  .replace(/\.(webm|mp4)$/i, '.ogg');
+    }
+    return url; // Pour AMQ ou autres, la balise <audio> extrait le flux audio nativement
+}
+
+// Convertit l'URL en lien vidéo lisible (AnimeThemes API ou Lien direct AMQ/Catbox)
+async function getDirectVideoUrl(url) {
+    if (!url || !url.startsWith('http')) return null;
+    
+    // Si c'est une page d'AnimeThemes qui nécessite un décodage API
+    if (url.includes('animethemes.moe') && !url.endsWith('.webm') && !url.includes('v.animethemes.moe')) {
+        return await getAnimeThemesVideoUrl(url);
+    }
+    
+    // Si c'est déjà un fichier vidéo direct (ex: Anime Music Quiz / AMQ, Catbox, .webm, .mp4)
+    return url;
 }
 
 async function getAnimeThemesVideoUrl(animethemesUrl) {
@@ -93,25 +119,13 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
                 return allVideos[0].link; 
             }
         }
-        for (const theme of themes) {
-            for (const entry of theme.animethemeentries || []) {
-                for (const video of entry.videos || []) {
-                    if (video.link.toLowerCase().includes(pathParts[2].toLowerCase()) || video.basename.toLowerCase().includes(pathParts[2].toLowerCase())) {
-                        return video.link;
-                    }
-                }
-            }
-        }
     } catch (e) {}
     return null;
 }
 
 function getFranchiseKey(title) {
     let base = title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
-    
-    // Gère et supprime " 2nd season", " 3rd season", " s1", " s2", " part", etc.
     base = base.split(/ -|:| \d*(?:st|nd|rd|th)?\s*season| s\d+| part/i)[0].trim();
-    
     base = base.replace(/\s+(?:[ivxldcm]+)\b$/gi, '').trim();
     base = base.replace(/\s+\d+$/g, '').trim();
     return base;
@@ -125,35 +139,33 @@ function preloadImages(questionObj) {
     });
 }
 
+// Préchargement ultra-rapide en mémoire RAM (Blob Fetch)
 async function preloadNextVideo() {
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questionsPlaylist.length) {
         const nextQuestionObj = questionsPlaylist[nextIndex];
         const nextQuestion = nextQuestionObj.correct;
-        const offset = nextQuestion.startOffset || 0;
         
+        // 1. Précharge les images des 4 cartes suivantes
         preloadImages(nextQuestionObj);
         
-        if (isAnimeThemes(nextQuestion.YoutubeId)) {
+        // 2. Précharge uniquement les fichiers RAM Blob pour AnimeThemes / AMQ
+        if (isDirectVideoUrl(nextQuestion.YoutubeId)) {
             const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
             if (directUrl) {
                 questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
-                
-                // On utilise le lecteur inactif pour préparer la suite en tâche de fond
-                const idlePlayer = getIdlePlayer();
-                if (idlePlayer) {
-                    idlePlayer.style.display = 'none';
-                    idlePlayer.muted = true;
-                    idlePlayer.src = directUrl;
-                    
-                    idlePlayer.onloadedmetadata = () => {
-                        idlePlayer.onloadedmetadata = null;
-                        idlePlayer.currentTime = offset; // Prépare le saut à 25s ou 50s en avance !
-                    };
-                    idlePlayer.load(); 
+                try {
+                    const response = await fetch(directUrl);
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    questionsPlaylist[nextIndex].correct.blobUrl = blobUrl;
+                    console.log(`[RAM Preloader] Vidéo ${nextQuestion.title} chargée en RAM !`);
+                } catch (e) {
+                    console.warn("[RAM Preloader] Échec du fetch blob, fallback réseau.", e);
                 }
             }
         }
+        // IMPORTANT : Ne touche JAMAIS à ytPlayer ici car il est réservé à la question active !
     }
 }
 
@@ -173,11 +185,13 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix", randomStartChoic
         return [];
     }
 
-    return selected.map(correctSong => {
+    return buildPlaylistFromSongs(selected, randomStartChoice);
+}
+
+function buildPlaylistFromSongs(songsList, randomStartChoice = false) {
+    return songsList.map(correctSong => {
         const distractors = getSimilarAnime(correctSong, 3);
         const choices = [correctSong, ...distractors].sort(() => 0.5 - Math.random());
-        
-        // Détermine l'offset de départ (0, 25 ou 50 secondes)
         const startOffset = randomStartChoice ? (Math.random() < 0.5 ? 25 : 50) : 0;
 
         return {
@@ -189,22 +203,19 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix", randomStartChoic
                 type: correctSong.type || "",
                 genres: correctSong.genres || [],
                 themes: correctSong.themes || [],
-                startOffset: startOffset // On stocke l'offset de cette question
+                startOffset: startOffset
             },
             choices: choices.map(c => ({ id: c.id || 0, title: c.title || "Inconnu", image: c.image || "" }))
         };
     });
 }
 
-// CORRIGÉ : Variable list renommée en candidates pour éviter le crash en jeu
 function getSimilarAnime(correctSong, count = 3) {
     const correctFranchise = getFranchiseKey(correctSong.title);
     const targetType = correctSong.type; 
 
     const candidates = animeDatabase
-        .filter(song => {
-            return getFranchiseKey(song.title) !== correctFranchise && song.type === targetType;
-        })
+        .filter(song => getFranchiseKey(song.title) !== correctFranchise && song.type === targetType)
         .map(song => {
             let similarity = 0;
             song.genres.forEach(g => { if (correctSong.genres.includes(g)) similarity += 2; });
@@ -223,9 +234,7 @@ function getSimilarAnime(correctSong, count = 3) {
             selectedDistractors.push(candidate.song);
             usedFranchises.add(candidateFranchise);
         }
-        if (selectedDistractors.length === count) {
-            break;
-        }
+        if (selectedDistractors.length === count) break;
     }
 
     if (selectedDistractors.length < count) {
@@ -240,62 +249,39 @@ function getSimilarAnime(correctSong, count = 3) {
     return selectedDistractors;
 }
 
-// --- API YOUTUBE (Version Ultra-Robuste) ---
+// --- API YOUTUBE ---
 function loadYoutubeAPI() {
     return new Promise((resolve) => {
-        // CORRECTION : Si l'API est déjà prête dans le navigateur (cache actif), on initialise directement
         if (window.YT && window.YT.Player) {
             ytPlayer = new YT.Player('yt-player', {
-                height: '100%',
-                width: '100%',
-                videoId: '',
-                playerVars: {
-                    'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1,
-                    'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3
-                },
+                height: '100%', width: '100%', videoId: '',
+                playerVars: { 'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3 },
                 events: {
                     'onReady': () => resolve(),
-                    'onStateChange': (event) => handleYoutubeStateChange(event),
-                    'onError': (event) => handleYoutubeError(event)
+                    'onStateChange': (e) => handleYoutubeStateChange(e),
+                    'onError': (e) => handleYoutubeError(e)
                 }
             });
             return;
         }
-
-        // Sinon, on définit le callback standard attendu par YouTube
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('yt-player', {
-                height: '100%',
-                width: '100%',
-                videoId: '',
-                playerVars: {
-                    'autoplay': 0, 
-                    'controls': 1, // Active les contrôles officiels
-                    'disablekb': 1, 
-                    'fs': 1,        // Active le bouton plein écran officiel
-                    'modestbranding': 1, 
-                    'rel': 0, 
-                    'showinfo': 0, 
-                    'iv_load_policy': 3
-                },
+                height: '100%', width: '100%', videoId: '',
+                playerVars: { 'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3 },
                 events: {
                     'onReady': () => resolve(),
-                    'onStateChange': (event) => handleYoutubeStateChange(event),
-                    'onError': (event) => handleYoutubeError(event)
+                    'onStateChange': (e) => handleYoutubeStateChange(e),
+                    'onError': (e) => handleYoutubeError(e)
                 }
             });
         };
 
-        // Injection sécurisée sans doublon
         if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             const firstScriptTag = document.getElementsByTagName('script')[0];
-            if (firstScriptTag) {
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            } else {
-                document.head.appendChild(tag);
-            }
+            if (firstScriptTag) firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            else document.head.appendChild(tag);
         }
     });
 }
@@ -303,22 +289,22 @@ function loadYoutubeAPI() {
 function handleYoutubeStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         clearTimeout(ytWatchdog);
-        if (!mediaReady) {
+        if (gameMode === "multi" && multiGameType === "classic" && !mediaReady) {
             mediaReady = true;
-            if (gameMode === "multi") {
-                ytPlayer.pauseVideo(); 
-            }
+            ytPlayer.pauseVideo(); 
             signalMediaReady();
+        } else {
+            document.getElementById('audio-status-text').innerText = "Écoutez attentivement...";
         }
     }
 }
 
 function handleYoutubeError(event) {
     clearTimeout(ytWatchdog);
-    if (gameMode === "multi" && !mediaReady) {
+    if (gameMode === "multi" && multiGameType === "classic" && !mediaReady) {
         mediaReady = true;
         signalMediaReady();
-    } else if (gameMode === "solo" && ytRetryCount < 2) {
+    } else if (ytRetryCount < 2) {
         ytRetryCount++;
         setTimeout(() => {
             if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
@@ -330,20 +316,23 @@ function handleYoutubeError(event) {
 }
 
 function unlockNativePlayer() {
-    const playerA = document.getElementById('native-player-a');
-    const playerB = document.getElementById('native-player-b');
-    const silentSrc = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-    
-    if (playerA) { playerA.src = silentSrc; playerA.play().catch(() => {}); }
-    if (playerB) { playerB.src = silentSrc; playerB.play().catch(() => {}); }
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+        nativePlayer.play().catch(() => {});
+    }
 }
 
-// --- GESTION DU VOLUME GLOBAL ---
 function applyGlobalVolume() {
-    const activePlayer = getActivePlayer();
-    if (activePlayer) {
-        activePlayer.volume = globalVolume;
-        activePlayer.muted = (globalVolume === 0);
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.volume = globalVolume;
+        nativePlayer.muted = (globalVolume === 0);
+    }
+    const audioPlayer = document.getElementById('game-audio-player');
+    if (audioPlayer) {
+        audioPlayer.volume = globalVolume;
+        audioPlayer.muted = (globalVolume === 0);
     }
     if (ytPlayer && typeof ytPlayer.setVolume === "function") {
         ytPlayer.setVolume(globalVolume * 100);
@@ -352,13 +341,60 @@ function applyGlobalVolume() {
     }
 }
 
-// --- CHARGEMENT SILENCIEUX (SYNC) ---
+function fadeInAudio() {
+    const duration = 1000;
+    const steps = 20;
+    const stepTime = duration / steps;
+    
+    const targetVolume = globalVolume;
+    const startVolume = targetVolume / 2;
+    let currentStep = 0;
+
+    const nativePlayer = document.getElementById('native-player'); // <--- Pointeur direct corrigé
+
+    if (nativePlayer) {
+        nativePlayer.volume = startVolume;
+        nativePlayer.muted = (startVolume === 0);
+    }
+    if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+        ytPlayer.setVolume(startVolume * 100);
+        if (startVolume === 0) ytPlayer.mute();
+        else ytPlayer.unMute();
+    }
+
+    const fadeInterval = setInterval(() => {
+        currentStep++;
+        const currentVol = startVolume + (currentStep / steps) * startVolume;
+
+        if (nativePlayer) {
+            nativePlayer.volume = Math.min(1, currentVol);
+        }
+        if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+            ytPlayer.setVolume(Math.min(100, currentVol * 100));
+        }
+
+        if (currentStep >= steps) {
+            clearInterval(fadeInterval);
+            if (nativePlayer) {
+                nativePlayer.volume = targetVolume;
+                nativePlayer.muted = (targetVolume === 0);
+            }
+            if (ytPlayer && typeof ytPlayer.setVolume === "function") {
+                ytPlayer.setVolume(targetVolume * 100);
+                if (targetVolume === 0) ytPlayer.mute();
+                else ytPlayer.unMute();
+            }
+        }
+    }, stepTime);
+}
+
 async function loadMediaForRound(youtubeId) {
     clearTimeout(ytWatchdog);
     mediaReady = false;
     
     const nativePlayerContainer = document.getElementById('native-player-container');
     const ytPlayerContainer = document.getElementById('yt-player-container');
+    const audioPlayer = document.getElementById('game-audio-player');
 
     if (gameMode === "solo") {
         document.getElementById('audio-status-text').innerText = "Préparation du morceau...";
@@ -371,60 +407,57 @@ async function loadMediaForRound(youtubeId) {
             mediaReady = true;
             signalMediaReady();
         }
-    }, 5000);
+    }, 2500);
 
     const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
     const offset = currentQuestion.startOffset || 0;
 
-    if (isAnimeThemes(youtubeId)) {
+    if (isDirectVideoUrl(youtubeId)) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
-        if (nativePlayerContainer) {
-            nativePlayerContainer.style.display = 'block';
-            
-            const activePlayer = getActivePlayer();
-            const idlePlayer = getIdlePlayer();
-            
-            // On masque le lecteur passif et on affiche le lecteur actif
-            if (idlePlayer) idlePlayer.style.display = 'none';
-            if (activePlayer) activePlayer.style.display = 'block';
+        if (nativePlayerContainer) nativePlayerContainer.style.display = 'none'; // Masqué pendant l'écoute
+        
+        let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
+        if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
 
-            let directUrl = currentQuestion.resolvedUrl;
-            if (!directUrl) directUrl = await getAnimeThemesVideoUrl(youtubeId);
+        if (directUrl && audioPlayer) {
+            const audioUrl = getAudioUrl(directUrl);
+            audioPlayer.src = audioUrl;
+            audioPlayer.volume = globalVolume;
+            audioPlayer.muted = false;
 
-            if (directUrl) {
-                // Si la vidéo n'a pas eu le temps d'être préchargée (ex: 1ère question)
-                if (activePlayer.src !== directUrl) {
-                    activePlayer.src = directUrl;
-                    activePlayer.load();
-                    activePlayer.onloadedmetadata = () => {
-                        activePlayer.onloadedmetadata = null;
-                        activePlayer.currentTime = offset;
-                    };
+            // Chargement du fichier audio de 1.2 Mo (Instantané !)
+            audioPlayer.oncanplay = () => {
+                audioPlayer.oncanplay = null;
+                if (offset > 0) audioPlayer.currentTime = offset;
+                
+                if (!mediaReady) {
+                    mediaReady = true;
+                    clearTimeout(safetyBufferTimeout);
+                    signalMediaReady();
                 }
+            };
 
-                activePlayer.muted = true;
-                activePlayer.play().then(() => {
-                    if (!isRoundActive) activePlayer.pause();
-                    if (!mediaReady) {
-                        mediaReady = true;
-                        clearTimeout(safetyBufferTimeout);
-                        signalMediaReady();
-                    }
-                }).catch(e => {
-                    if (!mediaReady) {
-                        mediaReady = true;
-                        clearTimeout(safetyBufferTimeout);
-                        signalMediaReady();
-                    }
-                });
-            } else {
-                if (!mediaReady) { mediaReady = true; signalMediaReady(); }
-            }
+            audioPlayer.play().then(() => {
+                if (!isRoundActive && gameMode === "multi" && multiGameType === "classic") {
+                    audioPlayer.pause();
+                }
+                if (!mediaReady) {
+                    mediaReady = true;
+                    clearTimeout(safetyBufferTimeout);
+                    signalMediaReady();
+                }
+            }).catch(e => {
+                if (!mediaReady) {
+                    mediaReady = true;
+                    clearTimeout(safetyBufferTimeout);
+                    signalMediaReady();
+                }
+            });
+        } else {
+            if (!mediaReady) { mediaReady = true; signalMediaReady(); }
         }
     } else {
-        const activePlayer = getActivePlayer();
-        if (activePlayer) activePlayer.pause();
-        
+        // Mode YouTube
         if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
 
@@ -442,20 +475,19 @@ async function loadMediaForRound(youtubeId) {
                     clearTimeout(safetyBufferTimeout);
                     signalMediaReady();
                 }
-            }, 4000);
+            }, 3000);
         }
     }
 }
 
 function signalMediaReady() {
-    if (gameMode === "solo") {
+    if (gameMode === "solo" || multiGameType === "draft") {
         startRound();
     } else {
         update(ref(db, `rooms/${roomCode}/players/${myRole}`), { isReady: true });
     }
 }
 
-// --- DÉMARRAGE DU CHRONO (Solo & Multi) ---
 function startTimer(currentQuestion) {
     currentTimer = 20;
     document.getElementById('timer-sec').innerText = currentTimer;
@@ -465,6 +497,7 @@ function startTimer(currentQuestion) {
     timerBar.classList.remove('warning');
     document.querySelector('.container').classList.remove('warning-pulse');
 
+    clearInterval(timerInterval);
     timerInterval = setInterval(() => {
         currentTimer--;
         document.getElementById('timer-sec').innerText = currentTimer;
@@ -485,55 +518,6 @@ function startTimer(currentQuestion) {
     }, 1000);
 }
 
-// Fondu sonore progressif sur 1 seconde de 50% à 100% du volume configuré
-function fadeInAudio() {
-    const duration = 1000;
-    const steps = 20;
-    const stepTime = duration / steps;
-    
-    const targetVolume = globalVolume;
-    const startVolume = targetVolume / 2;
-    let currentStep = 0;
-
-    const activePlayer = getActivePlayer(); // <--- Cible le bon lecteur A ou B !
-
-    if (activePlayer) {
-        activePlayer.volume = startVolume;
-        activePlayer.muted = (startVolume === 0);
-    }
-    if (ytPlayer && typeof ytPlayer.setVolume === "function") {
-        ytPlayer.setVolume(startVolume * 100);
-        if (startVolume === 0) ytPlayer.mute();
-        else ytPlayer.unMute();
-    }
-
-    const fadeInterval = setInterval(() => {
-        currentStep++;
-        const currentVol = startVolume + (currentStep / steps) * startVolume;
-
-        if (activePlayer) {
-            activePlayer.volume = currentVol;
-        }
-        if (ytPlayer && typeof ytPlayer.setVolume === "function") {
-            ytPlayer.setVolume(currentVol * 100);
-        }
-
-        if (currentStep >= steps) {
-            clearInterval(fadeInterval);
-            if (activePlayer) {
-                activePlayer.volume = targetVolume;
-                activePlayer.muted = (targetVolume === 0);
-            }
-            if (ytPlayer && typeof ytPlayer.setVolume === "function") {
-                ytPlayer.setVolume(targetVolume * 100);
-                if (targetVolume === 0) ytPlayer.mute();
-                else ytPlayer.unMute();
-            }
-        }
-    }, stepTime);
-}
-
-// --- DÉMARRAGE DU SON ET CHRONO (Multi) ---
 function startRound() {
     isRoundActive = true;
     document.getElementById('audio-status-text').innerText = "Écoutez attentivement...";
@@ -542,15 +526,15 @@ function startRound() {
     const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
     const hasOffset = (currentQuestion.startOffset || 0) > 0;
 
-    if (isAnimeThemes(currentQuestion.YoutubeId)) {
-        const activePlayer = getActivePlayer();
-        if (activePlayer) {
+    if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
+        const audioPlayer = document.getElementById('game-audio-player');
+        if (audioPlayer) {
+            audioPlayer.muted = (globalVolume === 0);
+            audioPlayer.volume = globalVolume;
             if (hasOffset) {
-                activePlayer.play().then(() => fadeInAudio()).catch(e => { activePlayer.muted = true; activePlayer.play(); });
+                audioPlayer.play().then(() => fadeInAudio()).catch(() => {});
             } else {
-                activePlayer.muted = (globalVolume === 0);
-                activePlayer.volume = globalVolume;
-                activePlayer.play().catch(e => { activePlayer.muted = true; activePlayer.play(); });
+                audioPlayer.play().catch(() => {});
             }
         }
     } else {
@@ -570,35 +554,52 @@ function startRound() {
 }
 
 function stopAudio() {
-    clearTimeout(ytWatchdog);
+    clearAllTimers();
     if (ytPlayer && typeof ytPlayer.stopVideo === "function") ytPlayer.stopVideo();
     
-    // On met en pause les deux lecteurs par sécurité
-    const playerA = document.getElementById('native-player-a');
-    const playerB = document.getElementById('native-player-b');
-    if (playerA) playerA.pause();
-    if (playerB) playerB.pause();
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) nativePlayer.pause();
+
+    const audioPlayer = document.getElementById('game-audio-player');
+    if (audioPlayer) audioPlayer.pause();
 }
 
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
+    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+
+    // Si c'est un lien direct (AnimeThemes / AMQ), on bascule de l'audio vers la vidéo
+    if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
+        const audioPlayer = document.getElementById('game-audio-player');
+        const nativePlayer = document.getElementById('native-player');
+        const nativeContainer = document.getElementById('native-player-container');
+        
+        let currentTime = 0;
+        if (audioPlayer) {
+            currentTime = audioPlayer.currentTime || 0;
+            audioPlayer.pause(); // Arrête le son seul
+        }
+
+        if (nativeContainer) nativeContainer.style.display = 'block';
+
+        if (nativePlayer) {
+            let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
+            nativePlayer.src = directUrl;
+            nativePlayer.currentTime = currentTime; // Synchro parfaite à la seconde près
+            nativePlayer.volume = globalVolume;
+            nativePlayer.muted = false;
+            nativePlayer.play().catch(() => {});
+        }
+    }
+
     document.getElementById('yt-player-container').classList.add('reveal');
     document.getElementById('native-player-container').classList.add('reveal');
-
-    if (gameMode === "solo") {
-        const manualCb = document.getElementById('manual-progress-checkbox');
-        manualProgress = manualCb ? manualCb.checked : false;
-    }
 
     if (manualProgress) {
         document.getElementById('yt-player-container').classList.add('interactive');
         document.getElementById('native-player-container').classList.add('interactive');
-        
-        // Active les contrôles natifs sur le lecteur A ou B actif
-        const activePlayer = getActivePlayer();
-        if (activePlayer) {
-            activePlayer.controls = true;
-        }
+        const nativePlayer = document.getElementById('native-player');
+        if (nativePlayer) nativePlayer.controls = true;
     }
 }
 
@@ -608,15 +609,23 @@ function resetVideoVisibility() {
     const ytContainer = document.getElementById('yt-player-container');
     const nativeContainer = document.getElementById('native-player-container');
     
-    ytContainer.classList.remove('reveal', 'interactive');
-    nativeContainer.classList.remove('reveal', 'interactive');
+    if (ytContainer) ytContainer.classList.remove('reveal', 'interactive');
+    if (nativeContainer) nativeContainer.classList.remove('reveal', 'interactive');
     
-    // Désactive les contrôles sur les deux lecteurs pour la manche suivante
-    const playerA = document.getElementById('native-player-a');
-    const playerB = document.getElementById('native-player-b');
-    if (playerA) playerA.controls = false;
-    if (playerB) playerB.controls = false;
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.removeAttribute('controls');
+    }
+
+    const customControls = document.getElementById('custom-controls');
+    if (customControls) customControls.classList.add('hidden');
+    
+    // Sécurité : On nettoie l'intervalle uniquement s'il existe
+    if (typeof controlsInterval !== 'undefined' && controlsInterval) {
+        clearInterval(controlsInterval);
+    }
 }
+
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById(screenId).classList.remove('hidden');
@@ -654,13 +663,26 @@ function animateScoreFusion(earnedPoints, nextScoreValue) {
         setTimeout(() => {
             sticker.classList.add('hidden');
             sticker.classList.remove('absorb');
-            if (gameMode === "solo") {
-                scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
-            }
+            scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
             scoreDisplay.classList.add('bulge');
             setTimeout(() => scoreDisplay.classList.remove('bulge'), 250);
         }, 300);
     }, 2500);
+}
+
+function cleanHistoryForFirebase(history) {
+    if (!history || !Array.isArray(history)) return [];
+    return history.map(item => ({
+        success: Boolean(item.success),
+        scoreEarned: Number(item.scoreEarned || 0),
+        song: {
+            id: item.song ? (item.song.id || 0) : 0,
+            title: item.song ? (item.song.title || "Inconnu") : "Inconnu",
+            image: item.song ? (item.song.image || "") : "",
+            YoutubeId: item.song ? (item.song.YoutubeId || "") : "",
+            type: item.song ? (item.song.type || "") : ""
+        }
+    }));
 }
 
 // --- INITIALISATION DE LA QUESTION ---
@@ -669,19 +691,29 @@ function loadQuestion() {
     roundProcessed = false;
     isRoundActive = false; 
     ytRetryCount = 0;
-
-    activePlayerIndex = 1 - activePlayerIndex;
     stopAudio();
     resetVideoVisibility();
     clearInterval(timerInterval);
-    document.getElementById('btn-next-question').classList.add('hidden');
-    document.getElementById('round-overlay').classList.add('hidden');
+
+    // Sécurisation des éléments masqués
+    const btnNext = document.getElementById('btn-next-question');
+    if (btnNext) btnNext.classList.add('hidden');
+
+    const overlay = document.getElementById('round-overlay');
+    if (overlay) overlay.classList.add('hidden');
 
     const timerBar = document.getElementById('timer-bar');
-    timerBar.style.width = '100%';
-    timerBar.classList.remove('warning');
-    document.querySelector('.container').classList.remove('warning-pulse');
-    document.getElementById('timer-sec').innerText = "--";
+    if (timerBar) {
+        timerBar.style.width = '100%';
+        timerBar.classList.remove('warning');
+    }
+
+    const container = document.querySelector('.container');
+    if (container) container.classList.remove('warning-pulse');
+
+    // Sécurisation du texte du chrono
+    const timerSec = document.getElementById('timer-sec');
+    if (timerSec) timerSec.innerText = "--";
 
     if (document.activeElement) document.activeElement.blur();
 
@@ -695,25 +727,30 @@ function loadQuestion() {
     const currentQuestion = currentQuestionObj.correct;
     const choices = currentQuestionObj.choices;
 
-    document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
+    // Sécurisation du numéro de question
+    const currentQEl = document.getElementById('current-question-num');
+    if (currentQEl) currentQEl.innerText = currentQuestionIndex + 1;
 
-    const container = document.getElementById('choices-container');
-    container.innerHTML = "";
-    choices.forEach((song, index) => {
-        const card = document.createElement('div');
-        card.className = gameMode === "multi" ? "choice-card disabled" : "choice-card"; 
-        card.innerHTML = `
-            <div class="choice-number">${index + 1}</div>
-            <img src="${song.image}" alt="${song.title}">
-            <span>${song.title}</span>
-        `;
-        card.addEventListener('click', () => {
-            if (!card.classList.contains('disabled')) {
-                handleChoice(card, song, currentQuestion);
-            }
+    // Sécurisation du conteneur de choix
+    const choicesContainer = document.getElementById('choices-container');
+    if (choicesContainer) {
+        choicesContainer.innerHTML = "";
+        choices.forEach((song, index) => {
+            const card = document.createElement('div');
+            card.className = (gameMode === "multi" && multiGameType === "classic") ? "choice-card disabled" : "choice-card"; 
+            card.innerHTML = `
+                <div class="choice-number">${index + 1}</div>
+                <img src="${song.image}" alt="${song.title}">
+                <span>${song.title}</span>
+            `;
+            card.addEventListener('click', () => {
+                if (!card.classList.contains('disabled')) {
+                    handleChoice(card, song, currentQuestion);
+                }
+            });
+            choicesContainer.appendChild(card);
         });
-        container.appendChild(card);
-    });
+    }
 
     if (gameMode === "multi") {
         update(ref(db, `rooms/${roomCode}/players/${myRole}`), { isReady: false });
@@ -723,38 +760,45 @@ function loadQuestion() {
     }
 
     preloadNextVideo();
-    loadMediaForRound(currentQuestion.YoutubeId); // Lance le chargement unifié (Solo et Multi)
+    loadMediaForRound(currentQuestion.YoutubeId);
 }
 
 function handleChoice(selectedCard, chosenSong, correctQuestion) {
     if (hasAnsweredCurrent) return;
     hasAnsweredCurrent = true;
-    clearInterval(timerInterval);
-    clearTimeout(ytWatchdog);
+    clearAllTimers();
     revealVideo(); 
 
     const isCorrect = chosenSong.id === correctQuestion.id;
     const earnedPoints = isCorrect ? Math.max(0, currentTimer * 0.5) : 0;
     score += earnedPoints;
 
-    playedHistory.push({ song: correctQuestion, success: isCorrect });
+    playedHistory.push({ song: correctQuestion, success: isCorrect, scoreEarned: earnedPoints });
     document.querySelectorAll('.choice-card').forEach(card => card.classList.add('disabled'));
 
     if (isCorrect) {
         selectedCard.classList.add('correct');
         document.querySelector('.container').classList.remove('warning-pulse');
-
         animateScoreFusion(earnedPoints, score);
 
-        if (gameMode === "solo") {
+        if (gameMode === "solo" || multiGameType === "draft") {
             showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
+            if (gameMode === "multi") {
+                update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+                    score: Number(score.toFixed(1)),
+                    hasAnswered: true,
+                    isCorrect: true,
+                    answersHistory: cleanHistoryForFirebase(playedHistory)
+                });
+            }
             triggerProgression();
         } else {
             const username = document.getElementById('username').value.trim() || "Joueur 1";
             update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
                 score: Number(score.toFixed(1)),
                 hasAnswered: true,
-                isCorrect: true
+                isCorrect: true,
+                answersHistory: cleanHistoryForFirebase(playedHistory)
             });
             update(ref(db, `rooms/${roomCode}`), {
                 roundStatus: "revealed",
@@ -770,13 +814,21 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
             }
         });
 
-        if (gameMode === "solo") {
+        if (gameMode === "solo" || multiGameType === "draft") {
             showImpactOverlay("ÉCHEC", false);
+            if (gameMode === "multi") {
+                update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+                    hasAnswered: true,
+                    isCorrect: false,
+                    answersHistory: cleanHistoryForFirebase(playedHistory)
+                });
+            }
             triggerProgression();
         } else {
             update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
                 hasAnswered: true,
-                isCorrect: false
+                isCorrect: false,
+                answersHistory: cleanHistoryForFirebase(playedHistory)
             });
         }
     }
@@ -784,9 +836,9 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
 
 function autoTimeout(correctQuestion) {
     hasAnsweredCurrent = true;
-    clearTimeout(ytWatchdog);
+    clearAllTimers();
     revealVideo(); 
-    playedHistory.push({ song: correctQuestion, success: false });
+    playedHistory.push({ song: correctQuestion, success: false, scoreEarned: 0 });
 
     document.querySelectorAll('.choice-card').forEach(card => {
         card.classList.add('disabled');
@@ -795,13 +847,21 @@ function autoTimeout(correctQuestion) {
         }
     });
 
-    if (gameMode === "solo") {
+    if (gameMode === "solo" || multiGameType === "draft") {
         showImpactOverlay("TEMPS ÉCOULÉ", false);
+        if (gameMode === "multi") {
+            update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+                hasAnswered: true,
+                isCorrect: false,
+                answersHistory: cleanHistoryForFirebase(playedHistory)
+            });
+        }
         triggerProgression();
     } else {
         update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
             hasAnswered: true,
-            isCorrect: false
+            isCorrect: false,
+            answersHistory: cleanHistoryForFirebase(playedHistory)
         });
     }
 }
@@ -812,7 +872,7 @@ function triggerProgression() {
     }
 
     if (manualProgress) {
-        if (gameMode === "solo" || myRole === "p1") {
+        if (gameMode === "solo" || myRole === "p1" || multiGameType === "draft") {
             document.getElementById('btn-next-question').classList.remove('hidden');
         } else {
             document.getElementById('audio-status-text').innerText = "Attente de l'hôte pour passer...";
@@ -825,78 +885,225 @@ function triggerProgression() {
 }
 
 function nextStep() {
-    if (gameMode === "solo") {
+    if (gameMode === "solo" || multiGameType === "draft") {
         currentQuestionIndex++;
+        
+        // S'il reste des questions à jouer
         if (currentQuestionIndex < questionsPlaylist.length) {
             loadQuestion();
         } else {
-            endGame();
+            // SÉCURITÉ : Fin de ses propres questions atteinte
+            clearAllTimers();
+            stopAudio();
+            
+            if (gameMode === "multi") {
+                const cleanedHistory = (typeof cleanHistoryForFirebase === "function") 
+                    ? cleanHistoryForFirebase(playedHistory) 
+                    : playedHistory;
+
+                const maxIndex = questionsPlaylist.length;
+
+                // CORRECTION CRITIQUE : On bascule sur l'écran d'attente SYNCHRONEMENT tout de suite
+                // (Cela empêche le .then() de s'exécuter en retard et d'écraser l'écran de Bilan !)
+                showScreen('screen-waiting-opponent');
+                if (typeof renderWaitingLastVideo === "function") renderWaitingLastVideo();
+
+                // Envoi de la fin de partie à Firebase en arrière-plan
+                update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+                    isFinished: true,
+                    currentQuestionIndex: maxIndex,
+                    answersHistory: cleanedHistory
+                }).catch(err => {
+                    console.error("Erreur de mise à jour de fin:", err);
+                });
+
+            } else {
+                endGame();
+            }
         }
     } else {
         if (myRole === "p1") moveToNextRound();
     }
 }
 
-function moveToNextRound() {
-    get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
-        const room = snapshot.val();
-        if (room.roundStatus === "revealed") {
-            const nextIndex = currentQuestionIndex + 1;
-            if (nextIndex < questionsPlaylist.length) {
-                update(ref(db, `rooms/${roomCode}`), {
-                    currentQuestionIndex: nextIndex,
-                    roundStatus: "loading",
-                    roundWinner: "none",
-                    "players/p1/hasAnswered": false,
-                    "players/p1/isCorrect": false,
-                    "players/p1/isReady": false,
-                    "players/p2/hasAnswered": false,
-                    "players/p2/isCorrect": false,
-                    "players/p2/isReady": false
-                });
+// --- PHASE DE SÉLECTION (MODE DÉFI) ---
+function resetSelectionUI() {
+    selectedSongIds = [];
+    const searchInp = document.getElementById('selection-search');
+    const autoBtn = document.getElementById('btn-auto-fill');
+    const confirmBtn = document.getElementById('btn-confirm-selection');
+    const waitMsg = document.getElementById('selection-waiting-msg');
+
+    if (searchInp) { searchInp.value = ""; searchInp.disabled = false; }
+    if (autoBtn) autoBtn.disabled = false;
+    if (confirmBtn) confirmBtn.disabled = true;
+    if (waitMsg) waitMsg.classList.add('hidden');
+
+    renderSelectionGrid();
+    updateSelectionUI();
+}
+
+function renderSelectionGrid(filterText = "") {
+    const grid = document.getElementById('selection-grid');
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    const sorted = [...animeDatabase].sort((a, b) => a.title.localeCompare(b.title));
+    const filtered = sorted.filter(song => song.title.toLowerCase().includes(filterText.toLowerCase()));
+
+    filtered.forEach(song => {
+        const card = document.createElement('div');
+        const isSelected = selectedSongIds.includes(song.id);
+        card.className = "selection-card" + (isSelected ? " selected" : "");
+
+        card.innerHTML = `
+            <img src="${song.image}" alt="${song.title}">
+            <span>${song.title}</span>
+        `;
+
+        card.addEventListener('click', () => {
+            if (selectedSongIds.includes(song.id)) {
+                selectedSongIds = selectedSongIds.filter(id => id !== song.id);
+                card.classList.remove('selected');
             } else {
-                update(ref(db, `rooms/${roomCode}`), { status: "finished" });
+                if (selectedSongIds.length < totalQuestions) {
+                    selectedSongIds.push(song.id);
+                    card.classList.add('selected');
+                } else {
+                    alert(`Vous avez déjà choisi vos ${totalQuestions} morceaux !`);
+                }
             }
-        }
+            updateSelectionUI();
+        });
+
+        grid.appendChild(card);
     });
 }
 
-// --- HISTORIQUE & FIN ---
-function renderHistory() {
+function updateSelectionUI() {
+    const countEl = document.getElementById('selection-count');
+    const targetEl = document.getElementById('selection-target');
+    const btnConfirm = document.getElementById('btn-confirm-selection');
+
+    if (countEl) countEl.innerText = selectedSongIds.length;
+    if (targetEl) targetEl.innerText = totalQuestions;
+    if (btnConfirm) btnConfirm.disabled = (selectedSongIds.length !== totalQuestions);
+}
+
+document.getElementById('selection-search').addEventListener('input', (e) => {
+    renderSelectionGrid(e.target.value.trim());
+});
+
+document.getElementById('btn-auto-fill').addEventListener('click', () => {
+    const available = animeDatabase.filter(s => !selectedSongIds.includes(s.id));
+    const needed = totalQuestions - selectedSongIds.length;
+
+    if (needed <= 0) return;
+
+    const shuffled = [...available].sort(() => 0.5 - Math.random());
+    const picked = shuffled.slice(0, needed);
+
+    picked.forEach(s => selectedSongIds.push(s.id));
+    renderSelectionGrid(document.getElementById('selection-search').value.trim());
+    updateSelectionUI();
+});
+
+document.getElementById('btn-confirm-selection').addEventListener('click', () => {
+    document.getElementById('btn-confirm-selection').disabled = true;
+    document.getElementById('btn-auto-fill').disabled = true;
+    document.getElementById('selection-search').disabled = true;
+    document.getElementById('selection-waiting-msg').classList.remove('hidden');
+
+    update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
+        selectedSongIds: selectedSongIds,
+        isSelectionReady: true
+    });
+});
+
+// --- HISTORIQUE & FIN ENRICHI ---
+function renderHistory(roomData = null) {
     const historyContainer = document.getElementById('quiz-history-container');
+    if (!historyContainer) return;
     historyContainer.innerHTML = "";
 
+    const myTitle = document.createElement('h4');
+    myTitle.style.color = "var(--accent)";
+    myTitle.style.margin = "10px 0 8px 0";
+    myTitle.innerText = gameMode === "solo" ? "Vos réponses :" : "Vos réponses aux choix de l'adversaire :";
+    historyContainer.appendChild(myTitle);
+
     playedHistory.forEach(item => {
-        const div = document.createElement('div');
-        div.className = "history-item";
-        const resultClass = item.success ? "correct" : "wrong";
-        const resultText = item.success ? "Trouvé" : "Échoué";
-
-        div.innerHTML = `
-            <div class="history-info">
-                <img src="${item.song.image}" alt="">
-                <div>
-                    <div class="history-title">${item.song.title}</div>
-                    <span class="history-result ${resultClass}">${resultText}</span>
-                </div>
-            </div>
-            <button class="btn-replay">Lecture</button>
-        `;
-
-        div.querySelector('.btn-replay').addEventListener('click', () => {
-            playHistoryVideo(item.song.YoutubeId);
-        });
-        historyContainer.appendChild(div);
+        historyContainer.appendChild(createHistoryItemHTML(item));
     });
+
+    if (gameMode === "multi" && roomData && roomData.players) {
+        const oppRole = (myRole === "p1") ? "p2" : "p1";
+        const oppData = roomData.players[oppRole];
+
+        if (oppData && oppData.answersHistory && oppData.answersHistory.length > 0) {
+            const oppTitle = document.createElement('h4');
+            oppTitle.style.color = "var(--warning)";
+            oppTitle.style.margin = "25px 0 8px 0";
+            oppTitle.innerText = `Réponses de ${oppData.name || 'l\'adversaire'} à vos choix :`;
+            historyContainer.appendChild(oppTitle);
+
+            oppData.answersHistory.forEach(item => {
+                historyContainer.appendChild(createHistoryItemHTML(item));
+            });
+        }
+    }
+}
+
+function createHistoryItemHTML(item) {
+    const div = document.createElement('div');
+    div.className = "history-item";
+    const resultClass = item.success ? "correct" : "wrong";
+    const resultText = item.success ? "Trouvé" : "Échoué";
+
+    div.innerHTML = `
+        <div class="history-info">
+            <img src="${item.song.image}" alt="">
+            <div>
+                <div class="history-title">${item.song.title}</div>
+                <span class="history-result ${resultClass}">${resultText}</span>
+            </div>
+        </div>
+        <button class="btn-replay">Lecture</button>
+    `;
+
+    div.querySelector('.btn-replay').addEventListener('click', () => {
+        playHistoryVideo(item.song.YoutubeId);
+    });
+
+    return div;
+}
+
+async function renderWaitingLastVideo() {
+    const container = document.getElementById('waiting-video-container');
+    if (!playedHistory || playedHistory.length === 0 || !container) return;
+
+    const lastSong = playedHistory[playedHistory.length - 1].song;
+    container.innerHTML = "<p style='color:white; font-size:0.85rem;'>Chargement de votre dernier morceau...</p>";
+
+    // Utilise lastSong.YoutubeId (Y majuscule)
+    if (isDirectVideoUrl(lastSong.YoutubeId)) {
+        const directUrl = await getDirectVideoUrl(lastSong.YoutubeId);
+        if (directUrl) {
+            container.innerHTML = `<video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>`;
+        }
+    } else {
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${lastSong.YoutubeId}?autoplay=1&controls=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    }
 }
 
 async function playHistoryVideo(youtubeId) {
     const modal = document.getElementById('video-modal');
     const ytContainer = document.getElementById('modal-yt-container');
 
-    if (isAnimeThemes(youtubeId)) {
-        ytContainer.innerHTML = "<p style='color:white; text-align:center; margin-top:20%;'>Chargement d'AnimeThemes...</p>";
-        const directUrl = await getAnimeThemesVideoUrl(youtubeId);
+    // Utilise youtubeId (y minuscule) qui est le nom du paramètre
+    if (isDirectVideoUrl(youtubeId)) {
+        ytContainer.innerHTML = "<p style='color:white; text-align:center; margin-top:20%;'>Chargement de la vidéo...</p>";
+        const directUrl = await getDirectVideoUrl(youtubeId);
         if (directUrl) {
             ytContainer.innerHTML = `<video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>`;
         } else {
@@ -911,39 +1118,122 @@ async function playHistoryVideo(youtubeId) {
 function closeVideoModal() {
     const modal = document.getElementById('video-modal');
     const ytContainer = document.getElementById('modal-yt-container');
-    ytContainer.innerHTML = ""; 
-    modal.classList.add('hidden');
+    if (ytContainer) ytContainer.innerHTML = ""; 
+    if (modal) modal.classList.add('hidden');
 }
 
-function endGame() {
+function endGame(roomData = null) {
+    clearAllTimers();
     stopAudio();
     resetVideoVisibility();
+
+    const waitingContainer = document.getElementById('waiting-video-container');
+    if (waitingContainer) waitingContainer.innerHTML = "";
+
     showScreen('screen-results');
-    renderHistory();
+    renderHistory(roomData);
     
-    document.getElementById('btn-play-again').disabled = false;
-    document.getElementById('btn-play-again').classList.remove('hidden');
-    document.getElementById('play-again-msg').classList.add('hidden');
+    const btnPlayAgain = document.getElementById('btn-play-again');
+    if (btnPlayAgain) { btnPlayAgain.disabled = false; btnPlayAgain.classList.remove('hidden'); }
 
-    // --- CALCUL DES TROUVÉS SUR LE TOTAL ---
+    const playAgainMsg = document.getElementById('play-again-msg');
+    if (playAgainMsg) playAgainMsg.classList.add('hidden');
+
     const correctGuesses = playedHistory.filter(item => item.success).length;
-    document.getElementById('average-score-display').innerText = `Trouvés : ${correctGuesses}/${totalQuestions}`;
+    const avgDisplay = document.getElementById('average-score-display');
+    if (avgDisplay) avgDisplay.innerText = `Trouvés : ${correctGuesses}/${totalQuestions}`;
 
-    if (gameMode === "solo") {
-        document.getElementById('winner-announcement').innerHTML = `<h3>Bravo ! Vous avez terminé.</h3>`;
-        document.getElementById('final-p1').innerText = `Votre score : ${Number(score.toFixed(1))} pts`;
-        document.getElementById('final-p2').classList.add('hidden');
+    const duelBox = document.getElementById('duel-summary-box');
+    const trapContainer = document.getElementById('trap-badge-container');
+    const finalP1 = document.getElementById('final-p1');
+    const finalP2 = document.getElementById('final-p2');
+    const winnerAnnounce = document.getElementById('winner-announcement');
+
+    if (gameMode === "solo" || !roomData) {
+        if (winnerAnnounce) winnerAnnounce.innerHTML = `<h3>Bravo ! Vous avez terminé.</h3>`;
+        if (finalP1) finalP1.innerText = `Votre score : ${Number((score || 0).toFixed(1))} pts`;
+        if (finalP2) finalP2.classList.add('hidden');
+        if (duelBox) duelBox.classList.add('hidden');
+        if (trapContainer) trapContainer.classList.add('hidden');
     } else {
-        document.getElementById('final-p2').classList.remove('hidden');
-        document.getElementById('final-p1').innerText = `Vous : ${Number(score.toFixed(1))} pts`;
-        document.getElementById('final-p2').innerText = `Adversaire : ${Number(opponentScore.toFixed(1))} pts`;
-        
-        if (score > opponentScore) {
-            document.getElementById('winner-announcement').innerHTML = `<h3 style="color:var(--success)">Victoire !</h3>`;
-        } else if (score < opponentScore) {
-            document.getElementById('winner-announcement').innerHTML = `<h3 style="color:var(--error)">Défaite...</h3>`;
-        } else {
-            document.getElementById('winner-announcement').innerHTML = `<h3>Égalité !</h3>`;
+        if (finalP2) finalP2.classList.remove('hidden');
+        if (duelBox) duelBox.classList.remove('hidden');
+
+        const p1 = roomData.players ? roomData.players.p1 || {} : {};
+        const p2 = roomData.players ? roomData.players.p2 || {} : {};
+
+        const myData = (myRole === "p1") ? p1 : p2;
+        const oppData = (myRole === "p1") ? p2 : p1;
+
+        const myScoreVal = Number((myData.score || 0).toFixed(1));
+        const oppScoreVal = Number((oppData.score || 0).toFixed(1));
+
+        const myFound = myData.answersHistory ? myData.answersHistory.filter(h => h.success).length : 0;
+        const oppFound = oppData.answersHistory ? oppData.answersHistory.filter(h => h.success).length : 0;
+
+        const duelP1Name = document.getElementById('duel-p1-name');
+        const duelP1Val = document.getElementById('duel-p1-val');
+        const duelP2Name = document.getElementById('duel-p2-name');
+        const duelP2Val = document.getElementById('duel-p2-val');
+
+        if (duelP1Name) duelP1Name.innerText = "Moi";
+        if (duelP1Val) duelP1Val.innerText = `${myFound}/${totalQuestions}`;
+
+        if (duelP2Name) duelP2Name.innerText = oppData.name || "Adversaire";
+        if (duelP2Val) duelP2Val.innerText = `${oppFound}/${totalQuestions}`;
+
+        if (finalP1) finalP1.innerText = `Vous : ${myScoreVal} pts`;
+        if (finalP2) finalP2.innerText = `${oppData.name || "Adversaire"} : ${oppScoreVal} pts`;
+
+        if (winnerAnnounce) {
+            if (myScoreVal > oppScoreVal) winnerAnnounce.innerHTML = `<h3 style="color:var(--success)">Victoire !</h3>`;
+            else if (myScoreVal < oppScoreVal) winnerAnnounce.innerHTML = `<h3 style="color:var(--error)">Défaite...</h3>`;
+            else winnerAnnounce.innerHTML = `<h3>Égalité !</h3>`;
+        }
+
+        // LE PIÈGE PARFAIT (LISTE COMPLÈTE DES ÉCHECS)
+        if (trapContainer) {
+            const trapContent = document.getElementById('trap-badge-content');
+            const trapHeader = trapContainer.querySelector('.trap-badge-header');
+
+            if (oppData.answersHistory && oppData.answersHistory.length > 0) {
+                const failedByOpponent = oppData.answersHistory.filter(h => !h.success);
+
+                if (failedByOpponent.length > 0) {
+                    trapContainer.classList.remove('hidden');
+                    if (trapHeader) trapHeader.innerText = `😈 PIÈGES RÉUSSIS (${failedByOpponent.length})`;
+
+                    if (trapContent) {
+                        let html = "";
+                        failedByOpponent.forEach(item => {
+                            const trap = item.song;
+                            html += `
+                                <div class="trap-item">
+                                    <img src="${trap.image || ''}" alt="">
+                                    <div class="trap-item-details">
+                                        <strong>${trap.title || 'Chanson Piège'}</strong><br>
+                                        <span style="color:#cbd5e1;">${oppData.name || 'L\'adversaire'} a échoué sur ce morceau !</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        trapContent.innerHTML = html;
+                    }
+                } else {
+                    trapContainer.classList.remove('hidden');
+                    if (trapHeader) trapHeader.innerText = `🛡️ AUCUN PIÈGE`;
+                    if (trapContent) {
+                        trapContent.innerHTML = `
+                            <div class="trap-item-details" style="text-align: center; width: 100%;">
+                                <strong>Impressionnant !</strong><br>
+                                <span style="color:#cbd5e1;">${oppData.name || 'L\'adversaire'} a réussi à deviner TOUS les morceaux que vous lui aviez choisis !</span>
+                            </div>
+                        `;
+                    }
+                }
+            } else {
+                trapContainer.classList.add('hidden');
+            }
         }
     }
 }
@@ -958,7 +1248,7 @@ document.getElementById('btn-play-again').addEventListener('click', () => {
         const musicType = typeSelect ? typeSelect.value : "Mix";
         const randomStartCb = document.getElementById('random-start-checkbox');
         randomStart = randomStartCb ? randomStartCb.checked : false;
-        
+
         questionsPlaylist = generatePlaylist(totalQuestions, musicType, randomStart);
         if (questionsPlaylist.length === 0) {
             document.getElementById('btn-play-again').disabled = false;
@@ -1004,7 +1294,7 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-// --- MENUS ---
+// --- MENUS & ROOMS ---
 function startSoloGame() {
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
         alert("Le lecteur se prépare... Veuillez patienter une seconde.");
@@ -1022,7 +1312,6 @@ function startSoloGame() {
     totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
     const typeSelect = document.getElementById('music-type-select');
     const musicType = typeSelect ? typeSelect.value : "Mix";
-    
     const randomStartCb = document.getElementById('random-start-checkbox');
     randomStart = randomStartCb ? randomStartCb.checked : false;
 
@@ -1031,8 +1320,12 @@ function startSoloGame() {
     
     preloadImages(questionsPlaylist[0]);
 
-    document.getElementById('total-questions-num').innerText = totalQuestions;
-    document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
+    // SÉCURITÉ : On vérifie que l'élément existe avant d'écrire son innerText
+    const totalQEl = document.getElementById('total-questions-num');
+    if (totalQEl) totalQEl.innerText = totalQuestions;
+
+    const scoreTopEl = document.getElementById('score-top-display');
+    if (scoreTopEl) scoreTopEl.innerText = `SCORE : ${score}`;
     
     showScreen('screen-game');
     loadQuestion();
@@ -1051,17 +1344,21 @@ function createRoom() {
     totalQuestions = lenInput ? parseInt(lenInput.value) || 10 : 10;
     const manualCb = document.getElementById('manual-progress-checkbox');
     manualProgress = manualCb ? manualCb.checked : false;
+    const randomStartCb = document.getElementById('random-start-checkbox');
+    randomStart = randomStartCb ? randomStartCb.checked : false;
+
+    const multiModeSelect = document.getElementById('multi-mode-select');
+    multiGameType = multiModeSelect ? multiModeSelect.value : "draft";
 
     roomCode = Math.floor(1000 + Math.random() * 9000).toString();
     myRole = "p1";
     gameMode = "multi";
     playedHistory = [];
 
-    const randomStartCb = document.getElementById('random-start-checkbox');
-    randomStart = randomStartCb ? randomStartCb.checked : false;
-
-    const playlist = generatePlaylist(totalQuestions, musicType, randomStart);
-    if (playlist.length === 0) return;
+    let playlist = [];
+    if (multiGameType === "classic") {
+        playlist = generatePlaylist(totalQuestions, musicType, randomStart);
+    }
 
     set(ref(db, `rooms/${roomCode}`), {
         status: "waiting",
@@ -1072,9 +1369,10 @@ function createRoom() {
         totalQuestions: totalQuestions,
         manualProgress: manualProgress,
         randomStart: randomStart,
+        multiGameType: multiGameType,
         playlist: playlist,
         players: {
-            p1: { name: username, score: 0, hasAnswered: false, isCorrect: false, playAgain: false, isReady: false }
+            p1: { name: username, score: 0, hasAnswered: false, isCorrect: false, playAgain: false, isReady: false, isSelectionReady: false, isFinished: false, currentQuestionIndex: 0 }
         }
     }).then(() => {
         document.getElementById('display-room-code').innerText = roomCode;
@@ -1085,17 +1383,6 @@ function createRoom() {
         document.getElementById('btn-start-game').classList.remove('hidden');
         document.getElementById('waiting-msg').classList.add('hidden');
         showScreen('screen-lobby');
-        
-        if (playlist.length > 0) preloadImages(playlist[0]);
-        if (playlist.length > 0 && isAnimeThemes(playlist[0].correct.YoutubeId)) {
-            getAnimeThemesVideoUrl(playlist[0].correct.YoutubeId).then(directUrl => {
-                if (directUrl) {
-                    playlist[0].correct.resolvedUrl = directUrl;
-                    const preloader = document.getElementById('preloader-player');
-                    if (preloader) { preloader.src = directUrl; preloader.load(); }
-                }
-            });
-        }
         listenToRoom();
     });
 }
@@ -1126,7 +1413,10 @@ function joinRoom() {
             hasAnswered: false,
             isCorrect: false,
             playAgain: false,
-            isReady: false
+            isReady: false,
+            isSelectionReady: false,
+            isFinished: false,
+            currentQuestionIndex: 0
         }).then(() => {
             document.getElementById('display-room-code').innerText = roomCode;
             document.getElementById('display-room-mode').innerText = roomData.musicType;
@@ -1136,149 +1426,197 @@ function joinRoom() {
             document.getElementById('btn-start-game').classList.add('hidden');
             document.getElementById('waiting-msg').classList.remove('hidden');
             showScreen('screen-lobby');
-            
-            if (roomData.playlist && roomData.playlist.length > 0) preloadImages(roomData.playlist[0]);
-            if (roomData.playlist && roomData.playlist.length > 0 && isAnimeThemes(roomData.playlist[0].correct.YoutubeId)) {
-                getAnimeThemesVideoUrl(roomData.playlist[0].correct.YoutubeId).then(directUrl => {
-                    if (directUrl) {
-                        roomData.playlist[0].correct.resolvedUrl = directUrl;
-                        const preloader = document.getElementById('preloader-player');
-                        if (preloader) { preloader.src = directUrl; preloader.load(); }
-                    }
-                });
-            }
             listenToRoom();
         });
     });
 }
 
 function listenToRoom() {
-    onValue(ref(db, `rooms/${roomCode}`), (snapshot) => {
+    if (!roomCode) return;
+    const roomRef = ref(db, `rooms/${roomCode}`);
+    
+    // Nettoie les anciens écouteurs pour éviter la multiplication des événements
+    off(roomRef);
+
+    onValue(roomRef, (snapshot) => {
         const room = snapshot.val();
         if (!room) return;
+
+        multiGameType = room.multiGameType || "draft";
+        totalQuestions = room.totalQuestions || 10;
+        manualProgress = room.manualProgress || false;
+        randomStart = room.randomStart || false;
 
         if (room.status === "waiting") {
             if (room.players.p1) document.getElementById('lobby-p1').innerText = room.players.p1.name;
             if (room.players.p2) document.getElementById('lobby-p2').innerText = room.players.p2.name;
         }
 
-        if (room.status === "finished") {
-            if (myRole === "p1" && room.players.p1.playAgain && room.players.p2 && room.players.p2.playAgain) {
-                const newPlaylist = generatePlaylist(room.totalQuestions, room.musicType, room.randomStart);
-                if (newPlaylist.length > 0) {
-                    update(ref(db, `rooms/${roomCode}`), {
-                        status: "playing",
-                        currentQuestionIndex: 0,
-                        roundStatus: "loading",
-                        roundWinner: "none",
-                        playlist: newPlaylist,
-                        "players/p1/score": 0,
-                        "players/p1/hasAnswered": false,
-                        "players/p1/isCorrect": false,
-                        "players/p1/playAgain": false,
-                        "players/p1/isReady": false,
-                        "players/p2/score": 0,
-                        "players/p2/hasAnswered": false,
-                        "players/p2/isCorrect": false,
-                        "players/p2/playAgain": false,
-                        "players/p2/isReady": false
-                    });
-                }
-            }
-        }
-
-        if (room.status === "playing" && !document.getElementById('screen-results').classList.contains('hidden')) {
-            playedHistory = [];
-            score = 0;
-            opponentScore = 0;
-            questionsPlaylist = room.playlist;
-            preloadImages(questionsPlaylist[0]);
-            showScreen('screen-game');
-        }
-
-        if (room.status === "playing" && document.getElementById('screen-game').classList.contains('hidden')) {
-            questionsPlaylist = room.playlist;
-            totalQuestions = room.totalQuestions;
-            manualProgress = room.manualProgress;
-            randomStart = room.randomStart || false;
-            document.getElementById('total-questions-num').innerText = totalQuestions;
-            showScreen('screen-game');
-        }
-
-        if (room.status === "playing") {
-            if (room.currentQuestionIndex !== currentQuestionIndex || (room.currentQuestionIndex === 0 && !hasAnsweredCurrent && document.getElementById('choices-container').children.length === 0)) {
-                currentQuestionIndex = room.currentQuestionIndex;
-                loadQuestion();
-            }
-
-            if (room.roundStatus === "loading") {
-                if (myRole === "p1" && room.players.p1.isReady && room.players.p2 && room.players.p2.isReady) {
-                    update(ref(db, `rooms/${roomCode}`), { roundStatus: "guessing" });
-                }
-            }
-
-            if (room.roundStatus === "guessing" && !isRoundActive) {
-                startRound();
-            }
-
-            if (room.roundStatus === "revealed" && !roundProcessed) {
-                roundProcessed = true; 
-
-                if (!hasAnsweredCurrent) {
-                    hasAnsweredCurrent = true;
-                    clearInterval(timerInterval);
-                    clearTimeout(ytWatchdog);
-                    revealVideo();
-                    document.querySelectorAll('.choice-card').forEach(card => card.classList.add('disabled'));
-                    const correctQuestion = questionsPlaylist[currentQuestionIndex].correct;
-                    document.querySelectorAll('.choice-card').forEach(card => {
-                        if (card.querySelector('span').innerText === correctQuestion.title) card.classList.add('correct');
-                    });
-                    playedHistory.push({ song: correctQuestion, success: false });
-                }
-
-                if (room.roundWinner === myRole) {
-                    showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
-                } else if (room.roundWinner === "none") {
-                    showImpactOverlay("ÉCHEC COLLECTIF", false);
-                } else {
-                    showImpactOverlay(`${room.lastWinnerName} a remporté cette manche`, false);
-                }
-                triggerProgression();
+        // --- PHASE DE SÉLECTION (MODE DÉFI) ---
+        if (room.status === "selection") {
+            if (document.getElementById('screen-selection').classList.contains('hidden')) {
+                clearAllTimers();
                 
-            } else if (room.roundStatus === "guessing") {
-                if (myRole === "p1" && room.players.p1.hasAnswered && room.players.p2 && room.players.p2.hasAnswered) {
-                    if (!room.players.p1.isCorrect && !room.players.p2.isCorrect) {
-                        update(ref(db, `rooms/${roomCode}`), { roundStatus: "revealed", roundWinner: "none" });
+                // REINITIALISATION COMPLÈTE DU REJEU (Vide les anciennes cartes et remet à 0/5)
+                currentQuestionIndex = 0;
+                score = 0;
+                opponentScore = 0;
+                playedHistory = [];
+                hasAnsweredCurrent = false;
+                isRoundActive = false;
+                document.getElementById('choices-container').innerHTML = ""; // Vide les anciennes cartes du jeu précédent
+                
+                resetSelectionUI();
+                showScreen('screen-selection');
+            }
+
+            if (myRole === "p1" && room.players.p1 && room.players.p1.isSelectionReady && room.players.p2 && room.players.p2.isSelectionReady) {
+                const songsForP1 = animeDatabase.filter(s => room.players.p2.selectedSongIds.includes(s.id));
+                const songsForP2 = animeDatabase.filter(s => room.players.p1.selectedSongIds.includes(s.id));
+
+                const p1Playlist = buildPlaylistFromSongs(songsForP1, room.randomStart);
+                const p2Playlist = buildPlaylistFromSongs(songsForP2, room.randomStart);
+
+                update(ref(db, `rooms/${roomCode}`), {
+                    status: "playing",
+                    p1_playlist: p1Playlist,
+                    p2_playlist: p2Playlist,
+                    roundStatus: "loading"
+                });
+            }
+        }
+
+        // --- RELANCE MULTIJOUEUR ---
+        if (room.status === "finished") {
+            if (myRole === "p1" && room.players.p1 && room.players.p1.playAgain && room.players.p2 && room.players.p2.playAgain) {
+                if (multiGameType === "draft") {
+                    update(ref(db, `rooms/${roomCode}`), {
+                        status: "selection",
+                        "players/p1/score": 0, "players/p1/hasAnswered": false, "players/p1/isCorrect": false, "players/p1/playAgain": false, "players/p1/isSelectionReady": false, "players/p1/isFinished": false, "players/p1/currentQuestionIndex": 0,
+                        "players/p2/score": 0, "players/p2/hasAnswered": false, "players/p2/isCorrect": false, "players/p2/playAgain": false, "players/p2/isSelectionReady": false, "players/p2/isFinished": false, "players/p2/currentQuestionIndex": 0
+                    });
+                } else {
+                    const newPlaylist = generatePlaylist(room.totalQuestions, room.musicType, room.randomStart);
+                    update(ref(db, `rooms/${roomCode}`), {
+                        status: "playing", currentQuestionIndex: 0, roundStatus: "loading", roundWinner: "none", playlist: newPlaylist,
+                        "players/p1/score": 0, "players/p1/hasAnswered": false, "players/p1/isCorrect": false, "players/p1/playAgain": false, "players/p1/isReady": false, "players/p1/isFinished": false,
+                        "players/p2/score": 0, "players/p2/hasAnswered": false, "players/p2/isCorrect": false, "players/p2/playAgain": false, "players/p2/isReady": false, "players/p2/isFinished": false
+                    });
+                }
+            }
+        }
+
+        // --- PHASE DE JEU MULTIJOUEUR ---
+        if (room.status === "playing") {
+            if (multiGameType === "draft") {
+                questionsPlaylist = (myRole === "p1") ? room.p1_playlist : room.p2_playlist;
+            } else {
+                questionsPlaylist = room.playlist;
+            }
+
+            if (document.getElementById('screen-game').classList.contains('hidden') && document.getElementById('screen-waiting-opponent').classList.contains('hidden')) {
+                document.getElementById('total-questions-num').innerText = totalQuestions;
+                showScreen('screen-game');
+            }
+
+            const oppRole = (myRole === "p1") ? "p2" : "p1";
+            if (room.players && room.players[oppRole]) {
+                const oppIndex = room.players[oppRole].currentQuestionIndex || 0;
+                const oppName = room.players[oppRole].name || "L'adversaire";
+                const percent = (oppIndex / totalQuestions) * 100;
+
+                const nameEl = document.getElementById('opponent-progress-name');
+                const barEl = document.getElementById('opponent-progress-bar');
+                const textEl = document.getElementById('opponent-progress-text');
+
+                if (nameEl) nameEl.innerText = `Attente de ${oppName}...`;
+                if (barEl) barEl.style.width = percent + '%';
+                if (textEl) textEl.innerText = `${oppName} répond à la question ${Math.min(oppIndex + 1, totalQuestions)}/${totalQuestions}...`;
+
+                // Déclenchement de la fin globale
+                if (multiGameType === "draft" && room.players.p1 && room.players.p1.isFinished && room.players.p2 && room.players.p2.isFinished) {
+                    if (room.status !== "finished") {
+                        update(ref(db, `rooms/${roomCode}`), { status: "finished" });
                     }
                 }
             }
 
-            const scoreP1 = room.players.p1.score || 0;
-            const scoreP2 = room.players.p2 ? room.players.p2.score : 0;
+            if (multiGameType === "classic") {
+                if (room.currentQuestionIndex !== currentQuestionIndex || (room.currentQuestionIndex === 0 && !hasAnsweredCurrent && document.getElementById('choices-container').children.length === 0)) {
+                    currentQuestionIndex = room.currentQuestionIndex;
+                    loadQuestion();
+                }
+
+                if (room.roundStatus === "loading") {
+                    if (myRole === "p1" && room.players.p1.isReady && room.players.p2 && room.players.p2.isReady) {
+                        update(ref(db, `rooms/${roomCode}`), { roundStatus: "guessing" });
+                    }
+                }
+
+                if (room.roundStatus === "guessing" && !isRoundActive) {
+                    startRound();
+                }
+
+                if (room.roundStatus === "revealed" && !roundProcessed) {
+                    roundProcessed = true; 
+
+                    if (!hasAnsweredCurrent) {
+                        hasAnsweredCurrent = true;
+                        clearAllTimers();
+                        revealVideo();
+                        document.querySelectorAll('.choice-card').forEach(card => card.classList.add('disabled'));
+                        const correctQuestion = questionsPlaylist[currentQuestionIndex].correct;
+                        document.querySelectorAll('.choice-card').forEach(card => {
+                            if (card.querySelector('span').innerText === correctQuestion.title) card.classList.add('correct');
+                        });
+                        playedHistory.push({ song: correctQuestion, success: false });
+                    }
+
+                    if (room.roundWinner === myRole) {
+                        showImpactOverlay("VOUS REMPORTEZ CETTE MANCHE", true);
+                    } else if (room.roundWinner === "none") {
+                        showImpactOverlay("ÉCHEC COLLECTIF", false);
+                    } else {
+                        showImpactOverlay(`${room.lastWinnerName} a remporté cette manche`, false);
+                    }
+                    triggerProgression();
+                }
+            } else {
+                if (document.getElementById('choices-container').children.length === 0) {
+                    loadQuestion();
+                }
+            }
+
+            const scoreP1 = room.players.p1 ? room.players.p1.score || 0 : 0;
+            const scoreP2 = room.players.p2 ? room.players.p2.score || 0 : 0;
             if (myRole === "p1") {
                 score = scoreP1; opponentScore = scoreP2;
                 document.getElementById('score-top-display').innerText = `MOI : ${Number(score.toFixed(1))} | ${room.players.p2 ? room.players.p2.name : 'P2'} : ${Number(opponentScore.toFixed(1))}`;
             } else {
                 score = scoreP2; opponentScore = scoreP1;
-                document.getElementById('score-top-display').innerText = `MOI : ${Number(score.toFixed(1))} | ${room.players.p1.name} : ${Number(opponentScore.toFixed(1))}`;
+                document.getElementById('score-top-display').innerText = `MOI : ${Number(score.toFixed(1))} | ${room.players.p1 ? room.players.p1.name : 'P1'} : ${Number(opponentScore.toFixed(1))}`;
             }
         }
 
-        if (room.status === "finished" && !document.getElementById('screen-game').classList.contains('hidden')) {
-            endGame();
+        // CHARGEMENT DU BILAN DÈS QUE LA ROOM PASSE EN FINISHED
+        if (room.status === "finished" && document.getElementById('screen-results').classList.contains('hidden')) {
+            clearAllTimers();
+            endGame(room);
         }
     });
 }
 
 function launchGame() {
-    update(ref(db, `rooms/${roomCode}`), { status: "playing", roundStatus: "loading", roundWinner: "none" });
+    if (multiGameType === "draft") {
+        update(ref(db, `rooms/${roomCode}`), { status: "selection" });
+    } else {
+        update(ref(db, `rooms/${roomCode}`), { status: "playing", roundStatus: "loading", roundWinner: "none" });
+    }
 }
 
 async function init() {
     await loadDatabase();
     
-    // Écouteur pour la barre de volume
     const volumeSlider = document.getElementById('volume-slider');
     if (volumeSlider) {
         volumeSlider.addEventListener('input', (e) => {
@@ -1294,6 +1632,7 @@ async function init() {
     document.getElementById('btn-next-question').addEventListener('click', nextStep);
     
     document.getElementById('btn-restart').addEventListener('click', () => {
+        clearAllTimers();
         stopAudio();
         showScreen('screen-menu');
     });
@@ -1303,10 +1642,12 @@ async function init() {
         if (e.target.id === "video-modal") closeVideoModal();
     });
 
+    // Débloqueur de son universel au clic
     document.body.addEventListener('click', () => {
-        const activePlayer = getActivePlayer();
-        if (activePlayer && activePlayer.muted && document.getElementById('native-player-container').style.display !== 'none') {
-            activePlayer.muted = false;
+        const nativePlayer = document.getElementById('native-player');
+        const nativeContainer = document.getElementById('native-player-container');
+        if (nativePlayer && nativePlayer.muted && nativeContainer && nativeContainer.style.display !== 'none') {
+            nativePlayer.muted = false;
         }
     });
 
