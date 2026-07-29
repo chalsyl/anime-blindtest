@@ -74,16 +74,6 @@ function isDirectVideoUrl(url) {
     return url && url.startsWith('http');
 }
 
-// Convertit un lien vidéo AnimeThemes en lien Audio ultra-légers (.ogg sur a.animethemes.moe)
-function getAudioUrl(url) {
-    if (!url) return "";
-    if (url.includes('v.animethemes.moe')) {
-        return url.replace('v.animethemes.moe', 'a.animethemes.moe')
-                  .replace(/\.(webm|mp4)$/i, '.ogg');
-    }
-    return url; // Pour AMQ ou autres, la balise <audio> extrait le flux audio nativement
-}
-
 // Convertit l'URL en lien vidéo lisible (AnimeThemes API ou Lien direct AMQ/Catbox)
 async function getDirectVideoUrl(url) {
     if (!url || !url.startsWith('http')) return null;
@@ -184,37 +174,54 @@ async function preloadUpcomingAudio(index) {
 }
 
 // Préchargement ultra-rapide en mémoire RAM (Blob Fetch)
-async function preloadNextVideo() {
-    const nextIndex = currentQuestionIndex + 1;
-    
-    // 1. Précharge l'audio de la question suivante (N+1) ET de la suivante (N+2) en RAM !
-    preloadUpcomingAudio(nextIndex);
-    preloadUpcomingAudio(nextIndex + 1);
+// Précharge les vidéos des questions N+1 et N+2 en tâche de fond
+async function preloadUpcomingVideos(currentIndex) {
+    // 1. Préchargement Question N + 1
+    const idx1 = currentIndex + 1;
+    if (idx1 < questionsPlaylist.length) {
+        const q1 = questionsPlaylist[idx1].correct;
+        const offset1 = q1.startOffset || 0;
+        preloadImages(questionsPlaylist[idx1]);
 
-    // 2. Précharge la vidéo N+1 en tâche de fond
-    if (nextIndex < questionsPlaylist.length) {
-        const nextQuestionObj = questionsPlaylist[nextIndex];
-        const nextQuestion = nextQuestionObj.correct;
-        const offset = nextQuestion.startOffset || 0;
-        
-        preloadImages(nextQuestionObj);
-        
-        if (isDirectVideoUrl(nextQuestion.YoutubeId)) {
-            const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
-            if (directUrl) {
-                questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
-                
-                // Préchargement vidéo dans la balise masquée
-                const preloader = document.getElementById('preloader-player');
-                if (preloader) {
-                    preloader.src = directUrl;
-                    preloader.onloadedmetadata = () => {
-                        preloader.onloadedmetadata = null;
-                        if (offset > 0) preloader.currentTime = offset;
-                    };
-                    preloader.load();
+        if (isDirectVideoUrl(q1.YoutubeId)) {
+            getDirectVideoUrl(q1.YoutubeId).then(url1 => {
+                if (url1) {
+                    questionsPlaylist[idx1].correct.resolvedUrl = url1;
+                    const p1 = document.getElementById('preloader-1');
+                    if (p1) {
+                        p1.src = url1;
+                        p1.onloadedmetadata = () => {
+                            p1.onloadedmetadata = null;
+                            if (offset1 > 0) p1.currentTime = offset1;
+                        };
+                        p1.load();
+                    }
                 }
-            }
+            });
+        }
+    }
+
+    // 2. Préchargement Question N + 2
+    const idx2 = currentIndex + 2;
+    if (idx2 < questionsPlaylist.length) {
+        const q2 = questionsPlaylist[idx2].correct;
+        const offset2 = q2.startOffset || 0;
+        
+        if (isDirectVideoUrl(q2.YoutubeId)) {
+            getDirectVideoUrl(q2.YoutubeId).then(url2 => {
+                if (url2) {
+                    questionsPlaylist[idx2].correct.resolvedUrl = url2;
+                    const p2 = document.getElementById('preloader-2');
+                    if (p2) {
+                        p2.src = url2;
+                        p2.onloadedmetadata = () => {
+                            p2.onloadedmetadata = null;
+                            if (offset2 > 0) p2.currentTime = offset2;
+                        };
+                        p2.load();
+                    }
+                }
+            });
         }
     }
 }
@@ -379,11 +386,6 @@ function applyGlobalVolume() {
         nativePlayer.volume = globalVolume;
         nativePlayer.muted = (globalVolume === 0);
     }
-    const audioPlayer = document.getElementById('game-audio-player');
-    if (audioPlayer) {
-        audioPlayer.volume = globalVolume;
-        audioPlayer.muted = (globalVolume === 0);
-    }
     if (ytPlayer && typeof ytPlayer.setVolume === "function") {
         ytPlayer.setVolume(globalVolume * 100);
         if (globalVolume === 0) ytPlayer.mute();
@@ -444,7 +446,6 @@ async function loadMediaForRound(youtubeId) {
     
     const nativePlayerContainer = document.getElementById('native-player-container');
     const ytPlayerContainer = document.getElementById('yt-player-container');
-    const audioPlayer = document.getElementById('game-audio-player');
     const nativePlayer = document.getElementById('native-player');
 
     if (gameMode === "solo") {
@@ -458,72 +459,40 @@ async function loadMediaForRound(youtubeId) {
             mediaReady = true;
             signalMediaReady();
         }
-    }, 2500);
+    }, 3500);
 
     const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
     const offset = currentQuestion.startOffset || 0;
 
     if (isDirectVideoUrl(youtubeId)) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
-        if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
+        if (nativePlayerContainer) nativePlayerContainer.style.display = 'block';
 
-        let audioSource = currentQuestion.audioBlobUrl;
-        
-        if (!audioSource) {
-            let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-            if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
-            if (directUrl) audioSource = getAudioUrl(directUrl);
-        }
+        let directUrl = currentQuestion.resolvedUrl || await getDirectVideoUrl(youtubeId);
 
-        if (audioSource && audioPlayer) {
-            audioPlayer.src = audioSource;
-            audioPlayer.volume = globalVolume;
-            audioPlayer.muted = false;
+        if (directUrl && nativePlayer) {
+            nativePlayer.src = directUrl;
+            nativePlayer.muted = true; // Silencieux pendant la phase de synchro
+            nativePlayer.load();
 
-            // CORRECTION 404 EN DIRECT : Si le lien audio plante, passe sur la vidéo directe
-            audioPlayer.onerror = () => {
-                audioPlayer.onerror = null;
-                console.warn("[AudioPlayer] Erreur 404 sur le son seul, bascule sur la vidéo...");
-                let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-                if (directUrl && audioPlayer.src !== directUrl) {
-                    audioPlayer.src = directUrl;
-                    audioPlayer.load();
-                    audioPlayer.play().catch(() => {});
+            nativePlayer.play().then(() => {
+                if (offset > 0) nativePlayer.currentTime = offset;
+                if (!isRoundActive && gameMode === "multi" && multiGameType === "classic") {
+                    nativePlayer.pause();
                 }
-            };
-
-            audioPlayer.oncanplay = () => {
-                audioPlayer.oncanplay = null;
-                if (offset > 0) audioPlayer.currentTime = offset;
-                
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            };
-
-            audioPlayer.play().then(() => {
                 if (!mediaReady) {
                     mediaReady = true;
                     clearTimeout(safetyBufferTimeout);
                     signalMediaReady();
                 }
             }).catch(e => {
+                if (offset > 0) nativePlayer.currentTime = offset;
                 if (!mediaReady) {
                     mediaReady = true;
                     clearTimeout(safetyBufferTimeout);
                     signalMediaReady();
                 }
             });
-
-            // Préchargement parallèle de la vidéo pour le Reveal
-            let videoSource = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-            if (videoSource && nativePlayer) {
-                nativePlayer.src = videoSource;
-                nativePlayer.muted = true;
-                nativePlayer.load();
-            }
         } else {
             if (!mediaReady) { mediaReady = true; signalMediaReady(); }
         }
@@ -549,6 +518,9 @@ async function loadMediaForRound(youtubeId) {
             }, 3000);
         }
     }
+
+    // Déclenche le préchargement des 2 questions suivantes
+    preloadUpcomingVideos(currentQuestionIndex);
 }
 
 function signalMediaReady() {
@@ -598,14 +570,20 @@ function startRound() {
     const hasOffset = (currentQuestion.startOffset || 0) > 0;
 
     if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
-        const audioPlayer = document.getElementById('game-audio-player');
-        if (audioPlayer) {
-            audioPlayer.muted = (globalVolume === 0);
-            audioPlayer.volume = globalVolume;
+        const nativePlayer = document.getElementById('native-player');
+        if (nativePlayer) {
             if (hasOffset) {
-                audioPlayer.play().then(() => fadeInAudio()).catch(() => {});
+                nativePlayer.play().then(() => fadeInAudio()).catch(e => {
+                    nativePlayer.muted = true;
+                    nativePlayer.play();
+                });
             } else {
-                audioPlayer.play().catch(() => {});
+                nativePlayer.muted = (globalVolume === 0);
+                nativePlayer.volume = globalVolume;
+                nativePlayer.play().catch(e => {
+                    nativePlayer.muted = true;
+                    nativePlayer.play();
+                });
             }
         }
     } else {
@@ -627,37 +605,13 @@ function startRound() {
 function stopAudio() {
     clearAllTimers();
     if (ytPlayer && typeof ytPlayer.stopVideo === "function") ytPlayer.stopVideo();
-    
     const nativePlayer = document.getElementById('native-player');
     if (nativePlayer) nativePlayer.pause();
-
-    const audioPlayer = document.getElementById('game-audio-player');
-    if (audioPlayer) audioPlayer.pause();
 }
-
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
-    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
-
-    if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
-        const audioPlayer = document.getElementById('game-audio-player');
-        const nativePlayer = document.getElementById('native-player');
-        
-        let currentTime = 0;
-        if (audioPlayer) {
-            currentTime = audioPlayer.currentTime || 0;
-            audioPlayer.pause(); // On stoppe le son seul
-        }
-
-        // BASCULE INSTANTANÉE SUR LA VIDÉO DÉJÀ PRÊTE EN MÉMOIRE
-        if (nativePlayer) {
-            nativePlayer.currentTime = currentTime; // Synchro à la milliseconde près
-            nativePlayer.volume = globalVolume;
-            nativePlayer.muted = (globalVolume === 0);
-            nativePlayer.play().catch(() => {});
-        }
-    }
-
+    
+    // Révèle instantanément les conteneurs vidéo
     document.getElementById('yt-player-container').classList.add('reveal');
     document.getElementById('native-player-container').classList.add('reveal');
 
@@ -684,14 +638,11 @@ function resetVideoVisibility() {
     if (nativeContainer) nativeContainer.classList.remove('reveal', 'interactive');
     
     const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        nativePlayer.removeAttribute('controls');
-    }
+    if (nativePlayer) nativePlayer.controls = false;
 
     const customControls = document.getElementById('custom-controls');
     if (customControls) customControls.classList.add('hidden');
     
-    // Sécurité : On nettoie l'intervalle uniquement s'il existe
     if (typeof controlsInterval !== 'undefined' && controlsInterval) {
         clearInterval(controlsInterval);
     }
@@ -830,7 +781,7 @@ function loadQuestion() {
         }
     }
 
-    preloadNextVideo();
+    preloadUpcomingVideos(currentQuestionIndex); // Précharge automatiquement N+1 et N+2
     loadMediaForRound(currentQuestion.YoutubeId);
 }
 
@@ -1390,8 +1341,7 @@ function startSoloGame() {
     if (questionsPlaylist.length === 0) return;
     
     // --- MODE SOLO : C'est parfait ! ---
-    preloadUpcomingAudio(0); // Précharge l'audio de la question 1
-    preloadUpcomingAudio(1); // Précharge l'audio de la question 2
+    preloadUpcomingVideos(0);
     preloadImages(questionsPlaylist[0]);
 
     const totalQEl = document.getElementById('total-questions-num');
@@ -1460,8 +1410,7 @@ function createRoom() {
         // --- MODE MULTI (HÔTE) : Seulement si la playlist est déjà générée (Mode Classique) ---
         if (playlist.length > 0) {
             questionsPlaylist = playlist;
-            preloadUpcomingAudio(0);
-            preloadUpcomingAudio(1);
+            preloadUpcomingVideos(0);
             preloadImages(playlist[0]);
         }
         
@@ -1512,8 +1461,7 @@ function joinRoom() {
             // --- MODE MULTI (INVITÉ) : Reçoit la playlist de l'hôte ---
             if (roomData.playlist && roomData.playlist.length > 0) {
                 questionsPlaylist = roomData.playlist;
-                preloadUpcomingAudio(0);
-                preloadUpcomingAudio(1);
+                preloadUpcomingVideos(0);
                 preloadImages(questionsPlaylist[0]);
             }
 

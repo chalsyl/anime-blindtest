@@ -141,9 +141,6 @@
         <p id="audio-status-text">Écoutez attentivement...</p>
     </div>
 
-    <!-- Lecteur Audio Ultra-Rapide pour la phase de devinette -->
-    <audio id="game-audio-player" preload="auto"></audio>
-
     <div id="yt-player-container">
         <div id="yt-player"></div>
     </div>
@@ -152,7 +149,9 @@
         <video id="native-player" playsinline style="width:100%; height:100%;"></video>
     </div>
     
-    <video id="preloader-player" preload="auto" muted style="position:absolute; width:1px; height:1px; opacity:0.01; pointer-events:none; left:-9999px;"></video>
+    <!-- 2 Préchargeurs vidéo invisibles (Question N+1 et Question N+2) -->
+    <video id="preloader-1" preload="auto" muted style="position:absolute; width:1px; height:1px; opacity:0.01; pointer-events:none; left:-9999px;"></video>
+    <video id="preloader-2" preload="auto" muted style="position:absolute; width:1px; height:1px; opacity:0.01; pointer-events:none; left:-9999px;"></video>
 </div>
         
 
