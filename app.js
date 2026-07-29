@@ -145,27 +145,27 @@ async function preloadNextVideo() {
     if (nextIndex < questionsPlaylist.length) {
         const nextQuestionObj = questionsPlaylist[nextIndex];
         const nextQuestion = nextQuestionObj.correct;
+        const offset = nextQuestion.startOffset || 0;
         
-        // 1. Précharge les images des 4 cartes suivantes
         preloadImages(nextQuestionObj);
         
-        // 2. Précharge uniquement les fichiers RAM Blob pour AnimeThemes / AMQ
         if (isDirectVideoUrl(nextQuestion.YoutubeId)) {
             const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
             if (directUrl) {
                 questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
-                try {
-                    const response = await fetch(directUrl);
-                    const blob = await response.blob();
-                    const blobUrl = URL.createObjectURL(blob);
-                    questionsPlaylist[nextIndex].correct.blobUrl = blobUrl;
-                    console.log(`[RAM Preloader] Vidéo ${nextQuestion.title} chargée en RAM !`);
-                } catch (e) {
-                    console.warn("[RAM Preloader] Échec du fetch blob, fallback réseau.", e);
+                
+                // Préchargement natif par balise HTML (contourne les blocages CORS)
+                const preloader = document.getElementById('preloader-player');
+                if (preloader) {
+                    preloader.src = directUrl;
+                    preloader.onloadedmetadata = () => {
+                        preloader.onloadedmetadata = null;
+                        if (offset > 0) preloader.currentTime = offset;
+                    };
+                    preloader.load();
                 }
             }
         }
-        // IMPORTANT : Ne touche JAMAIS à ytPlayer ici car il est réservé à la question active !
     }
 }
 
@@ -566,34 +566,22 @@ function stopAudio() {
 
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
+    document.getElementById('yt-player-container').classList.add('reveal');
+    document.getElementById('native-player-container').classList.add('reveal');
+
     const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
-
-    // Si c'est un lien direct (AnimeThemes / AMQ), on bascule de l'audio vers la vidéo
-    if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
-        const audioPlayer = document.getElementById('game-audio-player');
-        const nativePlayer = document.getElementById('native-player');
-        const nativeContainer = document.getElementById('native-player-container');
-        
-        let currentTime = 0;
-        if (audioPlayer) {
-            currentTime = audioPlayer.currentTime || 0;
-            audioPlayer.pause(); // Arrête le son seul
-        }
-
-        if (nativeContainer) nativeContainer.style.display = 'block';
-
-        if (nativePlayer) {
-            let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-            nativePlayer.src = directUrl;
-            nativePlayer.currentTime = currentTime; // Synchro parfaite à la seconde près
-            nativePlayer.volume = globalVolume;
-            nativePlayer.muted = false;
-            nativePlayer.play().catch(() => {});
+    
+    // Force la relance d'affichage du lecteur YouTube si c'est une vidéo YouTube
+    if (!isDirectVideoUrl(currentQuestion.YoutubeId)) {
+        if (ytPlayer && typeof ytPlayer.playVideo === "function") {
+            ytPlayer.playVideo();
         }
     }
 
-    document.getElementById('yt-player-container').classList.add('reveal');
-    document.getElementById('native-player-container').classList.add('reveal');
+    if (gameMode === "solo") {
+        const manualCb = document.getElementById('manual-progress-checkbox');
+        manualProgress = manualCb ? manualCb.checked : false;
+    }
 
     if (manualProgress) {
         document.getElementById('yt-player-container').classList.add('interactive');
