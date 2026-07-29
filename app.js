@@ -151,24 +151,33 @@ async function preloadUpcomingAudio(index) {
         const questionObj = questionsPlaylist[index];
         const song = questionObj.correct;
         
-        // Si c'est un lien direct (AnimeThemes / AMQ) et que l'audio n'est pas encore en RAM
         if (isDirectVideoUrl(song.YoutubeId) && !song.audioBlobUrl) {
             try {
                 let directVideoUrl = song.resolvedUrl || await getDirectVideoUrl(song.YoutubeId);
                 if (directVideoUrl) {
-                    const audioUrl = getAudioUrl(directVideoUrl);
+                    let audioUrl = getAudioUrl(directVideoUrl);
                     console.log(`[Audio RAM Pipeline] Téléchargement de l'audio (${index + 1}) : ${song.title}...`);
                     
-                    const response = await fetch(audioUrl);
-                    const blob = await response.blob();
-                    const blobUrl = URL.createObjectURL(blob);
+                    let response = await fetch(audioUrl);
                     
-                    // Stocke le lien audio en mémoire RAM !
-                    questionsPlaylist[index].correct.audioBlobUrl = blobUrl;
-                    console.log(`[Audio RAM Pipeline] Audio (${index + 1}) prêt en RAM !`);
+                    // CORRECTION 404 : Si le fichier audio .ogg n'existe pas (404), on bascule sur la vidéo directe !
+                    if (!response.ok && audioUrl !== directVideoUrl) {
+                        console.warn(`[Audio RAM Pipeline] 404 sur ${audioUrl}, bascule automatique sur le flux vidéo direct...`);
+                        audioUrl = directVideoUrl;
+                        response = await fetch(audioUrl);
+                    }
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const blobUrl = URL.createObjectURL(blob);
+                        questionsPlaylist[index].correct.audioBlobUrl = blobUrl;
+                        console.log(`[Audio RAM Pipeline] Audio (${index + 1}) prêt en RAM !`);
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
                 }
             } catch (e) {
-                console.warn(`[Audio RAM Pipeline] Échec préchargement audio (${index + 1})`, e);
+                console.warn(`[Audio RAM Pipeline] Échec du préchargement audio (${index + 1}):`, e);
             }
         }
     }
@@ -458,10 +467,8 @@ async function loadMediaForRound(youtubeId) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
         if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
 
-        // 1. PRIORITÉ ABSOLUE À L'AUDIO STOCKÉ EN RAM
         let audioSource = currentQuestion.audioBlobUrl;
         
-        // Fallback si le préchargement RAM n'était pas fini
         if (!audioSource) {
             let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
             if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
@@ -473,7 +480,18 @@ async function loadMediaForRound(youtubeId) {
             audioPlayer.volume = globalVolume;
             audioPlayer.muted = false;
 
-            // Si c'est un fichier RAM Blob (blob:http://...), le lancement est instantané (0ms) !
+            // CORRECTION 404 EN DIRECT : Si le lien audio plante, passe sur la vidéo directe
+            audioPlayer.onerror = () => {
+                audioPlayer.onerror = null;
+                console.warn("[AudioPlayer] Erreur 404 sur le son seul, bascule sur la vidéo...");
+                let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
+                if (directUrl && audioPlayer.src !== directUrl) {
+                    audioPlayer.src = directUrl;
+                    audioPlayer.load();
+                    audioPlayer.play().catch(() => {});
+                }
+            };
+
             audioPlayer.oncanplay = () => {
                 audioPlayer.oncanplay = null;
                 if (offset > 0) audioPlayer.currentTime = offset;
@@ -499,7 +517,7 @@ async function loadMediaForRound(youtubeId) {
                 }
             });
 
-            // 2. PRÉCHARGEMENT DE LA VIDÉO EN PARALLÈLE PENDANT L'ÉCOUTE
+            // Préchargement parallèle de la vidéo pour le Reveal
             let videoSource = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
             if (videoSource && nativePlayer) {
                 nativePlayer.src = videoSource;
