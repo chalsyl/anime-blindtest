@@ -335,24 +335,39 @@ function loadYoutubeAPI() {
     return new Promise((resolve) => {
         if (window.YT && window.YT.Player) {
             ytPlayer = new YT.Player('yt-player', {
-                height: '100%', width: '100%', videoId: '',
-                playerVars: { 'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3 },
+                host: 'https://www.youtube-nocookie.com', // <--- SUPPRIME LES ADS DOUBLECLICK !
+                height: '100%',
+                width: '100%',
+                videoId: '',
+                playerVars: {
+                    'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1,
+                    'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3,
+                    'origin': 'https://chalsyl.github.io'
+                },
                 events: {
                     'onReady': () => resolve(),
-                    'onStateChange': (e) => handleYoutubeStateChange(e),
-                    'onError': (e) => handleYoutubeError(e)
+                    'onStateChange': (event) => handleYoutubeStateChange(event),
+                    'onError': (event) => handleYoutubeError(event)
                 }
             });
             return;
         }
+
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('yt-player', {
-                height: '100%', width: '100%', videoId: '',
-                playerVars: { 'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3 },
+                host: 'https://www.youtube-nocookie.com', // <--- SUPPRIME LES ADS DOUBLECLICK !
+                height: '100%',
+                width: '100%',
+                videoId: '',
+                playerVars: {
+                    'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1,
+                    'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3,
+                    'origin': 'https://chalsyl.github.io'
+                },
                 events: {
                     'onReady': () => resolve(),
-                    'onStateChange': (e) => handleYoutubeStateChange(e),
-                    'onError': (e) => handleYoutubeError(e)
+                    'onStateChange': (event) => handleYoutubeStateChange(event),
+                    'onError': (event) => handleYoutubeError(event)
                 }
             });
         };
@@ -361,8 +376,11 @@ function loadYoutubeAPI() {
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             const firstScriptTag = document.getElementsByTagName('script')[0];
-            if (firstScriptTag) firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            else document.head.appendChild(tag);
+            if (firstScriptTag) {
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            } else {
+                document.head.appendChild(tag);
+            }
         }
     });
 }
@@ -539,7 +557,7 @@ async function loadMediaForRound(youtubeId) {
                     clearTimeout(safetyBufferTimeout);
                     signalMediaReady();
                 }
-            }, 3000);
+            }, 1500);
         }
     }
 
