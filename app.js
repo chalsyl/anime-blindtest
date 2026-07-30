@@ -1530,7 +1530,6 @@ function listenToRoom() {
     if (!roomCode) return;
     const roomRef = ref(db, `rooms/${roomCode}`);
     
-    // Nettoie les anciens écouteurs pour éviter la multiplication des événements
     off(roomRef);
 
     onValue(roomRef, (snapshot) => {
@@ -1551,23 +1550,17 @@ function listenToRoom() {
         if (room.status === "selection") {
             if (document.getElementById('screen-selection').classList.contains('hidden')) {
                 clearAllTimers();
-                
-                // REINITIALISATION COMPLÈTE DU REJEU (Vide les anciennes cartes et remet à 0/5)
-                currentQuestionIndex = 0;
-                score = 0;
-                opponentScore = 0;
-                playedHistory = [];
-                hasAnsweredCurrent = false;
-                isRoundActive = false;
-                document.getElementById('choices-container').innerHTML = ""; // Vide les anciennes cartes du jeu précédent
-                
                 resetSelectionUI();
                 showScreen('screen-selection');
             }
 
             if (myRole === "p1" && room.players.p1 && room.players.p1.isSelectionReady && room.players.p2 && room.players.p2.isSelectionReady) {
-                const songsForP1 = animeDatabase.filter(s => room.players.p2.selectedSongIds.includes(s.id));
-                const songsForP2 = animeDatabase.filter(s => room.players.p1.selectedSongIds.includes(s.id));
+                const p1Selected = room.players.p1.selectedSongIds || [];
+                const p2Selected = room.players.p2.selectedSongIds || [];
+
+                // CORRECTION 1 : Conversion explicite en Number() pour éviter l'erreur de playlist vide
+                const songsForP1 = animeDatabase.filter(s => p2Selected.map(Number).includes(Number(s.id)));
+                const songsForP2 = animeDatabase.filter(s => p1Selected.map(Number).includes(Number(s.id)));
 
                 const p1Playlist = buildPlaylistFromSongs(songsForP1, room.randomStart);
                 const p2Playlist = buildPlaylistFromSongs(songsForP2, room.randomStart);
@@ -1603,20 +1596,20 @@ function listenToRoom() {
 
         // --- PHASE DE JEU MULTIJOUEUR ---
         if (room.status === "playing") {
-            // CORRECTION CRITIQUE : La synchronisation de l'index commun NE S'EXÉCUTE QU'EN MODE CLASSIQUE !
-            if (multiGameType === "classic") {
-                if (room.currentQuestionIndex !== currentQuestionIndex || (room.currentQuestionIndex === 0 && !hasAnsweredCurrent && document.getElementById('choices-container').children.length === 0)) {
-                    currentQuestionIndex = room.currentQuestionIndex;
-                    loadQuestion();
-                }
-            } else {
-                // Mode Défi (Draft) : Chargement initial uniquement si la grille de choix est vide
-                if (document.getElementById('choices-container').children.length === 0) {
-                    loadQuestion();
-                }
+            // CORRECTION 2 : FERMETURE IMMÉDIATE DU SALON / ÉCRAN DE SÉLECTION DÈS LE DÉPART DU MATCH
+            if (!document.getElementById('screen-lobby').classList.contains('hidden') || !document.getElementById('screen-selection').classList.contains('hidden')) {
+                showScreen('screen-game');
             }
 
-            // MISE À JOUR EN DIRECT DE LA BARRE DE PROGRESSION DE L'ADVERSAIRE SUR L'ÉCRAN D'ATTENTE
+            if (multiGameType === "draft") {
+                questionsPlaylist = (myRole === "p1") ? room.p1_playlist : room.p2_playlist;
+            } else {
+                questionsPlaylist = room.playlist;
+            }
+
+            const totalQEl = document.getElementById('total-questions-num');
+            if (totalQEl) totalQEl.innerText = totalQuestions;
+
             const oppRole = (myRole === "p1") ? "p2" : "p1";
             if (room.players && room.players[oppRole]) {
                 const oppIndex = room.players[oppRole].currentQuestionIndex || 0;
@@ -1631,7 +1624,6 @@ function listenToRoom() {
                 if (barEl) barEl.style.width = percent + '%';
                 if (textEl) textEl.innerText = `${oppName} répond à la question ${Math.min(oppIndex + 1, totalQuestions)}/${totalQuestions}...`;
 
-                // Déclenchement de la fin globale en Mode Défi dès que les deux ont fini
                 if (multiGameType === "draft" && room.players.p1 && room.players.p1.isFinished && room.players.p2 && room.players.p2.isFinished) {
                     if (room.status !== "finished") {
                         update(ref(db, `rooms/${roomCode}`), { status: "finished" });
@@ -1640,6 +1632,11 @@ function listenToRoom() {
             }
 
             if (multiGameType === "classic") {
+                if (room.currentQuestionIndex !== currentQuestionIndex || (room.currentQuestionIndex === 0 && !hasAnsweredCurrent && document.getElementById('choices-container').children.length === 0)) {
+                    currentQuestionIndex = room.currentQuestionIndex;
+                    loadQuestion();
+                }
+
                 if (room.roundStatus === "loading") {
                     if (myRole === "p1" && room.players.p1.isReady && room.players.p2 && room.players.p2.isReady) {
                         update(ref(db, `rooms/${roomCode}`), { roundStatus: "guessing" });
@@ -1675,6 +1672,11 @@ function listenToRoom() {
                     }
                     triggerProgression();
                 }
+            } else {
+                // Mode Défi (Draft)
+                if (document.getElementById('choices-container').children.length === 0) {
+                    loadQuestion();
+                }
             }
 
             const scoreP1 = room.players.p1 ? room.players.p1.score || 0 : 0;
@@ -1688,7 +1690,6 @@ function listenToRoom() {
             }
         }
 
-        // CHARGEMENT DU BILAN DÈS QUE LA ROOM PASSE EN FINISHED
         if (room.status === "finished" && document.getElementById('screen-results').classList.contains('hidden')) {
             clearAllTimers();
             endGame(room);
