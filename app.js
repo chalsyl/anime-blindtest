@@ -482,12 +482,13 @@ function fadeInAudio() {
     }, stepTime);
 }
 
-async function loadMediaForRound(youtubeId) {
+aasync function loadMediaForRound(youtubeId) {
     clearTimeout(ytWatchdog);
     mediaReady = false;
     
     const nativePlayerContainer = document.getElementById('native-player-container');
     const ytPlayerContainer = document.getElementById('yt-player-container');
+    const audioPlayer = document.getElementById('game-audio-player');
     const nativePlayer = document.getElementById('native-player');
 
     if (gameMode === "solo") {
@@ -498,47 +499,71 @@ async function loadMediaForRound(youtubeId) {
 
     const safetyBufferTimeout = setTimeout(() => {
         if (!mediaReady) {
+            console.warn("Délai de chargement dépassé, démarrage de secours.");
             mediaReady = true;
             signalMediaReady();
         }
-    }, 2500);
+    }, 3000);
 
     const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
     const offset = currentQuestion.startOffset || 0;
 
     if (isDirectVideoUrl(youtubeId)) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
-        if (nativePlayerContainer) nativePlayerContainer.style.display = 'block';
+        if (nativePlayerContainer) {
+            nativePlayerContainer.style.display = 'block';
+            
+            let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
+            if (!directUrl) directUrl = await getAnimeThemesVideoUrl(youtubeId);
 
-        let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-        if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
+            if (directUrl && nativePlayer) {
+                nativePlayer.src = directUrl;
+                nativePlayer.muted = true;
 
-        if (directUrl && nativePlayer) {
-            // CORRECTION : Attribution directe de l'URL vidéo au lecteur natif sans passer par getAudioUrl
-            nativePlayer.src = directUrl;
-            nativePlayer.muted = true; // Silencieux pendant l'attente/synchro
-            nativePlayer.load();
+                // 1. Dès que les métadonnées sont là, on se déplace à 25s ou 50s
+                nativePlayer.onloadedmetadata = () => {
+                    nativePlayer.onloadedmetadata = null;
+                    if (offset > 0) {
+                        nativePlayer.currentTime = offset;
+                    } else {
+                        // Si offset = 0, prêt immédiatement
+                        if (!mediaReady) {
+                            mediaReady = true;
+                            clearTimeout(safetyBufferTimeout);
+                            signalMediaReady();
+                        }
+                    }
+                };
 
-            nativePlayer.play().then(() => {
-                if (offset > 0) nativePlayer.currentTime = offset;
-                if (!isRoundActive && gameMode === "multi" && multiGameType === "classic") {
-                    nativePlayer.pause();
-                }
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            }).catch(e => {
-                if (offset > 0) nativePlayer.currentTime = offset;
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            });
-        } else {
-            if (!mediaReady) { mediaReady = true; signalMediaReady(); }
+                // 2. ATTENTE STRICTE DU SEEK : On valide le signal PRÊT seulement quand le saut est 100% terminé !
+                nativePlayer.onseeked = () => {
+                    nativePlayer.onseeked = null; // Désactive l'écouteur
+                    if (!mediaReady) {
+                        mediaReady = true;
+                        clearTimeout(safetyBufferTimeout);
+                        signalMediaReady();
+                    }
+                };
+
+                nativePlayer.load();
+
+                // Démarrage de secours si onseeked a déjà été déclenché
+                nativePlayer.play().then(() => {
+                    if (offset === 0 && !mediaReady) {
+                        mediaReady = true;
+                        clearTimeout(safetyBufferTimeout);
+                        signalMediaReady();
+                    }
+                }).catch(e => {
+                    if (!mediaReady) {
+                        mediaReady = true;
+                        clearTimeout(safetyBufferTimeout);
+                        signalMediaReady();
+                    }
+                });
+            } else {
+                if (!mediaReady) { mediaReady = true; signalMediaReady(); }
+            }
         }
     } else {
         // Mode YouTube
@@ -614,32 +639,31 @@ function startRound() {
     const hasOffset = (currentQuestion.startOffset || 0) > 0;
 
     if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
-        const audioPlayer = document.getElementById('game-audio-player');
-        if (audioPlayer) {
-            audioPlayer.muted = (globalVolume === 0);
-            audioPlayer.volume = globalVolume;
+        const nativePlayer = document.getElementById('native-player');
+        if (nativePlayer) {
+            // DÉBLOCAGE STRICT DU SON ET DU VOLUME AVANT LA LECTURE
+            nativePlayer.muted = (globalVolume === 0);
+            nativePlayer.volume = globalVolume;
+
             if (hasOffset) {
-                audioPlayer.play().then(() => fadeInAudio()).catch(() => {});
+                nativePlayer.play().then(() => fadeInAudio()).catch(e => {
+                    nativePlayer.muted = true;
+                    nativePlayer.play();
+                });
             } else {
-                audioPlayer.play().catch(() => {});
+                nativePlayer.play().catch(e => {
+                    nativePlayer.muted = true;
+                    nativePlayer.play();
+                });
             }
         }
-
-        const nativePlayer = document.getElementById('native-player');
-        if (nativePlayer && nativePlayer.paused) {
-            nativePlayer.muted = true;
-            nativePlayer.play().catch(() => {});
-        }
     } else {
-        // --- MODE YOUTUBE ---
         if (ytPlayer && typeof ytPlayer.playVideo === "function") {
             if (gameMode === "solo") {
-                // En Solo : La musique joue DÉJÀ ! On applique juste le fondu sonore si besoin
                 if (hasOffset) {
                     fadeInAudio();
                 }
             } else {
-                // En Multi : Réactivation du son après la synchro des 2 joueurs
                 if (hasOffset) {
                     ytPlayer.playVideo();
                     fadeInAudio();
