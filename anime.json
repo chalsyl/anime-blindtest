@@ -2004,7 +2004,7 @@
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
     "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
     "themes": ["Shounen"],
-    "YoutubeId": ""
+    "YoutubeId": "DBCIuVopaGA"
   },
   {
     "id": 223,
@@ -2013,7 +2013,7 @@
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
     "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
     "themes": ["Shounen"],
-    "YoutubeId": ""
+    "YoutubeId": "3OhStDNna-k"
   },
   {
     "id": 224,
@@ -2022,7 +2022,7 @@
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
     "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
     "themes": ["Shounen"],
-    "YoutubeId": ""
+    "YoutubeId": "XvOAtMYTmPs"
   },
   {
     "id": 225,
@@ -2743,5 +2743,644 @@
     "genres": ["Action", "Comedy"],
     "themes": ["Shounen", "Super Power"],
     "YoutubeId": "cyyDwLLW8ho"
+  },
+  {
+    "id": 306,
+    "title": "Urusei Yatsura (2022) Seasons 2 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "fvYT-qeZGY8"
+  },
+  {
+    "id": 307,
+    "title": "Urusei Yatsura (2022) Seasons 2 ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143277-snjd4UzsUl8M.jpg",
+    "genres": ["Comedy", "Romance", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen"],
+    "YoutubeId": "BkD2Z9gz_f8"
+  },
+  {
+    "id": 308,
+    "title": "86 EIGHTY-SIX OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1987/117507l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Seinen", "Mecha", "Military"],
+    "YoutubeId": "plUBYKEeloI"
+  },
+  {
+    "id": 309,
+    "title": "86 EIGHTY-SIX ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1987/117507l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Seinen", "Mecha", "Military"],
+    "YoutubeId": "vMdlbE-MzF8"
+  },
+  {
+    "id": 310,
+    "title": "86 EIGHTY-SIX ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1987/117507l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Seinen", "Mecha", "Military"],
+    "YoutubeId": "VWtMNifnUtE"
+  },
+  {
+    "id": 311,
+    "title": "86 EIGHTY-SIX Part 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131586-JhC0wcBi09EZ.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Seinen", "Mecha", "Military"],
+    "YoutubeId": "0U6JUTWas8c"
+  },
+  {
+    "id": 312,
+    "title": "86 EIGHTY-SIX Part 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131586-JhC0wcBi09EZ.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Seinen", "Mecha", "Military"],
+    "YoutubeId": "YRGG02ZWccA"
+  },
+  {
+    "id": 313,
+    "title": "That Time I Got Reincarnated as a Slime OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101280-tDxCVJm714nt.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "ZhvUomsfG8o"
+  },
+  {
+    "id": 314,
+    "title": "That Time I Got Reincarnated as a Slime ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101280-tDxCVJm714nt.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "C83_rZh_QS4"
+  },
+  {
+    "id": 315,
+    "title": "That Time I Got Reincarnated as a Slime OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101280-tDxCVJm714nt.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "3wki_SgEUnU"
+  },
+  {
+    "id": 316,
+    "title": "That Time I Got Reincarnated as a Slime ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101280-tDxCVJm714nt.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "jiGz8D0bz90"
+  },
+  {
+    "id": 317,
+    "title": "That Time I Got Reincarnated as a Slime Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108511-PufFordLNyIb.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "XQqQqK9ufo8"
+  },
+  {
+    "id": 318,
+    "title": "That Time I Got Reincarnated as a Slime Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108511-PufFordLNyIb.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "51VezAvFv7E"
+  },
+  {
+    "id": 319,
+    "title": "That Time I Got Reincarnated as a Slime Season 2 Part 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx116742-jn0dW23ftehq.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "jEDQmD7nhyQ"
+  },
+  {
+    "id": 320,
+    "title": "That Time I Got Reincarnated as a Slime Season 2 Part 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx116742-jn0dW23ftehq.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "xYzj0Z76oww"
+  },
+  {
+    "id": 321,
+    "title": "That Time I Got Reincarnated as a Slime Season 3 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156822-Jzo2ITWgm4kM.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "d8rWV88FWFk"
+  },
+  {
+    "id": 322,
+    "title": "That Time I Got Reincarnated as a Slime Season 3 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156822-Jzo2ITWgm4kM.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "LySaUAQBBzs"
+  },
+  {
+    "id": 323,
+    "title": "That Time I Got Reincarnated as a Slime Season 3 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156822-Jzo2ITWgm4kM.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "zOar39luoQU"
+  },
+  {
+    "id": 324,
+    "title": "That Time I Got Reincarnated as a Slime Season 3 ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156822-Jzo2ITWgm4kM.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "ncbV-kMqKDo"
+  },
+  {
+    "id": 325,
+    "title": "That Time I Got Reincarnated as a Slime Season 4 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182205-q2AeO1owuQbO.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "nqOmZMU-3vM"
+  },
+  {
+    "id": 326,
+    "title": "That Time I Got Reincarnated as a Slime Season 4 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182205-q2AeO1owuQbO.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "ta_xDFk6uP8"
+  },
+  {
+    "id": 327,
+    "title": "That Time I Got Reincarnated as a Slime Season 4 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182205-q2AeO1owuQbO.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "9rOztM5Q524"
+  },
+  {
+    "id": 328,
+    "title": "That Time I Got Reincarnated as a Slime Season 4 ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182205-q2AeO1owuQbO.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+    "themes": ["Shounen", "Isekai", "Reincarnation"],
+    "YoutubeId": "IcOpQqbye6g"
+  },
+  {
+    "id": 329,
+    "title": "SHADOWS HOUSE ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx125038-BCfEvry0QBXW.png",
+    "genres": ["Fantasy", "Horror", "Mystery", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "-u-_DqqZGZU"
+  },
+  {
+    "id": 330,
+    "title": "Moriarty the Patriot Part 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx124858-96RtyVSgUYnm.jpg",
+    "genres": ["Mystery", "Suspense"],
+    "themes": ["Shounen", "Adult Cast", "Historical", "Organized Crime", "Psychological"],
+    "YoutubeId": "40IK3lK0ULM"
+  },
+  {
+    "id": 331,
+    "title": "Moriarty the Patriot Part 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx124858-96RtyVSgUYnm.jpg",
+    "genres": ["Mystery", "Suspense"],
+    "themes": ["Shounen", "Adult Cast", "Historical", "Organized Crime", "Psychological"],
+    "YoutubeId": "R8l9kj5wEfM"
+  },
+  {
+    "id": 332,
+    "title": "Sabikui Bisco OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130591-9O1cf7u6SfYa.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi"],
+    "themes": [],
+    "YoutubeId": "CUxSYkLcVC0"
+  },
+  {
+    "id": 333,
+    "title": "Sabikui Bisco ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130591-9O1cf7u6SfYa.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi"],
+    "themes": [],
+    "YoutubeId": "lSqnkifaXzc"
+  },
+  {
+    "id": 334,
+    "title": "Platinum End OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127401-fVKVbuIE5W5Q.jpg",
+    "genres": ["Drama", "Mystery", "Romance", "Supernatural"],
+    "themes": ["Shounen", "Psychological", "Mythology", "Survival"],
+    "YoutubeId": "apgMyxIcy0Q"
+  },
+  {
+    "id": 335,
+    "title": "Platinum End ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127401-fVKVbuIE5W5Q.jpg",
+    "genres": ["Drama", "Mystery", "Romance", "Supernatural"],
+    "themes": ["Shounen", "Psychological", "Mythology", "Survival"],
+    "YoutubeId": "uZxjYyhUT0Y"
+  },
+  {
+    "id": 336,
+    "title": "Platinum End ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127401-fVKVbuIE5W5Q.jpg",
+    "genres": ["Drama", "Mystery", "Romance", "Supernatural"],
+    "themes": ["Shounen", "Psychological", "Mythology", "Survival"],
+    "YoutubeId": "uADkwERoV3Q"
+  },
+  {
+    "id": 337,
+    "title": "Blue Period OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128705-LqIWVpiwDlDc.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "School", "Visual Arts"],
+    "YoutubeId": "-h2PX4famEo"
+  },
+  {
+    "id": 338,
+    "title": "Blue Period ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx128705-LqIWVpiwDlDc.jpg",
+    "genres": ["Drama", "Slice of Life"],
+    "themes": ["Seinen", "School", "Visual Arts"],
+    "YoutubeId": "Uzdf4dCTWqE"
+  },
+  {
+    "id": 339,
+    "title": "MARS RED OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx115183-jvILP9lWry4s.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi", "Supernatural"],
+    "themes": ["Adult Cast", "Historical", "Military", "Vampire"],
+    "YoutubeId": "8Sy5RyI3BiM"
+  },
+  {
+    "id": 340,
+    "title": "MARS RED ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx115183-jvILP9lWry4s.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi", "Supernatural"],
+    "themes": ["Adult Cast", "Historical", "Military", "Vampire"],
+    "YoutubeId": "zldh6aeb664"
+  },
+  {
+    "id": 341,
+    "title": "Arifureta: From Commonplace to World's Strongest OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100668-DvOn5bMOt4cy.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": "eZN3afhTyGY"
+  },
+  {
+    "id": 342,
+    "title": "Arifureta: From Commonplace to World's Strongest ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100668-DvOn5bMOt4cy.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 343,
+    "title": "Arifureta: From Commonplace to World's Strongest Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx112323-C6nlP84x8jH8.png",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": "MuB1U4BQY88"
+  },
+  {
+    "id": 344,
+    "title": "Arifureta: From Commonplace to World's Strongest Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx112323-C6nlP84x8jH8.png",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 345,
+    "title": "Arifureta: From Commonplace to World's Strongest Season 3 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154473-o55309dVGP3G.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": "FhG6WEFzaeo"
+  },
+  {
+    "id": 346,
+    "title": "Arifureta: From Commonplace to World's Strongest Season 3 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154473-o55309dVGP3G.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 347,
+    "title": "Arifureta: From Commonplace to World's Strongest Season 3 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154473-o55309dVGP3G.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": "AbRyFs5Eg0s"
+  },
+  {
+    "id": 348,
+    "title": "Arifureta: From Commonplace to World's Strongest Season 3 ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154473-o55309dVGP3G.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Harem", "Isekai"],
+    "YoutubeId": "RkJT_KCEV0o"
+  },
+  {
+    "id": 349,
+    "title": "Scarlet Nexus OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131150-YjdcqAvbHfxw.png",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi", "Supernatural"],
+    "themes": ["Military", "Super Power"],
+    "YoutubeId": "PnAIwL0rvEM"
+  },
+  {
+    "id": 350,
+    "title": "Scarlet Nexus ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131150-YjdcqAvbHfxw.png",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi", "Supernatural"],
+    "themes": ["Military", "Super Power"],
+    "YoutubeId": "25w2GM8t2uU"
+  },
+  {
+    "id": 351,
+    "title": "Scarlet Nexus OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131150-YjdcqAvbHfxw.png",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi", "Supernatural"],
+    "themes": ["Military", "Super Power"],
+    "YoutubeId": "ZwZYW79Got8"
+  },
+  {
+    "id": 352,
+    "title": "Scarlet Nexus ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131150-YjdcqAvbHfxw.png",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi", "Supernatural"],
+    "themes": ["Military", "Super Power"],
+    "YoutubeId": "NBbhd9rcHiQ"
+  },
+  {
+    "id": 353,
+    "title": "BASTARD!! -Heavy Metal, Dark Fantasy- OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1599/124228l.jpg",
+    "genres": ["Action", "Adventure", "Ecchi", "Fantasy"],
+    "themes": ["Seinen", "Gore"],
+    "YoutubeId": "HFORlrHogf8"
+  },
+  {
+    "id": 354,
+    "title": "BASTARD!! -Heavy Metal, Dark Fantasy- ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1599/124228l.jpg",
+    "genres": ["Action", "Adventure", "Ecchi", "Fantasy"],
+    "themes": ["Seinen", "Gore"],
+    "YoutubeId": "N0taa_RQIZs"
+  },
+  {
+    "id": 355,
+    "title": "BASTARD!! -Heavy Metal, Dark Fantasy- Hell’s Requiem Arc OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1268/137255l.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Ecchi", "Fantasy"],
+    "themes": ["Seinen"],
+    "YoutubeId": "U6yl3NAC9u0"
+  },
+  {
+    "id": 356,
+    "title": "BASTARD!! -Heavy Metal, Dark Fantasy- Hell’s Requiem Arc ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1268/137255l.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Ecchi", "Fantasy"],
+    "themes": ["Seinen"],
+    "YoutubeId": "Gvh0ylHc5mA"
+  },
+  {
+    "id": 357,
+    "title": "Yashahime: Princess Half-Demon OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx118399-sgHg8NQVQixB.png",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "SC4lbHnPxiw"
+  },
+  {
+    "id": 358,
+    "title": "Yashahime: Princess Half-Demon ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx118399-sgHg8NQVQixB.png",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "H70wE0wFeTQ"
+  },
+  {
+    "id": 359,
+    "title": "Yashahime: Princess Half-Demon OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx118399-sgHg8NQVQixB.png",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "t2cnuxkdq9g"
+  },
+  {
+    "id": 360,
+    "title": "Yashahime: Princess Half-Demon ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx118399-sgHg8NQVQixB.png",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "ASslTNkBBww"
+  },
+  {
+    "id": 361,
+    "title": "Yashahime: Princess Half-Demon - The Second Act OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131264-rN2hTY0vEGOa.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "BK54PrmGRTM"
+  },
+  {
+    "id": 362,
+    "title": "Yashahime: Princess Half-Demon - The Second Act ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131264-rN2hTY0vEGOa.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "QN1_dQPm9I8"
+  },
+  {
+    "id": 363,
+    "title": "Yashahime: Princess Half-Demon - The Second Act OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131264-rN2hTY0vEGOa.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "YkX8miilLEo"
+  },
+  {
+    "id": 364,
+    "title": "Yashahime: Princess Half-Demon - The Second Act ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx131264-rN2hTY0vEGOa.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Time Travel"],
+    "YoutubeId": "WgBM0JKpNV8"
+  },
+  {
+    "id": 365,
+    "title": "InuYasha OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "jI--lLUQtvo"
+  },
+  {
+    "id": 366,
+    "title": "InuYasha ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "LUMvLOC4gkg"
+  },
+  {
+    "id": 367,
+    "title": "InuYasha OP 3",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "-mL6YMbKhsw"
+  },
+  {
+    "id": 368,
+    "title": "InuYasha ED 3",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "c1WSR0RROps"
+  },
+  {
+    "id": 369,
+    "title": "InuYasha OP 4",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "85NjesF00qU"
+  },
+  {
+    "id": 370,
+    "title": "InuYasha ED 4",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "HMNQBG6nydM"
+  },
+  {
+    "id": 371,
+    "title": "InuYasha OP 5",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "Qt7g0zmobwQ"
+  },
+  {
+    "id": 372,
+    "title": "InuYasha ED 5",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "https://animethemes.moe/anime/inuyasha/ED5-NCDVD576"
+  },
+  {
+    "id": 373,
+    "title": "InuYasha OP 6",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "6C1Cp5DfVIQ"
+  },
+  {
+    "id": 374,
+    "title": "InuYasha ED 6",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "https://animethemes.moe/anime/inuyasha/ED6-NCDVD576"
+  },
+  {
+    "id": 375,
+    "title": "InuYasha ED 7",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "Lkq4J6gzuIg"
+  },
+  {
+    "id": 376,
+    "title": "InuYasha ED 8",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx249-jVBkyLnBvnRE.png",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
+    "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
+    "YoutubeId": "5TGzlhtNMps"
   }
 ]

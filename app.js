@@ -173,7 +173,31 @@ async function preloadUpcomingAudio(index) {
     }
 }
 
-// Préchargement ultra-rapide en mémoire RAM (Blob Fetch)
+// Précharge la TOUTE PREMIÈRE vidéo avec une priorité maximale (100% Bande passante)
+async function preloadFirstVideo() {
+    if (questionsPlaylist && questionsPlaylist.length > 0) {
+        const q0 = questionsPlaylist[0].correct;
+        const offset0 = q0.startOffset || 0;
+        
+        if (isDirectVideoUrl(q0.YoutubeId) && !q0.resolvedUrl) {
+            console.log(`[First Video Preloader] Téléchargement prioritaire de la Question 1 : ${q0.title}...`);
+            const directUrl = await getAnimeThemesVideoUrl(q0.YoutubeId);
+            if (directUrl) {
+                questionsPlaylist[0].correct.resolvedUrl = directUrl;
+                const preloader = document.getElementById('preloader-1');
+                if (preloader) {
+                    preloader.src = directUrl;
+                    preloader.onloadedmetadata = () => {
+                        preloader.onloadedmetadata = null;
+                        if (offset0 > 0) preloader.currentTime = offset0;
+                    };
+                    preloader.load(); // Téléchargement immédiat
+                }
+            }
+        }
+    }
+}
+
 // Précharge les vidéos des questions N+1 et N+2 en tâche de fond
 async function preloadUpcomingVideos(currentIndex) {
     // 1. Préchargement Question N + 1
@@ -1341,6 +1365,7 @@ function startSoloGame() {
     if (questionsPlaylist.length === 0) return;
     
     // --- MODE SOLO : C'est parfait ! ---
+    preloadFirstVideo(); 
     preloadUpcomingVideos(0);
     preloadImages(questionsPlaylist[0]);
 
@@ -1410,6 +1435,7 @@ function createRoom() {
         // --- MODE MULTI (HÔTE) : Seulement si la playlist est déjà générée (Mode Classique) ---
         if (playlist.length > 0) {
             questionsPlaylist = playlist;
+            preloadFirstVideo(); 
             preloadUpcomingVideos(0);
             preloadImages(playlist[0]);
         }
@@ -1461,6 +1487,7 @@ function joinRoom() {
             // --- MODE MULTI (INVITÉ) : Reçoit la playlist de l'hôte ---
             if (roomData.playlist && roomData.playlist.length > 0) {
                 questionsPlaylist = roomData.playlist;
+                preloadFirstVideo(); 
                 preloadUpcomingVideos(0);
                 preloadImages(questionsPlaylist[0]);
             }
