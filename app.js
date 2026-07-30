@@ -482,7 +482,7 @@ function fadeInAudio() {
     }, stepTime);
 }
 
-aasync function loadMediaForRound(youtubeId) {
+async function loadMediaForRound(youtubeId) {
     clearTimeout(ytWatchdog);
     mediaReady = false;
     
