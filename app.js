@@ -488,7 +488,6 @@ async function loadMediaForRound(youtubeId) {
     
     const nativePlayerContainer = document.getElementById('native-player-container');
     const ytPlayerContainer = document.getElementById('yt-player-container');
-    const audioPlayer = document.getElementById('game-audio-player');
     const nativePlayer = document.getElementById('native-player');
 
     if (gameMode === "solo") {
@@ -509,73 +508,45 @@ async function loadMediaForRound(youtubeId) {
 
     if (isDirectVideoUrl(youtubeId)) {
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
-        if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
+        if (nativePlayerContainer) nativePlayerContainer.style.display = 'block';
 
-        let audioSource = currentQuestion.audioBlobUrl;
-        if (!audioSource) {
-            let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-            if (!directUrl) directUrl = await getAnimeThemesVideoUrl(youtubeId);
-            if (directUrl) audioSource = getAudioUrl(directUrl);
-        }
+        let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
+        if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
 
-        if (audioSource && audioPlayer) {
-            audioPlayer.src = audioSource;
-            audioPlayer.volume = globalVolume;
-            audioPlayer.muted = false;
+        if (directUrl && nativePlayer) {
+            // CORRECTION : Attribution directe de l'URL vidéo au lecteur natif sans passer par getAudioUrl
+            nativePlayer.src = directUrl;
+            nativePlayer.muted = true; // Silencieux pendant l'attente/synchro
+            nativePlayer.load();
 
-            audioPlayer.oncanplay = () => {
-                audioPlayer.oncanplay = null;
-                if (offset > 0) audioPlayer.currentTime = offset;
-                
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
+            nativePlayer.play().then(() => {
+                if (offset > 0) nativePlayer.currentTime = offset;
+                if (!isRoundActive && gameMode === "multi" && multiGameType === "classic") {
+                    nativePlayer.pause();
                 }
-            };
-
-            audioPlayer.play().then(() => {
                 if (!mediaReady) {
                     mediaReady = true;
                     clearTimeout(safetyBufferTimeout);
                     signalMediaReady();
                 }
             }).catch(e => {
+                if (offset > 0) nativePlayer.currentTime = offset;
                 if (!mediaReady) {
                     mediaReady = true;
                     clearTimeout(safetyBufferTimeout);
                     signalMediaReady();
                 }
             });
-
-            let videoSource = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
-            if (!videoSource) videoSource = await getDirectVideoUrl(youtubeId);
-            
-            if (videoSource && nativePlayer) {
-                nativePlayer.src = videoSource;
-                nativePlayer.muted = true;
-                nativePlayer.load();
-            }
         } else {
             if (!mediaReady) { mediaReady = true; signalMediaReady(); }
         }
     } else {
-        // --- MODE YOUTUBE OPTIMISÉ ---
+        // Mode YouTube
         if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
 
         if (typeof ytPlayer.loadVideoById === "function") {
-            // En Solo : On charge DÉJÀ avec le son pour éviter le ré-échantillonnage
-            if (gameMode === "solo") {
-                if (globalVolume === 0) ytPlayer.mute();
-                else {
-                    ytPlayer.unMute();
-                    ytPlayer.setVolume(globalVolume * 100);
-                }
-            } else {
-                ytPlayer.mute(); // En multi : Muet pendant la synchro des 2 joueurs
-            }
-
+            ytPlayer.mute(); 
             ytPlayer.loadVideoById({
                 videoId: youtubeId,
                 startSeconds: offset
@@ -591,7 +562,8 @@ async function loadMediaForRound(youtubeId) {
             }, 1500);
         }
     }
-    // Déclenche le préchargement des 2 questions suivantes
+
+    // Précharge les 2 questions suivantes en arrière-plan
     preloadUpcomingVideos(currentQuestionIndex);
 }
 
