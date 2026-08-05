@@ -45,7 +45,7 @@ let controlsInterval = null;
 
 let selectedSongIds = [];
 
-// NETTOYEUR DE TIMERS FANTÔMES (Empêche les sauts d'écran intempestifs)
+// NETTOYEUR DE TIMERS FANTÔMES
 function clearAllTimers() {
     clearInterval(timerInterval);
     clearTimeout(ytWatchdog);
@@ -69,30 +69,27 @@ function getBaseAnimeName(title) {
     return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
 }
 
-// Récupère la question actuelle en toute sécurité sans jamais planter
-function getCurrentQuestion() {
+// --- SÉCURISATEUR UNIVERSEL D'ACCÈS AUX QUESTIONS ---
+function getQuestionAt(index) {
     if (!questionsPlaylist || questionsPlaylist.length === 0) return null;
-    const item = questionsPlaylist[currentQuestionIndex];
+    const item = questionsPlaylist[index];
     if (!item) return null;
-    // S'adapte automatiquement si l'objet contient .correct ou s'il s'agit du morceau direct
     return item.correct ? item.correct : item;
 }
 
-// Détecte si l'entrée est un lien vidéo externe (HTTP/HTTPS) ou un ID YouTube
+function getCurrentQuestion() {
+    return getQuestionAt(currentQuestionIndex);
+}
+
 function isDirectVideoUrl(url) {
     return url && url.startsWith('http');
 }
 
-// Convertit l'URL en lien vidéo lisible (AnimeThemes API ou Lien direct AMQ/Catbox)
 async function getDirectVideoUrl(url) {
     if (!url || !url.startsWith('http')) return null;
-    
-    // Si c'est une page d'AnimeThemes qui nécessite un décodage API
     if (url.includes('animethemes.moe') && !url.endsWith('.webm') && !url.includes('v.animethemes.moe')) {
         return await getAnimeThemesVideoUrl(url);
     }
-    
-    // Si c'est déjà un fichier vidéo direct (ex: Anime Music Quiz / AMQ, Catbox, .webm, .mp4)
     return url;
 }
 
@@ -114,12 +111,11 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
                 if (entry.videos) allVideos.push(...entry.videos);
             }
             if (allVideos.length > 0) {
-                // TRI INTELLIGENT : Donneur la priorité aux fichiers .mp4 (Décodage matériel GPU) puis à la plus basse résolution
                 allVideos.sort((a, b) => {
                     const isMp4A = a.link.endsWith('.mp4') ? 0 : 1;
                     const isMp4B = b.link.endsWith('.mp4') ? 0 : 1;
-                    if (isMp4A !== isMp4B) return isMp4A - isMp4B; // MP4 en premier
-                    return (a.resolution || 1080) - (b.resolution || 1080); // Puis par résolution
+                    if (isMp4A !== isMp4B) return isMp4A - isMp4B;
+                    return (a.resolution || 1080) - (b.resolution || 1080);
                 });
                 return allVideos[0].link; 
             }
@@ -144,46 +140,7 @@ function preloadImages(questionObj) {
     });
 }
 
-// Télécharge silencieusement l'audio d'une question future en mémoire RAM
-async function preloadUpcomingAudio(index) {
-    if (index < questionsPlaylist.length) {
-        const questionObj = questionsPlaylist[index];
-        const song = questionObj.correct;
-        
-        if (isDirectVideoUrl(song.YoutubeId) && !song.audioBlobUrl) {
-            try {
-                let directVideoUrl = song.resolvedUrl || await getDirectVideoUrl(song.YoutubeId);
-                if (directVideoUrl) {
-                    let audioUrl = getAudioUrl(directVideoUrl);
-                    console.log(`[Audio RAM Pipeline] Téléchargement de l'audio (${index + 1}) : ${song.title}...`);
-                    
-                    let response = await fetch(audioUrl);
-                    
-                    // CORRECTION 404 : Si le fichier audio .ogg n'existe pas (404), on bascule sur la vidéo directe !
-                    if (!response.ok && audioUrl !== directVideoUrl) {
-                        console.warn(`[Audio RAM Pipeline] 404 sur ${audioUrl}, bascule automatique sur le flux vidéo direct...`);
-                        audioUrl = directVideoUrl;
-                        response = await fetch(audioUrl);
-                    }
-
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const blobUrl = URL.createObjectURL(blob);
-                        questionsPlaylist[index].correct.audioBlobUrl = blobUrl;
-                        console.log(`[Audio RAM Pipeline] Audio (${index + 1}) prêt en RAM !`);
-                    } else {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-                }
-            } catch (e) {
-                console.warn(`[Audio RAM Pipeline] Échec du préchargement audio (${index + 1}):`, e);
-            }
-        }
-    }
-}
-
-// Préchargement prioritaire de la Question 1 avec logs complets dans la console
-// Préchargement prioritaire silencieux de la Question 1
+// Préchargement prioritaire de la Question 1 (100% Bande Passante)
 async function preloadFirstVideo() {
     if (!questionsPlaylist || questionsPlaylist.length === 0) return;
 
@@ -195,9 +152,10 @@ async function preloadFirstVideo() {
 
     if (isDirectVideoUrl(youtubeId)) {
         if (!q0.resolvedUrl) {
-            const directUrl = await getAnimeThemesVideoUrl(youtubeId);
+            // CORRECTION 1 : Utilise getDirectVideoUrl (0ms de latence pour AMQ / Catbox au lieu de 10s de timeout)
+            const directUrl = await getDirectVideoUrl(youtubeId);
             if (directUrl) {
-                questionsPlaylist[0].correct.resolvedUrl = directUrl;
+                q0.resolvedUrl = directUrl;
                 const preloader = document.getElementById('preloader-1');
                 if (preloader) {
                     preloader.src = directUrl;
@@ -212,31 +170,48 @@ async function preloadFirstVideo() {
     }
 }
 
-// Préchargement silencieux des questions suivantes
+// Préchargement des questions N+1 et N+2
 async function preloadUpcomingVideos(currentIndex) {
-    const nextIndex = currentIndex + 1;
-    if (nextIndex < questionsPlaylist.length) {
-        const nextQuestionObj = questionsPlaylist[nextIndex];
-        const nextQuestion = nextQuestionObj.correct;
-        const offset = nextQuestion.startOffset || 0;
-        
-        preloadImages(nextQuestionObj);
-        
-        if (isDirectVideoUrl(nextQuestion.YoutubeId)) {
-            const directUrl = await getAnimeThemesVideoUrl(nextQuestion.YoutubeId);
-            if (directUrl) {
-                questionsPlaylist[nextIndex].correct.resolvedUrl = directUrl;
-                
-                const preloader = document.getElementById('preloader-1');
-                if (preloader) {
-                    preloader.src = directUrl;
-                    preloader.onloadedmetadata = () => {
-                        preloader.onloadedmetadata = null;
-                        if (offset > 0) preloader.currentTime = offset;
-                    };
-                    preloader.load();
+    const idx1 = currentIndex + 1;
+    const q1 = getQuestionAt(idx1);
+    if (q1) {
+        preloadImages(questionsPlaylist[idx1]);
+        if (isDirectVideoUrl(q1.YoutubeId) && !q1.resolvedUrl) {
+            getDirectVideoUrl(q1.YoutubeId).then(url1 => {
+                if (url1) {
+                    q1.resolvedUrl = url1;
+                    const p1 = document.getElementById('preloader-1');
+                    if (p1) {
+                        p1.src = url1;
+                        p1.onloadedmetadata = () => {
+                            p1.onloadedmetadata = null;
+                            if ((q1.startOffset || 0) > 0) p1.currentTime = q1.startOffset;
+                        };
+                        p1.load();
+                    }
                 }
-            }
+            });
+        }
+    }
+
+    const idx2 = currentIndex + 2;
+    const q2 = getQuestionAt(idx2);
+    if (q2) {
+        if (isDirectVideoUrl(q2.YoutubeId) && !q2.resolvedUrl) {
+            getDirectVideoUrl(q2.YoutubeId).then(url2 => {
+                if (url2) {
+                    q2.resolvedUrl = url2;
+                    const p2 = document.getElementById('preloader-2');
+                    if (p2) {
+                        p2.src = url2;
+                        p2.onloadedmetadata = () => {
+                            p2.onloadedmetadata = null;
+                            if ((q2.startOffset || 0) > 0) p2.currentTime = q2.startOffset;
+                        };
+                        p2.load();
+                    }
+                }
+            });
         }
     }
 }
@@ -271,7 +246,7 @@ function buildPlaylistFromSongs(songsList, randomStartChoice = false) {
                 id: correctSong.id || 0,
                 title: correctSong.title || "Inconnu",
                 image: correctSong.image || "",
-                YoutubeId: correctSong.YoutubeId || "",
+                YoutubeId: correctSong.YoutubeId || correctSong.youtubeId || "",
                 type: correctSong.type || "",
                 genres: correctSong.genres || [],
                 themes: correctSong.themes || [],
@@ -287,7 +262,9 @@ function getSimilarAnime(correctSong, count = 3) {
     const targetType = correctSong.type; 
 
     const candidates = animeDatabase
-        .filter(song => getFranchiseKey(song.title) !== correctFranchise && song.type === targetType)
+        .filter(song => {
+            return getFranchiseKey(song.title) !== correctFranchise && song.type === targetType;
+        })
         .map(song => {
             let similarity = 0;
             song.genres.forEach(g => { if (correctSong.genres.includes(g)) similarity += 2; });
@@ -326,10 +303,8 @@ function loadYoutubeAPI() {
     return new Promise((resolve) => {
         if (window.YT && window.YT.Player) {
             ytPlayer = new YT.Player('yt-player', {
-                host: 'https://www.youtube-nocookie.com', // <--- SUPPRIME LES ADS DOUBLECLICK !
-                height: '100%',
-                width: '100%',
-                videoId: '',
+                host: 'https://www.youtube-nocookie.com',
+                height: '100%', width: '100%', videoId: '',
                 playerVars: {
                     'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1,
                     'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3,
@@ -346,10 +321,8 @@ function loadYoutubeAPI() {
 
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('yt-player', {
-                host: 'https://www.youtube-nocookie.com', // <--- SUPPRIME LES ADS DOUBLECLICK !
-                height: '100%',
-                width: '100%',
-                videoId: '',
+                host: 'https://www.youtube-nocookie.com',
+                height: '100%', width: '100%', videoId: '',
                 playerVars: {
                     'autoplay': 0, 'controls': 1, 'disablekb': 1, 'fs': 1,
                     'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'iv_load_policy': 3,
@@ -379,22 +352,22 @@ function loadYoutubeAPI() {
 function handleYoutubeStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         clearTimeout(ytWatchdog);
-        if (gameMode === "multi" && multiGameType === "classic" && !mediaReady) {
+        if (!mediaReady) {
             mediaReady = true;
-            ytPlayer.pauseVideo(); 
+            if (gameMode === "multi") {
+                ytPlayer.pauseVideo(); 
+            }
             signalMediaReady();
-        } else {
-            document.getElementById('audio-status-text').innerText = "Écoutez attentivement...";
         }
     }
 }
 
 function handleYoutubeError(event) {
     clearTimeout(ytWatchdog);
-    if (gameMode === "multi" && multiGameType === "classic" && !mediaReady) {
+    if (gameMode === "multi" && !mediaReady) {
         mediaReady = true;
         signalMediaReady();
-    } else if (ytRetryCount < 2) {
+    } else if (gameMode === "solo" && ytRetryCount < 2) {
         ytRetryCount++;
         setTimeout(() => {
             if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
@@ -406,11 +379,11 @@ function handleYoutubeError(event) {
 }
 
 function unlockNativePlayer() {
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) {
-        nativePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-        nativePlayer.play().catch(() => {});
-    }
+    const playerA = document.getElementById('native-player-a');
+    const playerB = document.getElementById('native-player-b');
+    const silentSrc = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    if (playerA) { playerA.src = silentSrc; playerA.play().catch(() => {}); }
+    if (playerB) { playerB.src = silentSrc; playerB.play().catch(() => {}); }
 }
 
 function applyGlobalVolume() {
@@ -435,7 +408,7 @@ function fadeInAudio() {
     const startVolume = targetVolume / 2;
     let currentStep = 0;
 
-    const nativePlayer = document.getElementById('native-player'); // <--- Pointeur direct corrigé
+    const nativePlayer = document.getElementById('native-player');
 
     if (nativePlayer) {
         nativePlayer.volume = startVolume;
@@ -479,7 +452,6 @@ async function loadMediaForRound(youtubeId) {
     
     const nativePlayerContainer = document.getElementById('native-player-container');
     const ytPlayerContainer = document.getElementById('yt-player-container');
-    const audioPlayer = document.getElementById('game-audio-player');
     const nativePlayer = document.getElementById('native-player');
 
     if (gameMode === "solo") {
@@ -495,7 +467,12 @@ async function loadMediaForRound(youtubeId) {
         }
     }, 2500);
 
-    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+    const currentQuestion = getCurrentQuestion();
+    if (!currentQuestion) {
+        signalMediaReady();
+        return;
+    }
+
     const offset = currentQuestion.startOffset || 0;
 
     if (isDirectVideoUrl(youtubeId)) {
@@ -503,13 +480,12 @@ async function loadMediaForRound(youtubeId) {
         if (nativePlayerContainer) {
             nativePlayerContainer.style.display = 'block';
             
-            let directUrl = currentQuestion.blobUrl || currentQuestion.resolvedUrl;
+            let directUrl = currentQuestion.resolvedUrl;
             if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
 
             if (directUrl && nativePlayer) {
+                currentQuestion.resolvedUrl = directUrl;
                 nativePlayer.src = directUrl;
-                
-                // CORRECTION CRITIQUE : Garder le son actif dès le départ (pas de sourdine !)
                 nativePlayer.muted = (globalVolume === 0);
                 nativePlayer.volume = globalVolume;
 
@@ -520,7 +496,6 @@ async function loadMediaForRound(youtubeId) {
 
                 nativePlayer.load();
 
-                // Lancement immédiat avec le son
                 nativePlayer.play().then(() => {
                     if (!mediaReady) {
                         mediaReady = true;
@@ -528,7 +503,6 @@ async function loadMediaForRound(youtubeId) {
                         signalMediaReady();
                     }
                 }).catch(e => {
-                    console.warn("Autoplay restreint, passage en sourdine de secours :", e);
                     nativePlayer.muted = true;
                     nativePlayer.play();
                     if (!mediaReady) {
@@ -542,7 +516,7 @@ async function loadMediaForRound(youtubeId) {
             }
         }
     } else {
-        // Mode YouTube
+        if (nativePlayer) nativePlayer.pause();
         if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
         if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
 
@@ -570,7 +544,6 @@ async function loadMediaForRound(youtubeId) {
         }
     }
 
-    // Précharge les 2 questions suivantes en arrière-plan
     preloadUpcomingVideos(currentQuestionIndex);
 }
 
@@ -631,19 +604,11 @@ function startRound() {
     if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
         const nativePlayer = document.getElementById('native-player');
         if (nativePlayer) {
-            nativePlayer.muted = (globalVolume === 0);
-            nativePlayer.volume = globalVolume;
-
+            if (nativePlayer.paused) {
+                nativePlayer.play().catch(() => {});
+            }
             if (hasOffset) {
-                nativePlayer.play().then(() => fadeInAudio()).catch(e => {
-                    nativePlayer.muted = true;
-                    nativePlayer.play();
-                });
-            } else {
-                nativePlayer.play().catch(e => {
-                    nativePlayer.muted = true;
-                    nativePlayer.play();
-                });
+                fadeInAudio();
             }
         }
     } else {
@@ -674,11 +639,15 @@ function stopAudio() {
     const nativePlayer = document.getElementById('native-player');
     if (nativePlayer) nativePlayer.pause();
 }
+
 function revealVideo() {
     document.getElementById('placeholder-container').style.opacity = '0';
-    const currentQuestion = questionsPlaylist[currentQuestionIndex].correct;
+    document.getElementById('yt-player-container').classList.add('reveal');
+    document.getElementById('native-player-container').classList.add('reveal');
 
-    if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
+    const currentQuestion = getCurrentQuestion();
+
+    if (currentQuestion && isDirectVideoUrl(currentQuestion.YoutubeId)) {
         const nativePlayer = document.getElementById('native-player');
         if (nativePlayer) {
             nativePlayer.muted = (globalVolume === 0);
@@ -688,9 +657,6 @@ function revealVideo() {
             }
         }
     }
-
-    document.getElementById('yt-player-container').classList.add('reveal');
-    document.getElementById('native-player-container').classList.add('reveal');
 
     if (gameMode === "solo") {
         const manualCb = document.getElementById('manual-progress-checkbox');
@@ -762,7 +728,9 @@ function animateScoreFusion(earnedPoints, nextScoreValue) {
         setTimeout(() => {
             sticker.classList.add('hidden');
             sticker.classList.remove('absorb');
-            scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
+            if (gameMode === "solo") {
+                scoreDisplay.innerText = `SCORE : ${Number(nextScoreValue.toFixed(1))}`;
+            }
             scoreDisplay.classList.add('bulge');
             setTimeout(() => scoreDisplay.classList.remove('bulge'), 250);
         }, 300);
@@ -856,7 +824,7 @@ function loadQuestion() {
         }
     }
 
-    preloadUpcomingVideos(currentQuestionIndex); // <--- Appelle la bonne fonction avec l'index actuel
+    preloadUpcomingVideos(currentQuestionIndex);
     loadMediaForRound(currentQuestion.YoutubeId);
 }
 
@@ -985,11 +953,9 @@ function nextStep() {
     if (gameMode === "solo" || multiGameType === "draft") {
         currentQuestionIndex++;
         
-        // S'il reste des questions à jouer
         if (currentQuestionIndex < questionsPlaylist.length) {
             loadQuestion();
         } else {
-            // SÉCURITÉ : Fin de ses propres questions atteinte
             clearAllTimers();
             stopAudio();
             
@@ -1000,12 +966,9 @@ function nextStep() {
 
                 const maxIndex = questionsPlaylist.length;
 
-                // CORRECTION CRITIQUE : On bascule sur l'écran d'attente SYNCHRONEMENT tout de suite
-                // (Cela empêche le .then() de s'exécuter en retard et d'écraser l'écran de Bilan !)
                 showScreen('screen-waiting-opponent');
                 if (typeof renderWaitingLastVideo === "function") renderWaitingLastVideo();
 
-                // Envoi de la fin de partie à Firebase en arrière-plan
                 update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
                     isFinished: true,
                     currentQuestionIndex: maxIndex,
@@ -1013,7 +976,6 @@ function nextStep() {
                 }).catch(err => {
                     console.error("Erreur de mise à jour de fin:", err);
                 });
-
             } else {
                 endGame();
             }
@@ -1021,6 +983,30 @@ function nextStep() {
     } else {
         if (myRole === "p1") moveToNextRound();
     }
+}
+
+function moveToNextRound() {
+    get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
+        const room = snapshot.val();
+        if (room.roundStatus === "revealed") {
+            const nextIndex = currentQuestionIndex + 1;
+            if (nextIndex < questionsPlaylist.length) {
+                update(ref(db, `rooms/${roomCode}`), {
+                    currentQuestionIndex: nextIndex,
+                    roundStatus: "loading",
+                    roundWinner: "none",
+                    "players/p1/hasAnswered": false,
+                    "players/p1/isCorrect": false,
+                    "players/p1/isReady": false,
+                    "players/p2/hasAnswered": false,
+                    "players/p2/isCorrect": false,
+                    "players/p2/isReady": false
+                });
+            } else {
+                update(ref(db, `rooms/${roomCode}`), { status: "finished" });
+            }
+        }
+    });
 }
 
 // --- PHASE DE SÉLECTION (MODE DÉFI) ---
@@ -1035,6 +1021,10 @@ function resetSelectionUI() {
     if (autoBtn) autoBtn.disabled = false;
     if (confirmBtn) confirmBtn.disabled = true;
     if (waitMsg) waitMsg.classList.add('hidden');
+
+    // Vider impérativement les cartes de la partie précédente
+    const choicesContainer = document.getElementById('choices-container');
+    if (choicesContainer) choicesContainer.innerHTML = "";
 
     renderSelectionGrid();
     updateSelectionUI();
@@ -1175,6 +1165,7 @@ function createHistoryItemHTML(item) {
     return div;
 }
 
+// Affiche la dernière vidéo jouée dans l'écran d'attente de manière instantanée
 async function renderWaitingLastVideo() {
     const container = document.getElementById('waiting-video-container');
     if (!playedHistory || playedHistory.length === 0 || !container) return;
@@ -1182,25 +1173,35 @@ async function renderWaitingLastVideo() {
     const lastSong = playedHistory[playedHistory.length - 1].song;
     container.innerHTML = "<p style='color:white; font-size:0.85rem;'>Chargement de votre dernier morceau...</p>";
 
-    // Utilise lastSong.YoutubeId (Y majuscule)
     if (isDirectVideoUrl(lastSong.YoutubeId)) {
-        const directUrl = await getDirectVideoUrl(lastSong.YoutubeId);
+        // CORRECTION : Réutilise en priorité l'URL déjà résolue pendant le quiz !
+        let directUrl = lastSong.blobUrl || lastSong.resolvedUrl;
+        if (!directUrl) directUrl = await getDirectVideoUrl(lastSong.YoutubeId);
+
         if (directUrl) {
-            container.innerHTML = `<video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>`;
+            container.innerHTML = `
+                <video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>
+            `;
+        } else {
+            container.innerHTML = "<p style='color:#ef4444; font-size:0.85rem;'>Erreur de chargement de la vidéo.</p>";
         }
     } else {
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${lastSong.YoutubeId}?autoplay=1&controls=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        // Si c'est une vidéo YouTube
+        container.innerHTML = `
+            <iframe src="https://www.youtube.com/embed/${lastSong.YoutubeId}?autoplay=1&controls=1" 
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen>
+            </iframe>
+        `;
     }
 }
-
 async function playHistoryVideo(youtubeId) {
     const modal = document.getElementById('video-modal');
     const ytContainer = document.getElementById('modal-yt-container');
 
-    // Utilise youtubeId (y minuscule) qui est le nom du paramètre
     if (isDirectVideoUrl(youtubeId)) {
         ytContainer.innerHTML = "<p style='color:white; text-align:center; margin-top:20%;'>Chargement de la vidéo...</p>";
-        const directUrl = await getDirectVideoUrl(youtubeId);
+        const directUrl = await getAnimeThemesVideoUrl(youtubeId);
         if (directUrl) {
             ytContainer.innerHTML = `<video src="${directUrl}" controls autoplay playsinline style="width:100%; height:100%; border-radius:8px;"></video>`;
         } else {
@@ -1412,10 +1413,7 @@ async function startSoloGame() {
     questionsPlaylist = generatePlaylist(totalQuestions, musicType, randomStart);
     if (questionsPlaylist.length === 0) return;
     
-    // --- 1. PRIORITÉ 100% À LA QUESTION 1 (Attente bloquante prioritaire) ---
     await preloadFirstVideo();
-    
-    // --- 2. ENSUITE SEULEMENT, LANCEMENT DE LA SUITE EN ARRIÈRE-PLAN ---
     preloadUpcomingVideos(0);
     preloadImages(questionsPlaylist[0]);
 
@@ -1469,7 +1467,7 @@ function createRoom() {
         players: {
             p1: { name: username, score: 0, hasAnswered: false, isCorrect: false, playAgain: false, isReady: false, isSelectionReady: false, isFinished: false, currentQuestionIndex: 0 }
         }
-    }).then(() => {
+    }).then(async () => {
         document.getElementById('display-room-code').innerText = roomCode;
         document.getElementById('display-room-mode').innerText = musicType;
         document.getElementById('display-room-length').innerText = totalQuestions;
@@ -1479,10 +1477,9 @@ function createRoom() {
         document.getElementById('waiting-msg').classList.add('hidden');
         showScreen('screen-lobby');
         
-        // --- MODE MULTI (HÔTE) : Seulement si la playlist est déjà générée (Mode Classique) ---
         if (playlist.length > 0) {
             questionsPlaylist = playlist;
-            preloadFirstVideo(); 
+            await preloadFirstVideo();
             preloadUpcomingVideos(0);
             preloadImages(playlist[0]);
         }
@@ -1530,12 +1527,9 @@ function joinRoom() {
             document.getElementById('btn-start-game').classList.add('hidden');
             document.getElementById('waiting-msg').classList.remove('hidden');
             showScreen('screen-lobby');
-
-            // --- MODE MULTI (INVITÉ) : Reçoit la playlist de l'hôte ---
+            
             if (roomData.playlist && roomData.playlist.length > 0) {
                 questionsPlaylist = roomData.playlist;
-                
-                // Priorité 100% Question 1 d'abord
                 await preloadFirstVideo();
                 preloadUpcomingVideos(0);
                 preloadImages(questionsPlaylist[0]);
@@ -1570,6 +1564,15 @@ function listenToRoom() {
         if (room.status === "selection") {
             if (document.getElementById('screen-selection').classList.contains('hidden')) {
                 clearAllTimers();
+                
+                // Réinitialisation complète des variables locales pour le rejeu
+                currentQuestionIndex = 0;
+                score = 0;
+                opponentScore = 0;
+                playedHistory = [];
+                hasAnsweredCurrent = false;
+                isRoundActive = false;
+                
                 resetSelectionUI();
                 showScreen('screen-selection');
             }
@@ -1578,7 +1581,6 @@ function listenToRoom() {
                 const p1Selected = room.players.p1.selectedSongIds || [];
                 const p2Selected = room.players.p2.selectedSongIds || [];
 
-                // CORRECTION 1 : Conversion explicite en Number() pour éviter l'erreur de playlist vide
                 const songsForP1 = animeDatabase.filter(s => p2Selected.map(Number).includes(Number(s.id)));
                 const songsForP2 = animeDatabase.filter(s => p1Selected.map(Number).includes(Number(s.id)));
 
@@ -1616,15 +1618,28 @@ function listenToRoom() {
 
         // --- PHASE DE JEU MULTIJOUEUR ---
         if (room.status === "playing") {
-            // CORRECTION 2 : FERMETURE IMMÉDIATE DU SALON / ÉCRAN DE SÉLECTION DÈS LE DÉPART DU MATCH
-            if (!document.getElementById('screen-lobby').classList.contains('hidden') || !document.getElementById('screen-selection').classList.contains('hidden')) {
-                showScreen('screen-game');
-            }
-
             if (multiGameType === "draft") {
                 questionsPlaylist = (myRole === "p1") ? room.p1_playlist : room.p2_playlist;
+                
+                // CORRECTION CRITIQUE : Si on vient de l'écran de sélection ou du Bilan, on lance la Question 1 à coup sûr !
+                if (!document.getElementById('screen-selection').classList.contains('hidden') || !document.getElementById('screen-results').classList.contains('hidden')) {
+                    clearAllTimers();
+                    currentQuestionIndex = 0;
+                    score = 0;
+                    opponentScore = 0;
+                    playedHistory = [];
+                    hasAnsweredCurrent = false;
+                    isRoundActive = false;
+                    
+                    showScreen('screen-game');
+                    preloadFirstVideo();
+                    loadQuestion();
+                }
             } else {
-                questionsPlaylist = room.playlist;
+                if (!document.getElementById('screen-lobby').classList.contains('hidden') || !document.getElementById('screen-results').classList.contains('hidden')) {
+                    questionsPlaylist = room.playlist;
+                    showScreen('screen-game');
+                }
             }
 
             const totalQEl = document.getElementById('total-questions-num');
@@ -1693,7 +1708,6 @@ function listenToRoom() {
                     triggerProgression();
                 }
             } else {
-                // Mode Défi (Draft)
                 if (document.getElementById('choices-container').children.length === 0) {
                     preloadFirstVideo();
                     loadQuestion();
@@ -1754,7 +1768,6 @@ async function init() {
         if (e.target.id === "video-modal") closeVideoModal();
     });
 
-    // Débloqueur de son universel au clic
     document.body.addEventListener('click', () => {
         const nativePlayer = document.getElementById('native-player');
         const nativeContainer = document.getElementById('native-player-container');
