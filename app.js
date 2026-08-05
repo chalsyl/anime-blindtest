@@ -44,6 +44,7 @@ let globalVolume = 1.0;
 let controlsInterval = null; 
 
 let selectedSongIds = [];
+let loadedQuestionKey = -1; 
 
 // NETTOYEUR DE TIMERS FANTÔMES
 function clearAllTimers() {
@@ -67,6 +68,54 @@ async function loadDatabase() {
 
 function getBaseAnimeName(title) {
     return title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
+}
+
+// Extraire le numéro de l'OP ou ED (ex: "Tokyo Ghoul:re ED 1" -> "ED 1")
+function getOpEdBadgeText(title) {
+    if (!title) return "";
+    const match = title.match(/(?:OP|ED)\s?\d+/i);
+    return match ? match[0].toUpperCase() : "";
+}
+
+// Clé de franchise ultra-nettoyée (supprime les symboles comme √, :, -, /, et les termes de saison/suite)
+function getFranchiseKey(title) {
+    if (!title) return "";
+    let base = title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
+    
+    // 1. Remplacer les caractères spéciaux (√, :, -, /, !, ?, ~, etc.) par des espaces
+    base = base.replace(/[^a-z0-9\s]/gi, ' ').trim();
+    
+    // 2. Supprimer les mots-clés de suites courants
+    base = base.replace(/\b(season|part|movie|final|specials?|ova|oad|re|root|z|gt|super|kai|first|second|third|1st|2nd|3rd|4th)\b/gi, '').trim();
+    
+    // 3. Supprimer les chiffres romains et numéros en fin de mot
+    base = base.replace(/\s+(?:[ivxldcm]+)\b$/gi, '').trim();
+    base = base.replace(/\s+\d+$/g, '').trim();
+    
+    // 4. Nettoyer les espaces multiples
+    base = base.replace(/\s+/g, ' ').trim();
+
+    // Garde les 2 premiers mots principaux (ex: "tokyo ghoul")
+    const words = base.split(' ');
+    if (words.length >= 2) {
+        return `${words[0]} ${words[1]}`;
+    }
+    return base;
+}
+
+// Comparateur de franchise puissant sans faux positifs
+function isSameFranchise(title1, title2) {
+    const key1 = getFranchiseKey(title1);
+    const key2 = getFranchiseKey(title2);
+    
+    if (!key1 || !key2) return false;
+    if (key1 === key2) return true;
+    
+    // Si les deux racines font au moins 4 lettres, vérifie si l'une commence par l'autre
+    if (key1.length >= 4 && key2.length >= 4) {
+        if (key1.startsWith(key2) || key2.startsWith(key1)) return true;
+    }
+    return false;
 }
 
 // --- SÉCURISATEUR UNIVERSEL D'ACCÈS AUX QUESTIONS ---
@@ -122,14 +171,6 @@ async function getAnimeThemesVideoUrl(animethemesUrl) {
         }
     } catch (e) {}
     return null;
-}
-
-function getFranchiseKey(title) {
-    let base = title.split(/ (?:OP|ED)\s?\d*/i)[0].trim().toLowerCase();
-    base = base.split(/ -|:| \d*(?:st|nd|rd|th)?\s*season| s\d+| part/i)[0].trim();
-    base = base.replace(/\s+(?:[ivxldcm]+)\b$/gi, '').trim();
-    base = base.replace(/\s+\d+$/g, '').trim();
-    return base;
 }
 
 function preloadImages(questionObj) {
@@ -236,7 +277,10 @@ function generatePlaylist(length = 10, musicTypeChoice = "Mix", randomStartChoic
 }
 
 function buildPlaylistFromSongs(songsList, randomStartChoice = false) {
-    return songsList.map(correctSong => {
+    // CORRECTION : Mélange aléatoire de la sélection pour disperser les morceaux du même animé
+    const shuffledSongs = [...songsList].sort(() => 0.5 - Math.random());
+
+    return shuffledSongs.map(correctSong => {
         const distractors = getSimilarAnime(correctSong, 3);
         const choices = [correctSong, ...distractors].sort(() => 0.5 - Math.random());
         const startOffset = randomStartChoice ? (Math.random() < 0.5 ? 25 : 50) : 0;
@@ -246,7 +290,7 @@ function buildPlaylistFromSongs(songsList, randomStartChoice = false) {
                 id: correctSong.id || 0,
                 title: correctSong.title || "Inconnu",
                 image: correctSong.image || "",
-                YoutubeId: correctSong.YoutubeId || correctSong.youtubeId || "",
+                YoutubeId: correctSong.YoutubeId || "",
                 type: correctSong.type || "",
                 genres: correctSong.genres || [],
                 themes: correctSong.themes || [],
@@ -258,12 +302,12 @@ function buildPlaylistFromSongs(songsList, randomStartChoice = false) {
 }
 
 function getSimilarAnime(correctSong, count = 3) {
-    const correctFranchise = getFranchiseKey(correctSong.title);
     const targetType = correctSong.type; 
 
     const candidates = animeDatabase
         .filter(song => {
-            return getFranchiseKey(song.title) !== correctFranchise && song.type === targetType;
+            // Exclut la même franchise que la bonne réponse (ex: bloque Tokyo Ghoul:re si la réponse est Tokyo Ghoul)
+            return !isSameFranchise(song.title, correctSong.title) && song.type === targetType;
         })
         .map(song => {
             let similarity = 0;
@@ -275,13 +319,13 @@ function getSimilarAnime(correctSong, count = 3) {
     candidates.sort((a, b) => b.score - a.score);
 
     const selectedDistractors = [];
-    const usedFranchises = new Set([correctFranchise]);
 
     for (const candidate of candidates) {
-        const candidateFranchise = getFranchiseKey(candidate.song.title);
-        if (!usedFranchises.has(candidateFranchise)) {
+        // Vérifie si la franchise du candidat est déjà utilisée par un autre choix de cette manche
+        const alreadyUsed = selectedDistractors.some(distractor => isSameFranchise(distractor.title, candidate.song.title));
+        
+        if (!alreadyUsed) {
             selectedDistractors.push(candidate.song);
-            usedFranchises.add(candidateFranchise);
         }
         if (selectedDistractors.length === count) break;
     }
@@ -754,6 +798,12 @@ function cleanHistoryForFirebase(history) {
 
 // --- INITIALISATION DE LA QUESTION ---
 function loadQuestion() {
+    const choicesContainerCheck = document.getElementById('choices-container');
+    if (loadedQuestionKey === currentQuestionIndex && choicesContainerCheck && choicesContainerCheck.children.length === 4) {
+        return; // Annule l'exécution en doublon !
+    }
+    loadedQuestionKey = currentQuestionIndex;
+
     hasAnsweredCurrent = false;
     roundProcessed = false;
     isRoundActive = false; 
@@ -799,12 +849,18 @@ function loadQuestion() {
 
     const choicesContainer = document.getElementById('choices-container');
     if (choicesContainer) {
-        choicesContainer.innerHTML = "";
+        choicesContainer.innerHTML = ""; // Supprime les cartes de la question précédente
+
         choices.forEach((song, index) => {
             const card = document.createElement('div');
             card.className = (gameMode === "multi" && multiGameType === "classic") ? "choice-card disabled" : "choice-card"; 
+            
+            const badgeText = getOpEdBadgeText(song.title);
+            const badgeHtml = badgeText ? `<div class="card-type-badge">${badgeText}</div>` : "";
+
             card.innerHTML = `
                 <div class="choice-number">${index + 1}</div>
+                ${badgeHtml}
                 <img src="${song.image}" alt="${song.title}">
                 <span>${song.title}</span>
             `;
@@ -1012,6 +1068,7 @@ function moveToNextRound() {
 // --- PHASE DE SÉLECTION (MODE DÉFI) ---
 function resetSelectionUI() {
     selectedSongIds = [];
+    loadedQuestionKey = -1;
     const searchInp = document.getElementById('selection-search');
     const autoBtn = document.getElementById('btn-auto-fill');
     const confirmBtn = document.getElementById('btn-confirm-selection');
@@ -1043,7 +1100,12 @@ function renderSelectionGrid(filterText = "") {
         const isSelected = selectedSongIds.includes(song.id);
         card.className = "selection-card" + (isSelected ? " selected" : "");
 
+        // Extrait le badge OP/ED pour l'afficher dans le coin supérieur droit
+        const badgeText = getOpEdBadgeText(song.title);
+        const badgeHtml = badgeText ? `<div class="card-type-badge">${badgeText}</div>` : "";
+
         card.innerHTML = `
+            ${badgeHtml}
             <img src="${song.image}" alt="${song.title}">
             <span>${song.title}</span>
         `;
@@ -1400,6 +1462,7 @@ async function startSoloGame() {
     
     gameMode = "solo";
     currentQuestionIndex = 0;
+    loadedQuestionKey = -1;
     score = 0;
     playedHistory = [];
 
@@ -1447,12 +1510,14 @@ function createRoom() {
     myRole = "p1";
     gameMode = "multi";
     playedHistory = [];
+    
+    // --- RÉINITIALISATION LOCALE DE LA VARIABLE ---
+    loadedQuestionKey = -1; // <--- C'est ici qu'il faut le placer en mémoire JavaScript !
 
-    let playlist = [];
-    if (multiGameType === "classic") {
-        playlist = generatePlaylist(totalQuestions, musicType, randomStart);
-    }
+    const playlist = generatePlaylist(totalQuestions, musicType, randomStart);
+    if (playlist.length === 0) return;
 
+    // Firebase n'a pas besoin de connaître loadedQuestionKey
     set(ref(db, `rooms/${roomCode}`), {
         status: "waiting",
         currentQuestionIndex: 0,

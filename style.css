@@ -325,6 +325,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     flex-direction: column;
     align-items: center;
     position: relative;
+    overflow: hidden;
 }
 
 .selection-card:hover {
@@ -596,6 +597,32 @@ input[type="text"]:focus, input[type="number"]:focus {
     margin-bottom: 15px;
 }
 
+/* Badge de type de musique (OP / ED) dans le coin supérieur droit */
+.card-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 550px) {
+    .card-type-badge {
+        font-size: 0.6rem;
+        padding: 1px 4px;
+        top: 6px;
+        right: 6px;
+    }
+}
+
 /* --- EN-TÊTE DE JEU (3 COLONNES) --- */
 .game-header {
     display: grid;
@@ -822,6 +849,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     align-items: center;
     position: relative;
     overflow: hidden;
+    min-height: 160px; /* Empêche la carte de s'écraser */
 }
 
 .choice-card:hover {
@@ -831,8 +859,10 @@ input[type="text"]:focus, input[type="number"]:focus {
 
 .choice-card img {
     width: 100%;
-    aspect-ratio: 2 / 3;
+    height: auto; /* Supprime la hauteur de 135px qui forçait l'image en carré */
+    aspect-ratio: 2 / 3; /* Le navigateur calcule la hauteur = Largeur x 1.5 */
     object-fit: cover;
+    flex-shrink: 0;
     border-radius: 12px;
     margin-bottom: 6px;
 }
@@ -955,8 +985,10 @@ input[type="text"]:focus, input[type="number"]:focus {
     /* Conserve un format vertical 2:3 parfait sur smartphone sans déformer */
     .choice-card img {
         width: 80px !important;
-        height: 120px !important;
+        height: 120px !important; /* 80 x 1.5 = 120 (Ratio 2:3 exact) */
+        aspect-ratio: 2 / 3;
         object-fit: cover;
+        flex-shrink: 0;
         border-radius: 8px;
         margin-bottom: 4px;
     }
