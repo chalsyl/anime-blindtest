@@ -2098,18 +2098,18 @@
   },
   {
     "id": 233,
-    "title": "JoJo's Bizarre Adventure: Stardust Crusaders OP 2",
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders - Battle in Egypt OP 1",
     "type": "OP",
-    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/11/75045l.jpg",
     "genres": ["Action", "Adventure", "Supernatural"],
     "themes": ["Shounen", "Super Power"],
     "YoutubeId": "JlVpQucPS-o"
   },
   {
     "id": 234,
-    "title": "JoJo's Bizarre Adventure: Stardust Crusaders ED 2",
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders - Battle in Egypt ED 1",
     "type": "ED",
-    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20474-xuqem5GBlBtb.jpg",
+    "image": "https://cdn.myanimelist.net/images/anime/11/75045l.jpg",
     "genres": ["Action", "Adventure", "Supernatural"],
     "themes": ["Shounen", "Super Power"],
     "YoutubeId": "KIQWQRa_OqA"
@@ -3382,5 +3382,500 @@
     "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Romance"],
     "themes": ["Shounen", "Historical", "Love Polygon", "Mythology", "Time Travel"],
     "YoutubeId": "5TGzlhtNMps"
+  },
+  {
+    "id": 377,
+    "title": "Miss Kobayashi's Dragon Maid OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21776-bwPaYKhnKfUs.png",
+    "genres": ["Comedy", "Fantasy", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "Ku5fgOHy1JY"
+  },
+  {
+    "id": 378,
+    "title": "Miss Kobayashi's Dragon Maid ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21776-bwPaYKhnKfUs.png",
+    "genres": ["Comedy", "Fantasy", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "hY3HpAOsfm8"
+  },
+  {
+    "id": 379,
+    "title": "Miss Kobayashi's Dragon Maid S OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx107717-bixaW1NTGBra.jpg",
+    "genres": ["Comedy", "Fantasy", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "K6KXOz459M"
+  },
+  {
+    "id": 380,
+    "title": "Miss Kobayashi's Dragon Maid S ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx107717-bixaW1NTGBra.jpg",
+    "genres": ["Comedy", "Fantasy", "Slice of Life", "Supernatural"],
+    "themes": ["Seinen"],
+    "YoutubeId": "IuAeQvzx1H4"
+  },
+  {
+    "id": 381,
+    "title": "Bungo Stray Dogs 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21679-9MKdz1A7YLV7.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "ILPkcaleQ38"
+  },
+  {
+    "id": 382,
+    "title": "Bungo Stray Dogs 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21679-9MKdz1A7YLV7.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "4iHXdgJTYfw"
+  },
+  {
+    "id": 383,
+    "title": "Bungo Stray Dogs 3 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx103223-bfdnnKWxE4YE.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "-odMJoRGoho"
+  },
+  {
+    "id": 384,
+    "title": "Bungo Stray Dogs 3 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx103223-bfdnnKWxE4YE.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "ytuUjBqiBg0"
+  },
+  {
+    "id": 385,
+    "title": "Bungo Stray Dogs 4 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx141249-8tjavEDHmLoT.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "9_Vo90LIWMg"
+  },
+  {
+    "id": 386,
+    "title": "Bungo Stray Dogs 4 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx141249-8tjavEDHmLoT.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "IRkeh-RUBtg"
+  },
+  {
+    "id": 387,
+    "title": "Bungo Stray Dogs 5 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163263-uz881pFAyi7P.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "_i7LCT0oSg0"
+  },
+  {
+    "id": 388,
+    "title": "Bungo Stray Dogs 5 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163263-uz881pFAyi7P.jpg",
+    "genres": ["Action", "Comedy", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Adult Cast", "Detective", "Organized Crime", "Super Power"],
+    "YoutubeId": "r4uDLVp7PNc"
+  },
+  {
+    "id": 389,
+    "title": "Death Note OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+    "genres": ["Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Psychological"],
+    "YoutubeId": "Bt3D3Ca9nww"
+  },
+  {
+    "id": 390,
+    "title": "Death Note ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+    "genres": ["Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Psychological"],
+    "YoutubeId": "pBiFmadbQg8"
+  },
+  {
+    "id": 391,
+    "title": "Death Note OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+    "genres": ["Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Psychological"],
+    "YoutubeId": "e6sSMIfG94k"
+  },
+  {
+    "id": 392,
+    "title": "Death Note ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg",
+    "genres": ["Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Psychological"],
+    "YoutubeId": "rw05U7fzGvE"
+  },
+  {
+    "id": 393,
+    "title": "Re:ZERO -Starting Life in Another World- OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "zoqqPshRCuQ"
+  },
+  {
+    "id": 394,
+    "title": "Re:ZERO -Starting Life in Another World- ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "JhCPPQ5PBdk"
+  },
+  {
+    "id": 395,
+    "title": "Re:ZERO -Starting Life in Another World- OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "Jo5HjzgoiZA"
+  },
+  {
+    "id": 396,
+    "title": "Re:ZERO -Starting Life in Another World- ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "OwpehHNlXM8"
+  },
+  {
+    "id": 397,
+    "title": "Re:ZERO -Starting Life in Another World- Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108632-lQWnmw7XaNOK.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "w-RUTZBbGwM"
+  },
+  {
+    "id": 398,
+    "title": "Re:ZERO -Starting Life in Another World- Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108632-lQWnmw7XaNOK.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "lQaufCqi5v4"
+  },
+  {
+    "id": 399,
+    "title": "Re:ZERO -Starting Life in Another World- Season 2 Part 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx119661-GDbUZxrZMz01.png",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "lUmLhQBGtYw"
+  },
+  {
+    "id": 400,
+    "title": "Re:ZERO -Starting Life in Another World- Season 2 Part 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx119661-GDbUZxrZMz01.png",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "o_MT4YLhZxM"
+  },
+  {
+    "id": 401,
+    "title": "Re:ZERO -Starting Life in Another World- Season 3 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163134-yieRFbvUOH9a.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "wKvBpv2idRc"
+  },
+  {
+    "id": 402,
+    "title": "Re:ZERO -Starting Life in Another World- Season 3 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163134-yieRFbvUOH9a.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "aPzI7S3MVI4"
+  },
+  {
+    "id": 403,
+    "title": "Re:ZERO -Starting Life in Another World- Season 4 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx189046-yaHWtS5FII46.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "BIz3B88JbNc"
+  },
+  {
+    "id": 404,
+    "title": "Re:ZERO -Starting Life in Another World- Season 4 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx189046-yaHWtS5FII46.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy", "Romance", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Isekai", "Time Travel"],
+    "YoutubeId": "iKLqlb_oX60"
+  },
+  {
+    "id": 405,
+    "title": "Tokyo Ghoul OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg",
+    "genres": ["Action", "Drama", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "RrfyrqvQ_Wk"
+  },
+  {
+    "id": 406,
+    "title": "Tokyo Ghoul ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg",
+    "genres": ["Action", "Drama", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "kSkSvK6Zx_I"
+  },
+  {
+    "id": 407,
+    "title": "Tokyo Ghoul √A OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20850-glDf9EMKeCwe.jpg",
+    "genres": ["Action", "Drama", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "qM8wxM_mcRw"
+  },
+  {
+    "id": 408,
+    "title": "Tokyo Ghoul √A ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20850-glDf9EMKeCwe.jpg",
+    "genres": ["Action", "Drama", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "MAw59zSbGqs"
+  },
+  {
+    "id": 409,
+    "title": "Tokyo Ghoul:re OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx100240-vJNaKd5HwPJ2.jpg",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "yWJlaumHQIY"
+  },
+  {
+    "id": 410,
+    "title": "Tokyo Ghoul:re ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx100240-vJNaKd5HwPJ2.jpg",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "a4RRHEeunjg"
+  },
+  {
+    "id": 411,
+    "title": "Tokyo Ghoul:re 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102351-yD3Ty9YZFMsf.jpg",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "K55ktT_rxVg"
+  },
+  {
+    "id": 412,
+    "title": "Tokyo Ghoul:re 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx102351-yD3Ty9YZFMsf.jpg",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Gore", "Urban Fantasy"],
+    "YoutubeId": "https://animethemes.moe/anime/tokyo_ghoulre_2nd_season/ED1"
+  },
+  {
+    "id": 413,
+    "title": "Dororo OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101347-TGaDwEYqLfm1.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Samurai"],
+    "YoutubeId": "6vk4X0EF0kc"
+  },
+  {
+    "id": 414,
+    "title": "Dororo ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101347-TGaDwEYqLfm1.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Samurai"],
+    "YoutubeId": "PNEFDufPRQs"
+  },
+  {
+    "id": 415,
+    "title": "Dororo OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101347-TGaDwEYqLfm1.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Samurai"],
+    "YoutubeId": "6xrfpWirGhA"
+  },
+  {
+    "id": 416,
+    "title": "Dororo ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101347-TGaDwEYqLfm1.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Supernatural", "Fantasy"],
+    "themes": ["Shounen", "Historical", "Mythology", "Samurai"],
+    "YoutubeId": "NBV3lA3LbGQ"
+  },
+  {
+    "id": 417,
+    "title": "Link Click OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx126403-BfVSRzWUtVFW.png",
+    "genres": ["Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Adult Cast", "Super Power", "Time Travel"],
+    "YoutubeId": "ZtEBMYcZvjY"
+  },
+  {
+    "id": 418,
+    "title": "Link Click ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx126403-BfVSRzWUtVFW.png",
+    "genres": ["Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Adult Cast", "Super Power", "Time Travel"],
+    "YoutubeId": "I4BnU5Uqgsg"
+  },
+  {
+    "id": 419,
+    "title": "Link Click Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx136484-QiHcF64PVWQi.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Adult Cast", "Super Power", "Time Travel"],
+    "YoutubeId": "KUBqBkGrmso"
+  },
+  {
+    "id": 420,
+    "title": "Link Click Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx136484-QiHcF64PVWQi.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Adult Cast", "Super Power", "Time Travel"],
+    "YoutubeId": "LGsRUS5Xtw"
+  },
+  {
+    "id": 421,
+    "title": "Link Click: Bridon Arc OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx170166-VpX7l0Horthq.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Adult Cast", "Super Power", "Time Travel"],
+    "YoutubeId": "5xwnTO6A79o"
+  },
+  {
+    "id": 422,
+    "title": "Link Click: Bridon Arc ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx170166-VpX7l0Horthq.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Adult Cast", "Super Power", "Time Travel"],
+    "YoutubeId": "hk0tw2GWSCM"
+  },
+  {
+    "id": 423,
+    "title": "OSHI NO KO OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx150672-WqmmwZ4nMzAy.png",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "PgBvV9ofjmA"
+  },
+  {
+    "id": 424,
+    "title": "OSHI NO KO ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx150672-WqmmwZ4nMzAy.png",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "0saw1cGIl1A"
+  },
+  {
+    "id": 425,
+    "title": "OSHI NO KO Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166531-dAL5MsqDHUkj.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "PAcf55v6zqQ"
+  },
+  {
+    "id": 426,
+    "title": "OSHI NO KO Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx166531-dAL5MsqDHUkj.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "JuS4iuhG-vc"
+  },
+  {
+    "id": 427,
+    "title": "OSHI NO KO Season 3 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182587-fsU8LOjmd7oj.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "5B-ZPcq8KxQ"
+  },
+  {
+    "id": 428,
+    "title": "OSHI NO KO Season 3 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182587-fsU8LOjmd7oj.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "ZWvFR00t-NE"
+  },
+  {
+    "id": 429,
+    "title": "OSHI NO KO Season 3 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182587-fsU8LOjmd7oj.jpg",
+    "genres": ["Drama", "Mystery", "Supernatural"],
+    "themes": ["Seinen", "Psychological", "Reincarnation"],
+    "YoutubeId": "QgIQbeRzkkc"
+  },
+  {
+    "id": 430,
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders - Battle in Egypt ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20799-S1eyqBDlx51E.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "h_-9wOXKaZw"
+  },
+  {
+    "id": 431,
+    "title": "JoJo's Bizarre Adventure: Stardust Crusaders - Battle in Egypt ED 3",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20799-S1eyqBDlx51E.jpg",
+    "genres": ["Action", "Adventure", "Supernatural"],
+    "themes": ["Shounen", "Super Power"],
+    "YoutubeId": "1JP8M7-yY58"
   }
 ]
