@@ -4786,5 +4786,158 @@
     "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
     "themes": ["Shounen"],
     "YoutubeId": "oHivIGj4EqI"
+  },
+  {
+    "id": 531,
+    "title": "Delicious in Dungeon OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153518-IVXPDY5ph3kO.jpg",
+    "genres": ["Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Seinen"],
+    "YoutubeId": "60_2zt9l3Yk"
+  },
+  {
+    "id": 532,
+    "title": "Delicious in Dungeon ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153518-IVXPDY5ph3kO.jpg",
+    "genres": ["Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Seinen"],
+    "YoutubeId": "jio_17jg980"
+  },
+  {
+    "id": 533,
+    "title": "Delicious in Dungeon OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153518-IVXPDY5ph3kO.jpg",
+    "genres": ["Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Seinen"],
+    "YoutubeId": "asyT-N1Ip70"
+  },
+  {
+    "id": 534,
+    "title": "Delicious in Dungeon ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153518-IVXPDY5ph3kO.jpg",
+    "genres": ["Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Seinen"],
+    "YoutubeId": "8Uba6oz7AC8"
+  },
+  {
+    "id": 535,
+    "title": "Mobile Suit Gundam OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/1031/91561l.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "ZszGvGAR5NU"
+  },
+  {
+    "id": 536,
+    "title": "Mobile Suit Gundam ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/1031/91561l.jpg",
+    "genres": ["Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "3a3NMejuFbE"
+  },
+  {
+    "id": 537,
+    "title": "Mobile Suit Zeta Gundam OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/6/11153l.jpg",
+    "genres": ["Drama", "Sci-Fi", "Romance"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "X82QTT_vJI0"
+  },
+  {
+    "id": 538,
+    "title": "Mobile Suit Zeta Gundam ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/6/11153l.jpg",
+    "genres": ["Drama", "Sci-Fi", "Romance"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "cnqnRQlicqk"
+  },
+  {
+    "id": 539,
+    "title": "Mobile Suit Zeta Gundam OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/6/11153l.jpg",
+    "genres": ["Drama", "Sci-Fi", "Romance"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "bM9IvVH3pKE"
+  },
+  {
+    "id": 540,
+    "title": "Mobile Suit Gundam 00 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2581-MLEf00dNAfqY.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "04wwfBUbvh4"
+  },
+  {
+    "id": 541,
+    "title": "Mobile Suit Gundam 00 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2581-MLEf00dNAfqY.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "EddtXOChCcM"
+  },
+  {
+    "id": 542,
+    "title": "Mobile Suit Gundam 00 OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2581-MLEf00dNAfqY.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "GDT_6zd_lvo"
+  },
+  {
+    "id": 543,
+    "title": "Mobile Suit Gundam 00  ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx2581-MLEf00dNAfqY.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "4RbtscV9QwE"
+  },
+  {
+    "id": 544,
+    "title": "Mobile Suit Gundam 00 Second Season OP 1",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/10/13185l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "5gdItTOUpDM"
+  },
+  {
+    "id": 545,
+    "title": "Mobile Suit Gundam 00 Second Season ED 1",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/10/13185l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "o8aD52zktFo"
+  },
+  {
+    "id": 546,
+    "title": "Mobile Suit Gundam 00 Second Season OP 2",
+    "type": "OP",
+    "image": "https://cdn.myanimelist.net/images/anime/10/13185l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "CgqXWXjA8WE"
+  },
+  {
+    "id": 547,
+    "title": "Mobile Suit Gundam 00 Second Season ED 2",
+    "type": "ED",
+    "image": "https://cdn.myanimelist.net/images/anime/10/13185l.jpg",
+    "genres": ["Action", "Drama", "Sci-Fi"],
+    "themes": ["Mecha", "Military", "Space"],
+    "YoutubeId": "3NYliAI8LFM"
   }
 ]
