@@ -3903,7 +3903,7 @@
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx199547-LAaG3cmKCGhr.jpg",
     "genres": ["Action", "Comedy", "Drama", "Romance"],
     "themes": ["Shounen", "Adult Cast"],
-    "YoutubeId": ""
+    "YoutubeId": "8kDuurgaQow"
   },
   {
     "id": 435,
@@ -3912,7 +3912,7 @@
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx199547-LAaG3cmKCGhr.jpg",
     "genres": ["Action", "Comedy", "Drama", "Romance"],
     "themes": ["Shounen", "Adult Cast"],
-    "YoutubeId": ""
+    "YoutubeId": "RG38wnLdkNQ"
   },
   {
     "id": 436,
@@ -3920,8 +3920,8 @@
     "type": "OP",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx198113-NRa47idWSlnx.jpg",
     "genres": ["Action", "Comedy"],
-    "themes": ["Shounen"],
-    "YoutubeId": ""
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "g8S6-tC4NeI"
   },
   {
     "id": 437,
@@ -3929,8 +3929,8 @@
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx198113-NRa47idWSlnx.jpg",
     "genres": ["Action", "Comedy"],
-    "themes": ["Shounen"],
-    "YoutubeId": ""
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "bjK97cBgTvs"
   },
   {
     "id": 438,
@@ -4235,8 +4235,8 @@
     "type": "OP",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176273-raxxcgkslf4Q.jpg",
     "genres": ["Action", "Fantasy", "Romance"],
-    "themes": [],
-    "YoutubeId": ""
+    "themes": ["Isekai"],
+    "YoutubeId": "oygsxvHtU74"
   },
   {
     "id": 472,
@@ -4244,26 +4244,26 @@
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176273-raxxcgkslf4Q.jpg",
     "genres": ["Action", "Fantasy", "Romance"],
-    "themes": [],
-    "YoutubeId": ""
+    "themes": ["Isekai"],
+    "YoutubeId": "hVuPwbnH1RQ"
   },
   {
     "id": 473,
     "title": "Clevatess Season 2 OP 1",
     "type": "OP",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx198946-IGXmbqBEYRYD.jpg",
-    "genres": ["Action", "Drama", "Fantasy"],
-    "themes": [],
-    "YoutubeId": ""
+    "genres": ["Action", "Fantasy"],
+    "themes": ["School"],
+    "YoutubeId": "SiTi3WCmzfc"
   },
   {
     "id": 474,
     "title": "Clevatess Season 2 ED 1",
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx198946-IGXmbqBEYRYD.jpg",
-    "genres": ["Action", "Drama", "Fantasy"],
-    "themes": [],
-    "YoutubeId": ""
+    "genres": ["Action", "Fantasy"],
+    "themes": ["School"],
+    "YoutubeId": "Tbyi0Tx1QLA"
   },
   {
     "id": 475,
@@ -4460,8 +4460,8 @@
     "type": "OP",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100332-5saXfqfB8nvF.jpg",
     "genres": ["Action", "Drama", "Mystery", "Supernatural", "Suspense"],
-    "themes": ["Seinen", "Psychological"],
-    "YoutubeId": ""
+    "themes": ["Seinen", "Adult Cast", "Psychological"],
+    "YoutubeId": "fhBA6ynorvc"
   },
   {
     "id": 495,
@@ -4469,8 +4469,8 @@
     "type": "ED",
     "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx100332-5saXfqfB8nvF.jpg",
     "genres": ["Action", "Drama", "Mystery", "Supernatural", "Suspense"],
-    "themes": ["Seinen", "Psychological"],
-    "YoutubeId": ""
+    "themes": ["Seinen", "Adult Cast", "Psychological"],
+    "YoutubeId": "kwb_GRm6NtU"
   },
   {
     "id": 496,
@@ -4525,5 +4525,266 @@
     "genres": ["Action", "Mystery", "Sci-Fi", "Suspense"],
     "themes": ["Adult Cast", "Detective", "Psychological"],
     "YoutubeId": "E3GJ5_iYj10"
+  },
+  {
+    "id": 502,
+    "title": "Agents of the Four Seasons: Dance of Spring OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx190143-IqqbkMAF0GOo.jpg",
+    "genres": ["Drama", "Fantasy", "Romance"],
+    "themes": ["Shoujo", "Urban Fantasy"],
+    "YoutubeId": "7k4VN-XmgLs"
+  },
+  {
+    "id": 503,
+    "title": "Agents of the Four Seasons: Dance of Spring ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx190143-IqqbkMAF0GOo.jpg",
+    "genres": ["Drama", "Fantasy", "Romance"],
+    "themes": ["Shoujo", "Urban Fantasy"],
+    "YoutubeId": "lrHJGndISbA"
+  },
+  {
+    "id": 504,
+    "title": "Secrets of the Silent Witch OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179966-g0EU7rVe2Og7.jpg",
+    "genres": ["Drama", "Fantasy"],
+    "themes": ["Shoujo", "School"],
+    "YoutubeId": "8dky0A7Gx1c"
+  },
+  {
+    "id": 505,
+    "title": "Secrets of the Silent Witch ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx179966-g0EU7rVe2Og7.jpg",
+    "genres": ["Drama", "Fantasy"],
+    "themes": ["Shoujo", "School"],
+    "YoutubeId": "ZssInPdN6o8"
+  },
+  {
+    "id": 506,
+    "title": "The Water Magician OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx186052-zq8h0Qo0O0sP.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Isekai", "Reincarnation"],
+    "YoutubeId": "wxdHpj7r6Rc"
+  },
+  {
+    "id": 507,
+    "title": "The Water Magician ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx186052-zq8h0Qo0O0sP.jpg",
+    "genres": ["Action", "Adventure", "Fantasy"],
+    "themes": ["Isekai", "Reincarnation"],
+    "YoutubeId": "JuWSQPlO5B0"
+  },
+  {
+    "id": 508,
+    "title": "The Ramparts of Ice OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx186497-uwPrNPphXvjP.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life"],
+    "themes": ["Shoujo", "School"],
+    "YoutubeId": "fWsHcllfmx4"
+  },
+  {
+    "id": 509,
+    "title": "The Ramparts of Ice ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx186497-uwPrNPphXvjP.jpg",
+    "genres": ["Comedy", "Drama", "Romance", "Slice of Life"],
+    "themes": ["Shoujo", "School"],
+    "YoutubeId": "5ggfKnnQ-0Q"
+  },
+  {
+    "id": 510,
+    "title": "Wistoria: Wand and Sword OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx174576-tpKcHG0eO6CS.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Fantasy"],
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "VJLJ15yIQlI"
+  },
+  {
+    "id": 511,
+    "title": "Wistoria: Wand and Sword ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx174576-tpKcHG0eO6CS.jpg",
+    "genres": ["Action", "Comedy", "Drama", "Fantasy"],
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "luke9AYCN7g"
+  },
+  {
+    "id": 512,
+    "title": "Wistoria: Wand and Sword Season 2 OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182300-IYkq5KrkQq1V.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy"],
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "03eMtnVjiBk"
+  },
+  {
+    "id": 513,
+    "title": "Wistoria: Wand and Sword Season 2 ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx182300-IYkq5KrkQq1V.jpg",
+    "genres": ["Action", "Adventure", "Drama", "Fantasy"],
+    "themes": ["Shounen", "School"],
+    "YoutubeId": "Pn0c9QIiqbo"
+  },
+  {
+    "id": 514,
+    "title": "Saint Seiya: Knights of the Zodiac OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1254.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "CsCcPHRPnBo"
+  },
+  {
+    "id": 515,
+    "title": "Saint Seiya: Knights of the Zodiac ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1254.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "ggCL1RB3RWM"
+  },
+  {
+    "id": 516,
+    "title": "Saint Seiya: Knights of the Zodiac OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1254.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "JUJP5eAxcIA"
+  },
+  {
+    "id": 517,
+    "title": "Saint Seiya: Knights of the Zodiac ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1254.jpg",
+    "genres": ["Action", "Adventure", "Fantasy", "Sci-Fi"],
+    "themes": ["Shounen", "Mythology"],
+    "YoutubeId": "EB-VQtnWdwk"
+  },
+  {
+    "id": 518,
+    "title": "Toriko OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "s0XgPT5dnmw"
+  },
+  {
+    "id": 519,
+    "title": "Toriko ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "3iVCvr8Ko8g"
+  },
+  {
+    "id": 520,
+    "title": "Toriko OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "n-MeuJxECho"
+  },
+  {
+    "id": 521,
+    "title": "Toriko ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "9nLcPbDBJzU"
+  },
+  {
+    "id": 522,
+    "title": "Toriko ED 3",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "XpO3oQZISBU"
+  },
+  {
+    "id": 523,
+    "title": "Toriko ED 4",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "pZ5RUZm07KY"
+  },
+  {
+    "id": 524,
+    "title": "Toriko ED 5",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "ojNRqpcr144"
+  },
+  {
+    "id": 525,
+    "title": "Toriko ED 6",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "kD6bc25xxkk"
+  },
+  {
+    "id": 526,
+    "title": "Toriko ED 7",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "SiUYp-magPE"
+  },
+  {
+    "id": 527,
+    "title": "Toriko ED 8",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "lKnya_p-yoQ"
+  },
+  {
+    "id": 528,
+    "title": "Toriko ED 9",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "qRAARib2Vhg"
+  },
+  {
+    "id": 529,
+    "title": "Toriko ED 10",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "_9Q77F8hBQw"
+  },
+  {
+    "id": 530,
+    "title": "Toriko ED 11",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx10033-V7xnlgAVtaVR.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Fantasy", "Gourmet"],
+    "themes": ["Shounen"],
+    "YoutubeId": "oHivIGj4EqI"
   }
 ]
