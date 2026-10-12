@@ -591,7 +591,7 @@
     "image": "https://cdn.myanimelist.net/images/anime/5/69957l.jpg",
     "genres": ["Romance", "Drama"],
     "themes": ["Shounen", "Love Polygon", "Music", "Performing Arts", "School"],
-    "YoutubeId": "NOnSynIeiSk"
+    "YoutubeId": "https://naedist.animemusicquiz.com/ekclmq.webm"
   },
   {
     "id": 65,
@@ -4939,5 +4939,302 @@
     "genres": ["Action", "Drama", "Sci-Fi"],
     "themes": ["Mecha", "Military", "Space"],
     "YoutubeId": "3NYliAI8LFM"
+  },
+  {
+    "id": 548,
+    "title": "World Trigger OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20729-DnBXnUxFon1B.png",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": "B7Jbd63h_iM"
+  },
+  {
+    "id": 549,
+    "title": "World Trigger OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20729-DnBXnUxFon1B.png",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": "n1j5k2pLCCw"
+  },
+  {
+    "id": 550,
+    "title": "World Trigger OP 3",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20729-DnBXnUxFon1B.png",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": ""
+  },
+  {
+    "id": 551,
+    "title": "World Trigger 2nd Season OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114087-5sSD98EFqQZ5.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": "sEu3GWw-TbI"
+  },
+  {
+    "id": 552,
+    "title": "World Trigger 2nd Season ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114087-5sSD98EFqQZ5.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": "RCyHQAxrE8Q"
+  },
+  {
+    "id": 553,
+    "title": "World Trigger 3rd Season OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127400-m2xz2qDVqQwL.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": "R0utySPqkbU"
+  },
+  {
+    "id": 554,
+    "title": "World Trigger 3rd Season ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127400-m2xz2qDVqQwL.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Shounen"],
+    "YoutubeId": "j8fo01EZaSU"
+  },
+  {
+    "id": 555,
+    "title": "The Legendary Hero is Dead! OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx148109-cwAINDGwAHB2.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Ecchi", "Fantasy"],
+    "themes": ["Harem", "Parody"],
+    "YoutubeId": "z1VBlur77cI"
+  },
+  {
+    "id": 556,
+    "title": "The Legendary Hero is Dead! ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx148109-cwAINDGwAHB2.jpg",
+    "genres": ["Action", "Adventure", "Comedy", "Ecchi", "Fantasy"],
+    "themes": ["Harem", "Parody"],
+    "YoutubeId": "LzbbAkqolVc"
+  },
+  {
+    "id": 557,
+    "title": "Insomniacs After School OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143653-uq3motvR9kb4.png",
+    "genres": ["Romance", "Slice of Life"],
+    "themes": ["Seinen", "School"],
+    "YoutubeId": "j0dQmivkJTw"
+  },
+  {
+    "id": 558,
+    "title": "Insomniacs After School ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143653-uq3motvR9kb4.png",
+    "genres": ["Romance", "Slice of Life"],
+    "themes": ["Seinen", "School"],
+    "YoutubeId": "LzbbAkqolVc"
+  },
+  {
+    "id": 559,
+    "title": "Deadman Wonderland OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx6880-qZ1jIqIYpST2.png",
+    "genres": ["Action", "Drama", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen", "Gore", "High Stakes Game", "Survival"],
+    "YoutubeId": "_5WvUPHF5f8"
+  },
+  {
+    "id": 560,
+    "title": "Deadman Wonderland ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx6880-qZ1jIqIYpST2.png",
+    "genres": ["Action", "Drama", "Sci-Fi", "Supernatural"],
+    "themes": ["Shounen", "Gore", "High Stakes Game", "Survival"],
+    "YoutubeId": "wD7pwXF8otA"
+  },
+  {
+    "id": 561,
+    "title": "The Future Diary OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10620-dUZeNej0W4QN.png",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Gore", "High Stakes Game", "Psychological", "Survival"],
+    "YoutubeId": "I59V9pjEOLI"
+  },
+  {
+    "id": 562,
+    "title": "The Future Diary ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10620-dUZeNej0W4QN.png",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Gore", "High Stakes Game", "Psychological", "Survival"],
+    "YoutubeId": "8JoNNd-JC9g"
+  },
+  {
+    "id": 563,
+    "title": "The Future Diary OP 2",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10620-dUZeNej0W4QN.png",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Gore", "High Stakes Game", "Psychological", "Survival"],
+    "YoutubeId": "0_36iNzrEn0"
+  },
+  {
+    "id": 564,
+    "title": "The Future Diary ED 2",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx10620-dUZeNej0W4QN.png",
+    "genres": ["Action", "Horror", "Mystery", "Supernatural", "Suspense"],
+    "themes": ["Shounen", "Gore", "High Stakes Game", "Psychological", "Survival"],
+    "YoutubeId": "Ibtz3uuvnxg"
+  },
+  {
+    "id": 565,
+    "title": "The Future Diary: Redial OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/16762.jpg",
+    "genres": ["Action", "Supernatural"],
+    "themes": ["Shounen", "Psychological"],
+    "YoutubeId": "2lx0S9LrOPc"
+  },
+  {
+    "id": 566,
+    "title": "The Future Diary: Redial ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/16762.jpg",
+    "genres": ["Action", "Supernatural"],
+    "themes": ["Shounen", "Psychological"],
+    "YoutubeId": "vSV_vQWKR9U"
+  },
+  {
+    "id": 567,
+    "title": "Elfen Lied OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx226-MibyRKhIrnTe.png",
+    "genres": ["Action", "Drama", "Ecchi", "Horror", "Romance", "Supernatural"],
+    "themes": ["Seinen", "Gore", "Psychological", "Super Power"],
+    "YoutubeId": "https://naedist.animemusicquiz.com/9n3417.webm"
+  },
+  {
+    "id": 568,
+    "title": "Elfen Lied ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx226-MibyRKhIrnTe.png",
+    "genres": ["Action", "Drama", "Ecchi", "Horror", "Romance", "Supernatural"],
+    "themes": ["Seinen", "Gore", "Psychological", "Super Power"],
+    "YoutubeId": "https://naedist.animemusicquiz.com/oiclov.webm"
+  },
+  {
+    "id": 569,
+    "title": "Darwin's Game OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105190-lSoQNlnMF6UP.jpg",
+    "genres": ["Action", "Mystery", "Sci-Fi", "Suspense"],
+    "themes": ["Shounen", "High Stakes Game", "Super Power", "Survival"],
+    "YoutubeId": "Furuj5r37NU"
+  },
+  {
+    "id": 570,
+    "title": "Darwin's Game ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105190-lSoQNlnMF6UP.jpg",
+    "genres": ["Action", "Mystery", "Sci-Fi", "Suspense"],
+    "themes": ["Shounen", "High Stakes Game", "Super Power", "Survival"],
+    "YoutubeId": "fLM0ilwk6n8"
+  },
+  {
+    "id": 571,
+    "title": "Kemono Jihen OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114085-2w5rYZTOa7ER.jpg",
+    "genres": ["Action", "Drama", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Detective", "Mythology"],
+    "YoutubeId": "6JyDgWe_UrQ"
+  },
+  {
+    "id": 572,
+    "title": "Kemono Jihen ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114085-2w5rYZTOa7ER.jpg",
+    "genres": ["Action", "Drama", "Mystery", "Supernatural"],
+    "themes": ["Shounen", "Detective", "Mythology"],
+    "YoutubeId": "fGTZunYgzB8"
+  },
+  {
+    "id": 573,
+    "title": "BTOOOM! OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx14345-BeDPCuhQGtL5.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Seinen", "Gore", "High Stakes Game", "Psychological", "Survival"],
+    "YoutubeId": "5GjbLOe_cgw"
+  },
+  {
+    "id": 574,
+    "title": "BTOOOM! ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx14345-BeDPCuhQGtL5.jpg",
+    "genres": ["Action", "Sci-Fi"],
+    "themes": ["Seinen", "Gore", "High Stakes Game", "Psychological", "Survival"],
+    "YoutubeId": "m090_MNrtXU"
+  },
+  {
+    "id": 575,
+    "title": "Black Lagoon OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx889-4S7N2ciq2cwA.png",
+    "genres": ["Action", "Adventure", "Drama", "Suspense"],
+    "themes": ["Seinen", "Adult Cast", "Organized Crime"],
+    "YoutubeId": "dWfxcRj39tg"
+  },
+  {
+    "id": 576,
+    "title": "Black Lagoon ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx889-4S7N2ciq2cwA.png",
+    "genres": ["Action", "Adventure", "Drama", "Suspense"],
+    "themes": ["Seinen", "Adult Cast", "Organized Crime"],
+    "YoutubeId": "oWZh3tK6zkw"
+  },
+  {
+    "id": 577,
+    "title": "Jormungand OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx12413-LAnEEGbT5JQP.jpg",
+    "genres": ["Action", "Adventure"],
+    "themes": ["Seinen", "Adult Cast", "Military", "Organized Crime"],
+    "YoutubeId": "SJINKQ6msok"
+  },
+  {
+    "id": 578,
+    "title": "Jormungand ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx12413-LAnEEGbT5JQP.jpg",
+    "genres": ["Action", "Adventure"],
+    "themes": ["Seinen", "Adult Cast", "Military", "Organized Crime"],
+    "YoutubeId": "hGNK0eSx7WI"
+  },
+  {
+    "id": 579,
+    "title": "Rainbow OP 1",
+    "type": "OP",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b6114-pLPszMA7AxbD.jpg",
+    "genres": ["Drama", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Delinquents", "Historical"],
+    "YoutubeId": "ibkhGFKhyW8"
+  },
+  {
+    "id": 580,
+    "title": "Rainbow ED 1",
+    "type": "ED",
+    "image": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b6114-pLPszMA7AxbD.jpg",
+    "genres": ["Drama", "Suspense"],
+    "themes": ["Seinen", "Psychological", "Delinquents", "Historical"],
+    "YoutubeId": "GfjWJuRmieM"
   }
 ]
