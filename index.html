@@ -47,6 +47,7 @@
 
             <div class="menu-buttons">
                 <button id="btn-solo" class="btn">Mode Solo</button>
+                <button id="btn-ascension" class="btn" style="background: linear-gradient(135deg, #8e44ad 0%, #c0392b 100%); box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);">🔥 Mode L'Ascension (Survie)</button>
                 <hr>
                 <div class="multiplayer-box">
                     <h3>Mode 2 Joueurs</h3>
@@ -123,65 +124,114 @@
 
         <!-- 3. ZONE DE JEU -->
         <div id="screen-game" class="screen hidden">
+            <!-- EN-TÊTE ÉPURÉ -->
             <div class="game-header">
-                <div class="round-counter">QUESTION : <span id="current-question-num">1</span>/<span id="total-questions-num">10</span></div>
+                <!-- GAUCHE : Soit Question X/Y (mode normal), Soit les Coeurs (mode Ascension) -->
+                <div class="round-counter" id="normal-round-counter">QUESTION : <span id="current-question-num">1</span>/<span id="total-questions-num">10</span></div>
+                <div class="ascension-hearts-box hidden" id="ascension-hearts-box">
+                    <span class="hearts-display" id="ascension-hearts">❤️❤️❤️</span>
+                </div>
+
+                <!-- CENTRE : Score normal OU Étage + Score en Ascension -->
                 <div class="score-display-wrapper">
-                <div class="score-display" id="score-top-display">SCORE : 0</div>
-                    <!-- Sticker de gain de points dynamique -->
+                    <div id="ascension-floor-pill" class="floor-pill hidden">ÉTAGE 1</div>
+                    <div class="score-display" id="score-top-display">SCORE : 0</div>
                     <div id="score-increment-sticker" class="score-sticker hidden"></div>
                 </div>
+
+                <!-- DROITE : Timer -->
                 <div class="timer">TEMPS : <span id="timer-sec">20</span>s</div>
             </div>
 
-            <!-- Conteneur vidéo horizontal centré -->
-            <!-- Section Média Unifiée (Vidéo + Volume à droite) -->
+            <!-- BANNIÈRE DE MALÉDICTION (SI ACTIVE) -->
+            <div id="malus-banner" class="malus-banner hidden">
+                <span id="malus-icon">⚠️</span> <span id="malus-text">MALUS ACTIF</span>
+            </div>
+
+            <!-- SECTION MÉDIA (Vidéo / Audio) -->
             <div class="game-media-section">
-                <div class="audio-status">
-    <div id="placeholder-container">
-        <div class="music-icon">🎵</div>
-        <div class="timer-bar-container">
-            <div id="timer-bar" class="timer-bar"></div>
-        </div>
-        <p id="audio-status-text">Écoutez attentivement...</p>
-    </div>
-
-    <div id="yt-player-container">
-        <div id="yt-player"></div>
-    </div>
-    
-    <div id="native-player-container" style="display:none;">
-        <video id="native-player" playsinline style="width:100%; height:100%;"></video>
-    </div>
-    
-    <!-- 2 Préchargeurs vidéo invisibles (Question N+1 et Question N+2) -->
-    <video id="preloader-1" preload="auto" muted style="position:absolute; width:1px; height:1px; opacity:0.01; pointer-events:none; left:-9999px;"></video>
-    <video id="preloader-2" preload="auto" muted style="position:absolute; width:1px; height:1px; opacity:0.01; pointer-events:none; left:-9999px;"></video>
-</div>
-        
-
-                <!-- Contrôle de volume vertical à droite de la vidéo -->
+                <div class="audio-status" id="audio-status">
+                    <div id="placeholder-container">
+                        <div class="music-icon">♫</div>
+                        <p id="audio-status-text">Préparation du morceau...</p>
+                        <div class="timer-bar-container" id="timer-bar-container" aria-label="Temps restant">
+                            <div class="timer-bar" id="timer-bar"></div>
+                        </div>
+                    </div>
+                    <div id="yt-player-container"><div id="yt-player"></div></div>
+                    <div id="native-player-container">
+                        <video id="native-player" preload="auto" playsinline></video>
+                    </div>
+                    <audio id="native-player-a" preload="auto"></audio>
+                    <audio id="native-player-b" preload="auto"></audio>
+                    <div id="round-overlay" class="round-overlay hidden"><div id="round-overlay-text" class="round-overlay-text"></div></div>
+                </div>
                 <div class="volume-slider-container">
-                    <span class="volume-icon">🔊</span>
-                    <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" orient="vertical">
+                    <span class="volume-icon" id="volume-icon">🔊</span>
+                    <input id="volume-slider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume">
                 </div>
             </div>
-
-            <!-- Overlay d'impact pour les annonces de victoire/défaite -->
-<div id="round-overlay" class="round-overlay hidden">
-    <div id="round-overlay-text" class="round-overlay-text"></div>
-</div>
-
-            <div class="choices-grid" id="choices-container">
-                <!-- Généré dynamiquement -->
+            <div id="custom-controls" class="custom-controls">
+                <button id="ctrl-play-pause" type="button" aria-label="Lecture/Pause">▶</button>
+                <input id="ctrl-seek" type="range" min="0" max="100" value="0" aria-label="Position de lecture">
+                <span id="ctrl-current-time">0:00</span>
+                <select id="ctrl-speed" class="ctrl-select" aria-label="Vitesse"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
             </div>
+            <video id="preloader-1" preload="auto" muted playsinline></video>
+            <video id="preloader-2" preload="auto" muted playsinline></video>
+
+            <!-- BARRE DES POUVOIRS (Placée proprement au-dessus des cartes de choix) -->
+            <div class="powers-bar hidden" id="powers-bar">
+                <button id="btn-power-5050" class="btn-power">🃏 50/50 (<span id="stock-5050">0</span>)</button>
+                <button id="btn-power-purify" class="btn-power">🧪 Purifier (<span id="stock-purify">0</span>)</button>
+                <button id="btn-power-slow" class="btn-power">⏳ +5s (<span id="stock-slow">0</span>)</button>
+            </div>
+
+            <!-- Grille des choix -->
+            <div class="choices-grid" id="choices-container"></div>
 
             <!-- BOUTON DE PROGRESSION MANUELLE -->
             <button id="btn-next-question" class="btn hidden">Question suivante ➡️</button>
         </div>
 
+        <!-- ÉCRAN DE SÉLECTION DE BONUS (PERKS) -->
+        <div id="screen-perk-select" class="screen hidden">
+            <h2 style="color:var(--warning); text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">⭐ PALIER FRANCHI !</h2>
+            <p>Choisissez un pouvoir pour continuer votre ascension :</p>
+            
+            <div class="perks-grid">
+                <div class="perk-card" id="perk-5050">
+                    <div class="perk-icon">🃏</div>
+                    <h3>Option 50/50</h3>
+                    <p>Obtenez +1 charge pour éliminer immédiatement deux mauvaises réponses.</p>
+                </div>
+                <div class="perk-card" id="perk-purify">
+                    <div class="perk-icon">🧪</div>
+                    <h3>Purificateur</h3>
+                    <p>Obtenez +1 charge pour dissiper les malus et remettre le jeu à l'état normal.</p>
+                </div>
+                <div class="perk-card" id="perk-slow">
+                    <div class="perk-icon">⏳</div>
+                    <h3>Ralentisseur</h3>
+                    <p>Obtenez +1 charge pour rajouter immédiatement +5 secondes au chronomètre.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- 4. ÉCRAN DE FIN -->
         <div id="screen-results" class="screen hidden">
             <h2>Bilan de la Partie</h2>
+            <section id="ascension-results" class="ascension-results hidden">
+                <h3>⚔️ Bilan de l’Ascension</h3>
+                <div class="ascion-result-number"><span>Étage atteint</span><strong id="asc-final-floor">0</strong></div>
+                <div class="ascion-result-number"><span>Score obtenu</span><strong id="asc-final-score">0 pts</strong></div>
+                <h4>🏆 Classement Firebase — Top 10</h4>
+                <ol id="asc-leaderboard" class="asc-leaderboard"><li>Chargement du classement…</li></ol>
+                <label for="asc-pseudo">Votre pseudo pour le classement</label>
+                <input id="asc-pseudo" type="text" maxlength="16" placeholder="Votre pseudo">
+                <button id="btn-asc-save" class="btn">Enregistrer mon résultat</button>
+                <p id="asc-save-status" class="info-msg" aria-live="polite"></p>
+            </section>
             <div id="winner-announcement"></div>
 
             <!-- COMPARATIF DUEL MULTIJOUEUR -->

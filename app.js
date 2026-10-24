@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, update, get, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, update, get, off, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDejimWjgsbqP2cmrfL_Oa_sotz8h-sBKg",
@@ -34,9 +34,24 @@ let hasAnsweredCurrent = false;
 let playedHistory = [];
 
 let ytWatchdog = null;
+let mediaWatchdog = null;
 let ytRetryCount = 0;
 let progressionTimeout = null;
 let roundProcessed = false;
+
+let isAscensionMode = false;
+let ascensionFloor = 1;
+let ascensionHearts = 3;
+let activeMalus = null;
+let wobbleInterval = null;
+let malusAudioContext = null;
+let malusAudioSource = null;
+let malusAudioNodes = [];
+let robotOscillator = null;
+let robotGain = null;
+let malusOverlayNodes = [];
+let hasPickedFloorPerk = false;
+let stocks = { fifty: 1, purify: 1, slow: 1 };
 
 let mediaReady = false;
 let isRoundActive = false;
@@ -49,10 +64,10 @@ let loadedQuestionKey = -1;
 // NETTOYEUR DE TIMERS FANTÔMES
 function clearAllTimers() {
     clearInterval(timerInterval);
-    clearTimeout(ytWatchdog);
+    clearTimeout(mediaWatchdog); // Watchdog unique
     clearTimeout(progressionTimeout);
     timerInterval = null;
-    ytWatchdog = null;
+    mediaWatchdog = null;
     progressionTimeout = null;
 }
 
@@ -131,15 +146,36 @@ function getCurrentQuestion() {
 }
 
 function isDirectVideoUrl(url) {
-    return url && url.startsWith('http');
+    return typeof url === 'string' && /^https?:\/\//i.test(url);
 }
+
+// Mode de test : ne retenir que les sources vidéo directes, jamais YouTube.
+function isNonYoutubeVideoUrl(value) {
+    if (!isDirectVideoUrl(value)) return false;
+    try {
+        const hostname = new URL(value).hostname.toLowerCase();
+        if (hostname === 'youtu.be' || hostname.endsWith('.youtube.com') || hostname === 'youtube.com' ||
+            hostname.endsWith('.youtube-nocookie.com') || hostname === 'youtube-nocookie.com' ||
+            hostname.endsWith('.youtube.googleapis.com')) return false;
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+const directVideoUrlCache = new Map();
 
 async function getDirectVideoUrl(url) {
     if (!url || !url.startsWith('http')) return null;
-    if (url.includes('animethemes.moe') && !url.endsWith('.webm') && !url.includes('v.animethemes.moe')) {
-        return await getAnimeThemesVideoUrl(url);
+    if (!url.includes('animethemes.moe') || url.endsWith('.webm') || url.includes('v.animethemes.moe')) {
+        return url;
     }
-    return url;
+    // Évite les requêtes API répétées lorsque le préchargement et le lecteur
+    // demandent la résolution du même lien en parallèle.
+    if (!directVideoUrlCache.has(url)) {
+        directVideoUrlCache.set(url, getAnimeThemesVideoUrl(url).catch(() => null));
+    }
+    return directVideoUrlCache.get(url);
 }
 
 async function getAnimeThemesVideoUrl(animethemesUrl) {
@@ -213,53 +249,40 @@ async function preloadFirstVideo() {
 
 // Préchargement des questions N+1 et N+2
 async function preloadUpcomingVideos(currentIndex) {
+    // Précharge N+1
     const idx1 = currentIndex + 1;
     const q1 = getQuestionAt(idx1);
     if (q1) {
         preloadImages(questionsPlaylist[idx1]);
         if (isDirectVideoUrl(q1.YoutubeId) && !q1.resolvedUrl) {
-            getDirectVideoUrl(q1.YoutubeId).then(url1 => {
-                if (url1) {
-                    q1.resolvedUrl = url1;
+            getDirectVideoUrl(q1.YoutubeId).then(url => {
+                if (url) {
+                    q1.resolvedUrl = url;
                     const p1 = document.getElementById('preloader-1');
-                    if (p1) {
-                        p1.src = url1;
-                        p1.onloadedmetadata = () => {
-                            p1.onloadedmetadata = null;
-                            if ((q1.startOffset || 0) > 0) p1.currentTime = q1.startOffset;
-                        };
-                        p1.load();
-                    }
+                    if (p1) { p1.src = url; p1.load(); }
                 }
             });
         }
     }
 
+    // Précharge N+2
     const idx2 = currentIndex + 2;
     const q2 = getQuestionAt(idx2);
-    if (q2) {
-        if (isDirectVideoUrl(q2.YoutubeId) && !q2.resolvedUrl) {
-            getDirectVideoUrl(q2.YoutubeId).then(url2 => {
-                if (url2) {
-                    q2.resolvedUrl = url2;
-                    const p2 = document.getElementById('preloader-2');
-                    if (p2) {
-                        p2.src = url2;
-                        p2.onloadedmetadata = () => {
-                            p2.onloadedmetadata = null;
-                            if ((q2.startOffset || 0) > 0) p2.currentTime = q2.startOffset;
-                        };
-                        p2.load();
-                    }
-                }
-            });
-        }
+    if (q2 && isDirectVideoUrl(q2.YoutubeId) && !q2.resolvedUrl) {
+        getDirectVideoUrl(q2.YoutubeId).then(url => {
+            if (url) {
+                q2.resolvedUrl = url;
+                const p2 = document.getElementById('preloader-2');
+                if (p2) { p2.src = url; p2.load(); }
+            }
+        });
     }
 }
 
 function generatePlaylist(length = 10, musicTypeChoice = "Mix", randomStartChoice = false) {
     let availableSongs = animeDatabase.filter(song => {
-        if (!song.type) return false;
+        // YouTube et vidéos directes sont tous deux autorisés après la fin du test.
+        if (!song || !(song.YoutubeId || song.youtubeId) || !song.type) return false;
         if (musicTypeChoice === "OP") return song.type.toUpperCase() === "OP";
         if (musicTypeChoice === "ED") return song.type.toUpperCase() === "ED";
         return true;
@@ -343,6 +366,119 @@ function getSimilarAnime(correctSong, count = 3) {
 }
 
 // --- API YOUTUBE ---
+
+// Malus Hardcore : quatre propositions issues de la même franchise et de la même catégorie OP/ED.
+// Le malus ne s'active que si la franchise possède au moins quatre morceaux de cette catégorie.
+function getHardcoreEligibleGroups() {
+    if (!Array.isArray(animeDatabase)) return [];
+    
+    // Filtre les morceaux valides avec un média
+    const eligibleSongs = animeDatabase.filter(s => 
+        s && s.title && s.type && (s.YoutubeId || s.youtubeId)
+    );
+
+    const groups = [];
+
+    for (const song of eligibleSongs) {
+        const type = String(song.type).trim().toUpperCase();
+        
+        // Trouve un groupe existant de même type (OP/ED) et de même franchise
+        let foundGroup = groups.find(g => g.type === type && isSameFranchise(g.repTitle, song.title));
+        
+        if (foundGroup) {
+            // Évite d'ajouter deux fois exactement le même titre
+            const titleLower = song.title.trim().toLowerCase();
+            if (!foundGroup.songs.some(s => s.title.trim().toLowerCase() === titleLower)) {
+                foundGroup.songs.push(song);
+            }
+        } else {
+            groups.push({
+                repTitle: song.title,
+                type: type,
+                songs: [song]
+            });
+        }
+    }
+
+    // Ne conserve que les franchises qui ont au moins 4 morceaux distincts dans cette catégorie
+    return groups.filter(g => g.songs.length >= 4).map(g => g.songs);
+}
+
+function renderAscensionChoices(choices, correctQuestion) {
+    const choicesContainer = document.getElementById('choices-container');
+    if (!choicesContainer || !Array.isArray(choices)) return;
+
+    choicesContainer.innerHTML = "";
+    choicesContainer.classList.remove('malus-blurred');
+
+    choices.forEach((song, index) => {
+        const card = document.createElement('div');
+        card.className = "choice-card";
+
+        const badgeText = getOpEdBadgeText(song.title);
+        const badgeHtml = badgeText ? `<div class="card-type-badge">${badgeText}</div>` : "";
+
+        card.innerHTML = `
+            <div class="choice-number">${index + 1}</div>
+            ${badgeHtml}
+            <img src="${song.image || ''}" alt="${song.title || ''}">
+            <span>${song.title || 'Inconnu'}</span>
+        `;
+
+        card.addEventListener('click', () => {
+            if (!card.classList.contains('disabled')) {
+                handleChoice(card, song, correctQuestion);
+            }
+        });
+
+        choicesContainer.appendChild(card);
+    });
+}
+function getHardcoreChoices(correctQuestion) {
+    if (!correctQuestion) return [];
+    // Récupère 3 animés différents de la même catégorie via le comparateur normal
+    const distractors = getSimilarAnime(correctQuestion, 3);
+    return [correctQuestion, ...distractors].sort(() => 0.5 - Math.random());
+}
+
+// Le Hardcore choisit une franchise/catégorie éligible, puis quatre morceaux de ce groupe.
+
+function getRandomHardcoreSet() {
+    const groups = getHardcoreEligibleGroups();
+    if (!groups.length) return null;
+
+    // 1. Choisit une franchise/catégorie au hasard (ex: les OP de Bleach, ou les ED de Naruto)
+    const chosenGroup = groups[Math.floor(Math.random() * groups.length)];
+
+    // 2. Tire 4 morceaux distincts parmi cette même franchise
+    const shuffled = [...chosenGroup].sort(() => 0.5 - Math.random());
+    const choices = shuffled.slice(0, 4);
+
+    // 3. L'un des 4 est désigné comme le morceau à deviner
+    const correctSong = choices[Math.floor(Math.random() * choices.length)];
+    const startOffset = (Math.random() < 0.5 ? 25 : 50);
+
+    return {
+        isHardcore: true,
+        correct: {
+            id: correctSong.id || 0,
+            title: correctSong.title || "Inconnu",
+            image: correctSong.image || "",
+            YoutubeId: correctSong.YoutubeId || correctSong.youtubeId || "",
+            type: correctSong.type || "",
+            genres: correctSong.genres || [],
+            themes: correctSong.themes || [],
+            startOffset: startOffset
+        },
+        choices: choices.map(c => ({
+            id: c.id || 0,
+            title: c.title || "Inconnu",
+            image: c.image || ""
+        }))
+    };
+}
+
+
 function loadYoutubeAPI() {
     return new Promise((resolve) => {
         if (window.YT && window.YT.Player) {
@@ -396,6 +532,9 @@ function loadYoutubeAPI() {
 function handleYoutubeStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         clearTimeout(ytWatchdog);
+        clearTimeout(mediaWatchdog);
+        ytWatchdog = null;
+        mediaWatchdog = null;
         if (!mediaReady) {
             mediaReady = true;
             if (gameMode === "multi") {
@@ -408,6 +547,9 @@ function handleYoutubeStateChange(event) {
 
 function handleYoutubeError(event) {
     clearTimeout(ytWatchdog);
+    clearTimeout(mediaWatchdog);
+    ytWatchdog = null;
+    mediaWatchdog = null;
     if (gameMode === "multi" && !mediaReady) {
         mediaReady = true;
         signalMediaReady();
@@ -431,7 +573,7 @@ function unlockNativePlayer() {
 }
 
 function applyGlobalVolume() {
-    const nativePlayer = document.getElementById('native-player');
+    var nativePlayer = document.getElementById('native-player');
     if (nativePlayer) {
         nativePlayer.volume = globalVolume;
         nativePlayer.muted = (globalVolume === 0);
@@ -452,7 +594,7 @@ function fadeInAudio() {
     const startVolume = targetVolume / 2;
     let currentStep = 0;
 
-    const nativePlayer = document.getElementById('native-player');
+    var nativePlayer = document.getElementById('native-player');
 
     if (nativePlayer) {
         nativePlayer.volume = startVolume;
@@ -491,25 +633,20 @@ function fadeInAudio() {
 }
 
 async function loadMediaForRound(youtubeId) {
-    clearTimeout(ytWatchdog);
+    clearTimeout(mediaWatchdog);
     mediaReady = false;
-    
-    const nativePlayerContainer = document.getElementById('native-player-container');
-    const ytPlayerContainer = document.getElementById('yt-player-container');
-    const nativePlayer = document.getElementById('native-player');
 
-    if (gameMode === "solo") {
-        document.getElementById('audio-status-text').innerText = "Préparation du morceau...";
-    } else {
-        document.getElementById('audio-status-text').innerText = "Synchronisation des joueurs...";
-    }
+    document.getElementById('audio-status-text').innerText = 
+        (gameMode === "solo") ? "Chargement du morceau..." : "Synchronisation...";
 
-    const safetyBufferTimeout = setTimeout(() => {
+    // Secours long (8s) : laisse au lecteur le temps de démarrer avant de débloquer une vidéo défaillante.
+    mediaWatchdog = setTimeout(() => {
         if (!mediaReady) {
+            console.warn("[Watchdog] Délai dépassé, lancement forcé de la manche.");
             mediaReady = true;
             signalMediaReady();
         }
-    }, 2500);
+    }, 8000);
 
     const currentQuestion = getCurrentQuestion();
     if (!currentQuestion) {
@@ -519,111 +656,113 @@ async function loadMediaForRound(youtubeId) {
 
     const offset = currentQuestion.startOffset || 0;
 
+    // CAS 1 : Vidéo directe (MP4 / WebM / AnimeThemes)
     if (isDirectVideoUrl(youtubeId)) {
-        if (ytPlayerContainer) ytPlayerContainer.style.display = 'none';
-        if (nativePlayerContainer) {
-            nativePlayerContainer.style.display = 'block';
-            
-            let directUrl = currentQuestion.resolvedUrl;
-            if (!directUrl) directUrl = await getDirectVideoUrl(youtubeId);
+        if (ytPlayer && typeof ytPlayer.pauseVideo === "function") ytPlayer.pauseVideo();
+        document.getElementById('yt-player-container').style.display = 'none';
+        
+        const nativeContainer = document.getElementById('native-player-container');
+        nativeContainer.style.display = 'block';
 
-            if (directUrl && nativePlayer) {
-                currentQuestion.resolvedUrl = directUrl;
-                nativePlayer.src = directUrl;
-                nativePlayer.muted = (globalVolume === 0);
-                nativePlayer.volume = globalVolume;
+        let directUrl = currentQuestion.resolvedUrl || await getDirectVideoUrl(youtubeId);
+        currentQuestion.resolvedUrl = directUrl;
 
-                nativePlayer.onloadedmetadata = () => {
-                    nativePlayer.onloadedmetadata = null;
-                    if (offset > 0) nativePlayer.currentTime = offset;
-                };
-
-                nativePlayer.load();
-
-                nativePlayer.play().then(() => {
-                    if (!mediaReady) {
-                        mediaReady = true;
-                        clearTimeout(safetyBufferTimeout);
-                        signalMediaReady();
-                    }
-                }).catch(e => {
-                    nativePlayer.muted = true;
-                    nativePlayer.play();
-                    if (!mediaReady) {
-                        mediaReady = true;
-                        clearTimeout(safetyBufferTimeout);
-                        signalMediaReady();
-                    }
+        const video = document.getElementById('native-player');
+        if (video && directUrl) {
+            // Les sources AnimeThemes sont des fichiers VIDÉO : elles doivent être
+            // lues dans un élément <video>, pas dans <audio> (qui peut rester muet).
+            video.pause();
+            video.muted = (globalVolume === 0);
+            video.volume = globalVolume;
+            video.onloadedmetadata = () => {
+                if (offset > 0 && Number.isFinite(video.duration) && offset < video.duration) {
+                    try { video.currentTime = offset; } catch (_) {}
+                }
+                video.play().catch(err => {
+                    // Ne jamais muter automatiquement : cela laissait les questions
+                    // suivantes silencieuses après un refus d'autoplay.
+                    console.warn('[Vidéo directe] Lecture bloquée par le navigateur :', err);
                 });
-            } else {
-                if (!mediaReady) { mediaReady = true; signalMediaReady(); }
-            }
+            };
+            video.onplaying = () => {
+                clearTimeout(mediaWatchdog);
+                if (!mediaReady) {
+                    mediaReady = true;
+                    signalMediaReady();
+                }
+            };
+            video.onerror = () => {
+                console.warn('[Vidéo directe] Impossible de lire la source :', directUrl);
+            };
+            if (video.src !== directUrl) video.src = directUrl;
+            video.load();
+            // Si les métadonnées sont déjà disponibles depuis le cache, déclencher la lecture.
+            if (video.readyState >= 1) video.onloadedmetadata();
+        } else {
+            console.warn('[Vidéo directe] URL introuvable pour cette question :', youtubeId);
         }
-    } else {
-        if (nativePlayer) nativePlayer.pause();
-        if (nativePlayerContainer) nativePlayerContainer.style.display = 'none';
-        if (ytPlayerContainer) ytPlayerContainer.style.display = 'block';
+    } 
+    // CAS 2 : Vidéo YouTube
+    else {
+        const video = document.getElementById('native-player');
+        if (video) video.pause();
+        document.getElementById('native-player-container').style.display = 'none';
+        document.getElementById('yt-player-container').style.display = 'block';
 
-        if (typeof ytPlayer.loadVideoById === "function") {
-            if (gameMode === "solo") {
-                if (globalVolume === 0) ytPlayer.mute();
-                else { ytPlayer.unMute(); ytPlayer.setVolume(globalVolume * 100); }
-            } else {
-                ytPlayer.mute();
-            }
-
+        if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
             ytPlayer.loadVideoById({
                 videoId: youtubeId,
                 startSeconds: offset
             });
-            ytPlayer.playVideo(); 
-            
-            ytWatchdog = setTimeout(() => {
-                if (!mediaReady) {
-                    mediaReady = true;
-                    clearTimeout(safetyBufferTimeout);
-                    signalMediaReady();
-                }
-            }, 1500);
+            ytPlayer.playVideo();
         }
     }
-
-    preloadUpcomingVideos(currentQuestionIndex);
 }
 
 function signalMediaReady() {
+    clearTimeout(mediaWatchdog);
+    
     if (gameMode === "solo" || multiGameType === "draft") {
+        // Le flux est prêt et le son sort des enceintes : on lance immédiatement le chrono
         startRound();
     } else {
+        // En Classique synchrone : on informe Firebase que notre lecteur est prêt
         update(ref(db, `rooms/${roomCode}/players/${myRole}`), { isReady: true });
     }
 }
 
 function startTimer(currentQuestion) {
-    currentTimer = 20;
-    document.getElementById('timer-sec').innerText = currentTimer;
-    
+    const timerDuration = (isAscensionMode && activeMalus === 'short_timer') ? 10 : 20;
     const timerBar = document.getElementById('timer-bar');
-    timerBar.style.width = '100%';
-    timerBar.classList.remove('warning');
-    document.querySelector('.container').classList.remove('warning-pulse');
+    const timerSec = document.getElementById('timer-sec');
+
+    // Rétablit le décompte linéaire standard
+    if (timerBar) {
+        timerBar.style.transition = 'width 1s linear, background-color 0.3s ease';
+    }
+
+    if (timerSec) {
+        timerSec.innerText = currentTimer;
+    }
 
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
         currentTimer--;
-        document.getElementById('timer-sec').innerText = currentTimer;
+        if (timerSec) timerSec.innerText = currentTimer;
         
-        const percent = (currentTimer / 20) * 100;
-        timerBar.style.width = percent + '%';
+        const percent = (currentTimer / timerDuration) * 100;
+        if (timerBar) timerBar.style.width = percent + '%';
 
         if (currentTimer <= 10) {
-            timerBar.classList.add('warning');
-            document.querySelector('.container').classList.add('warning-pulse');
+            if (timerBar) timerBar.classList.add('warning');
+            const container = document.querySelector('.container');
+            if (container) container.classList.add('warning-pulse');
         }
 
         if (currentTimer <= 0) {
             clearInterval(timerInterval);
-            document.querySelector('.container').classList.remove('warning-pulse');
+            const container = document.querySelector('.container');
+            if (container) container.classList.remove('warning-pulse');
             autoTimeout(currentQuestion);
         }
     }, 1000);
@@ -631,6 +770,20 @@ function startTimer(currentQuestion) {
 
 function startRound() {
     isRoundActive = true;
+
+    const targetRate = (isAscensionMode && activeMalus === 'speed') ? 1.25 : 1.0;
+
+    const roundNativePlayer = document.getElementById('native-player');
+    if (roundNativePlayer) {
+        roundNativePlayer.playbackRate = targetRate;
+        roundNativePlayer.preservesPitch = true;
+    }
+    if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
+        ytPlayer.setPlaybackRate(targetRate);
+    }
+
+    // Ajuste le temps de base si Malus Chrono Éclair (10s au lieu de 20s)
+    currentTimer = (isAscensionMode && activeMalus === 'short_timer') ? 10 : 20;
     
     const currentQuestion = getCurrentQuestion();
     if (!currentQuestion) {
@@ -646,7 +799,7 @@ function startRound() {
     const hasOffset = (currentQuestion.startOffset || 0) > 0;
 
     if (isDirectVideoUrl(currentQuestion.YoutubeId)) {
-        const nativePlayer = document.getElementById('native-player');
+        var nativePlayer = document.getElementById('native-player');
         if (nativePlayer) {
             if (nativePlayer.paused) {
                 nativePlayer.play().catch(() => {});
@@ -679,9 +832,13 @@ function startRound() {
 
 function stopAudio() {
     clearAllTimers();
-    if (ytPlayer && typeof ytPlayer.stopVideo === "function") ytPlayer.stopVideo();
-    const nativePlayer = document.getElementById('native-player');
-    if (nativePlayer) nativePlayer.pause();
+    if (ytPlayer && typeof ytPlayer.pauseVideo === "function") {
+        ytPlayer.pauseVideo(); // Beaucoup plus rapide à réveiller que stopVideo()
+    }
+    var nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        nativePlayer.pause();
+    }
 }
 
 function revealVideo() {
@@ -692,7 +849,7 @@ function revealVideo() {
     const currentQuestion = getCurrentQuestion();
 
     if (currentQuestion && isDirectVideoUrl(currentQuestion.YoutubeId)) {
-        const nativePlayer = document.getElementById('native-player');
+        var nativePlayer = document.getElementById('native-player');
         if (nativePlayer) {
             nativePlayer.muted = (globalVolume === 0);
             nativePlayer.volume = globalVolume;
@@ -710,7 +867,7 @@ function revealVideo() {
     if (manualProgress) {
         document.getElementById('yt-player-container').classList.add('interactive');
         document.getElementById('native-player-container').classList.add('interactive');
-        const nativePlayer = document.getElementById('native-player');
+        var nativePlayer = document.getElementById('native-player');
         if (nativePlayer) nativePlayer.controls = true;
     }
 }
@@ -724,7 +881,7 @@ function resetVideoVisibility() {
     if (ytContainer) ytContainer.classList.remove('reveal', 'interactive');
     if (nativeContainer) nativeContainer.classList.remove('reveal', 'interactive');
     
-    const nativePlayer = document.getElementById('native-player');
+    var nativePlayer = document.getElementById('native-player');
     if (nativePlayer) nativePlayer.controls = false;
 
     const customControls = document.getElementById('custom-controls');
@@ -800,7 +957,7 @@ function cleanHistoryForFirebase(history) {
 function loadQuestion() {
     const choicesContainerCheck = document.getElementById('choices-container');
     if (loadedQuestionKey === currentQuestionIndex && choicesContainerCheck && choicesContainerCheck.children.length === 4) {
-        return; // Annule l'exécution en doublon !
+        return;
     }
     loadedQuestionKey = currentQuestionIndex;
 
@@ -810,27 +967,52 @@ function loadQuestion() {
     ytRetryCount = 0;
     stopAudio();
     resetVideoVisibility();
+    
+    // =========================================================================
+    // RECHARGE FLUIDE DU TIMER (ANIMATION DU NIVEAU QUI REMONTE À 100%)
+    // =========================================================================
     clearInterval(timerInterval);
+    timerInterval = null;
 
-    const btnNext = document.getElementById('btn-next-question');
-    if (btnNext) btnNext.classList.add('hidden');
-
-    const overlay = document.getElementById('round-overlay');
-    if (overlay) overlay.classList.add('hidden');
+    const timerDuration = (isAscensionMode && activeMalus === 'short_timer') ? 10 : 20;
+    currentTimer = timerDuration;
 
     const timerBar = document.getElementById('timer-bar');
     if (timerBar) {
-        timerBar.style.width = '100%';
+        // Animation fluide de recharge (0.6s) : la jauge se remplit et redevient verte
+        timerBar.style.transition = 'width 0.6s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.4s ease';
         timerBar.classList.remove('warning');
+        timerBar.style.width = '100%'; // Remonte fluidement depuis sa position précédente
     }
 
     const container = document.querySelector('.container');
-    if (container) container.classList.remove('warning-pulse');
+    if (container) {
+        container.classList.remove('warning-pulse');
+    }
 
     const timerSec = document.getElementById('timer-sec');
-    if (timerSec) timerSec.innerText = "--";
+    if (timerSec) {
+        timerSec.innerText = "--"; // Ou timerDuration selon votre préférence
+    }
+    // =========================================================================
+    // =========================================================================
+    // 1. LE NOUVEAU MALUS EST TIRÉ ICI, UNIQUEMENT QUAND LA MANCHE COMMENCE
+    // =========================================================================
+    if (isAscensionMode) {
+        rollMalus();
+    }
 
-    if (document.activeElement) document.activeElement.blur();
+    // 2. Gestion du Malus Hardcore (si tiré pour cette manche)
+    if (isAscensionMode && activeMalus === 'hardcore') {
+        const hardcoreSet = getRandomHardcoreSet();
+        if (hardcoreSet) {
+            questionsPlaylist[currentQuestionIndex] = hardcoreSet;
+        } else {
+            activeMalus = null;
+            const banner = document.getElementById('malus-banner');
+            if (banner) banner.classList.add('hidden');
+        }
+    }
 
     const currentQuestion = getCurrentQuestion();
     if (!currentQuestion) {
@@ -840,8 +1022,8 @@ function loadQuestion() {
     }
 
     const currentQuestionObj = questionsPlaylist[currentQuestionIndex];
-    const choices = (currentQuestionObj && currentQuestionObj.choices) 
-        ? currentQuestionObj.choices 
+    let choices = (currentQuestionObj && currentQuestionObj.choices)
+        ? currentQuestionObj.choices
         : [currentQuestion, ...getSimilarAnime(currentQuestion, 3)].sort(() => 0.5 - Math.random());
 
     const currentQEl = document.getElementById('current-question-num');
@@ -849,7 +1031,7 @@ function loadQuestion() {
 
     const choicesContainer = document.getElementById('choices-container');
     if (choicesContainer) {
-        choicesContainer.innerHTML = ""; // Supprime les cartes de la question précédente
+        choicesContainer.innerHTML = "";
 
         choices.forEach((song, index) => {
             const card = document.createElement('div');
@@ -899,7 +1081,8 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
 
     if (isCorrect) {
         selectedCard.classList.add('correct');
-        document.querySelector('.container').classList.remove('warning-pulse');
+        const container = document.querySelector('.container');
+        if (container) container.classList.remove('warning-pulse');
         animateScoreFusion(earnedPoints, score);
 
         if (gameMode === "solo" || multiGameType === "draft") {
@@ -935,6 +1118,17 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
             }
         });
 
+        // DÉFAITE ASCENSION : PERD UN CŒUR UNIQUEMENT ICI !
+        let isGameOver = false;
+        if (isAscensionMode) {
+            removeMalusEffects();
+            ascensionHearts--;
+            updateAscensionHUD();
+            if (ascensionHearts <= 0) {
+                isGameOver = true;
+            }
+        }
+
         if (gameMode === "solo" || multiGameType === "draft") {
             showImpactOverlay("ÉCHEC", false);
             if (gameMode === "multi") {
@@ -944,7 +1138,13 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
                     answersHistory: cleanHistoryForFirebase(playedHistory)
                 });
             }
-            triggerProgression();
+            
+            // Si c'est Game Over, on attend 2.5s pour que le joueur voie la bonne réponse avant de couper
+            if (isGameOver) {
+                setTimeout(() => endGameAscension(), 2500);
+            } else {
+                triggerProgression();
+            }
         } else {
             update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
                 hasAnswered: true,
@@ -952,6 +1152,25 @@ function handleChoice(selectedCard, chosenSong, correctQuestion) {
                 answersHistory: cleanHistoryForFirebase(playedHistory)
             });
         }
+    }
+
+    // Ascension : un étage gagné uniquement si la réponse est correcte.
+    // La progression n'est volontairement pas déclenchée sur une erreur.
+    if (isAscensionMode && isCorrect) {
+        ascensionFloor++;
+        score += 15;
+        updateAscensionHUD();
+        removeMalusEffects();
+
+        // Tous les 5 étages : choix d'un pouvoir avant la prochaine question.
+        if (ascensionFloor % 5 === 0) {
+            clearTimeout(progressionTimeout);
+            progressionTimeout = null;
+            document.getElementById('btn-next-question').classList.add('hidden');
+            showScreen('screen-perk-select');
+            return;
+        }
+
     }
 }
 
@@ -968,6 +1187,16 @@ function autoTimeout(correctQuestion) {
         }
     });
 
+    // DÉFAITE ASCENSION (Temps écoulé)
+    let isGameOver = false;
+    if (isAscensionMode) {
+        ascensionHearts--;
+        updateAscensionHUD();
+        if (ascensionHearts <= 0) {
+            isGameOver = true;
+        }
+    }
+
     if (gameMode === "solo" || multiGameType === "draft") {
         showImpactOverlay("TEMPS ÉCOULÉ", false);
         if (gameMode === "multi") {
@@ -977,7 +1206,13 @@ function autoTimeout(correctQuestion) {
                 answersHistory: cleanHistoryForFirebase(playedHistory)
             });
         }
-        triggerProgression();
+        
+        // Si c'est Game Over, on laisse le temps de voir la réponse
+        if (isGameOver) {
+            setTimeout(() => endGameAscension(), 2500);
+        } else {
+            triggerProgression();
+        }
     } else {
         update(ref(db, `rooms/${roomCode}/players/${myRole}`), {
             hasAnswered: true,
@@ -986,7 +1221,6 @@ function autoTimeout(correctQuestion) {
         });
     }
 }
-
 function triggerProgression() {
     if (gameMode === "solo") {
         manualProgress = document.getElementById('manual-progress-checkbox').checked;
@@ -1001,7 +1235,8 @@ function triggerProgression() {
     } else {
         document.getElementById('btn-next-question').classList.add('hidden');
         clearTimeout(progressionTimeout);
-        progressionTimeout = setTimeout(() => { nextStep(); }, 3000);
+        // 5000 ms = 5 secondes complètes d'écoute originale
+        progressionTimeout = setTimeout(() => { nextStep(); }, 5000);
     }
 }
 
@@ -1009,9 +1244,12 @@ function nextStep() {
     if (gameMode === "solo" || multiGameType === "draft") {
         currentQuestionIndex++;
         
+        // S'il reste des questions à jouer
         if (currentQuestionIndex < questionsPlaylist.length) {
             loadQuestion();
         } else {
+            // SÉCURITÉ : Fin de ses propres questions atteinte
+            currentQuestionIndex = questionsPlaylist.length; // Verrouille l'index pour éviter tout crash
             clearAllTimers();
             stopAudio();
             
@@ -1032,6 +1270,7 @@ function nextStep() {
                 }).catch(err => {
                     console.error("Erreur de mise à jour de fin:", err);
                 });
+
             } else {
                 endGame();
             }
@@ -1040,7 +1279,6 @@ function nextStep() {
         if (myRole === "p1") moveToNextRound();
     }
 }
-
 function moveToNextRound() {
     get(ref(db, `rooms/${roomCode}`)).then(snapshot => {
         const room = snapshot.val();
@@ -1398,8 +1636,152 @@ function endGame(roomData = null) {
     }
 }
 
+async function loadAscensionLeaderboard() {
+    const list = document.getElementById('asc-leaderboard');
+    if (!list) return;
+    list.innerHTML = "<li>Chargement du classement…</li>";
+    try {
+        const snap = await get(ref(db, "ascensionLeaderboard"));
+        const values = [];
+        snap.forEach(child => values.push({ ...child.val(), id: child.key }));
+        values.sort((a, b) => (Number(b.floor) || 0) - (Number(a.floor) || 0) || (Number(b.score) || 0) - (Number(a.score) || 0) || (Number(b.correct) || 0) - (Number(a.correct) || 0) || (Number(a.time) || 0) - (Number(b.time) || 0));
+        list.innerHTML = "";
+        if (!values.length) { list.innerHTML = "<li>Soyez le premier à inscrire un score !</li>"; return; }
+        values.slice(0, 10).forEach((entry, i) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="asc-rank">#${i + 1}</span><span class="asc-player"></span><span class="asc-floor-value"></span><strong class="asc-score-value"></strong>`;
+            li.querySelector('.asc-player').textContent = entry.pseudo || "Joueur anonyme";
+            li.querySelector('.asc-floor-value').textContent = `Étage ${Number(entry.floor) || 0}`;
+            li.querySelector('.asc-score-value').textContent = `${Number(entry.score || 0).toFixed(1)} pts`;
+            list.appendChild(li);
+        });
+    } catch (error) {
+        list.innerHTML = "<li>Classement indisponible. Vérifiez les règles Firebase Realtime Database.</li>";
+        console.error("Erreur classement Ascension:", error);
+    }
+}
+
+async function saveAscensionScore() {
+    const pseudoInput = document.getElementById('asc-pseudo');
+    const pseudo = (pseudoInput && pseudoInput.value || "").trim().slice(0, 16);
+    const status = document.getElementById('asc-save-status');
+    if (!pseudo) {
+        if (status) status.textContent = "Entre un pseudo pour apparaître dans le classement Ascension.";
+        if (pseudoInput) { pseudoInput.required = true; pseudoInput.focus(); }
+        return;
+    }
+    const button = document.getElementById('btn-asc-save');
+    if (!button || button.disabled) return;
+    button.disabled = true;
+    if (status) status.textContent = "Enregistrement…";
+    try {
+        await set(push(ref(db, "ascensionLeaderboard")), {
+            pseudo,
+            floor: Math.max(0, Number(ascensionFloor) || 0),
+            score: Number((score || 0).toFixed(1)),
+            correct: playedHistory.filter(item => item && item.success).length,
+            time: Date.now(),
+            createdAt: new Date().toISOString()
+        });
+        if (status) status.textContent = "Score enregistré !";
+        await loadAscensionLeaderboard();
+    } catch (error) {
+        if (status) status.textContent = "Impossible d’enregistrer le score. Vérifiez les règles Firebase.";
+        console.error("Erreur sauvegarde Ascension:", error);
+    } finally { button.disabled = false; }
+}
+
+// Écran de fin spécifique au Mode Ascension (Game Over à 0 cœur)
+function endGameAscension() {
+    clearAllTimers();
+    stopAudio();
+    resetVideoVisibility();
+    removeMalusEffects();
+    
+    // Masque le HUD de survie
+    const hud = document.getElementById('ascension-hud');
+    const powers = document.getElementById('powers-bar');
+    if (hud) hud.classList.add('hidden');
+    if (powers) powers.classList.add('hidden');
+    
+    const saveStatus = document.getElementById('asc-save-status');
+    if (saveStatus) saveStatus.textContent = "";
+    const saveButton = document.getElementById('btn-asc-save');
+    if (saveButton) saveButton.disabled = false;
+    showScreen('screen-results');
+    loadAscensionLeaderboard();
+    renderHistory();
+
+    const ascResults = document.getElementById('ascension-results');
+    if (ascResults) {
+        ascResults.classList.remove('hidden');
+        let pseudoInput = document.getElementById('asc-pseudo');
+        if (!pseudoInput) {
+            const saveButton = document.getElementById('btn-asc-save');
+            const saveArea = saveButton ? saveButton.parentElement : ascResults;
+            const label = document.createElement('label');
+            label.htmlFor = 'asc-pseudo';
+            label.textContent = 'Ton pseudo pour le classement Ascension';
+            label.style.display = 'block';
+            label.style.margin = '12px 0 6px';
+            pseudoInput = document.createElement('input');
+            pseudoInput.id = 'asc-pseudo';
+            pseudoInput.name = 'asc-pseudo';
+            pseudoInput.type = 'text';
+            pseudoInput.maxLength = 16;
+            pseudoInput.required = true;
+            pseudoInput.autocomplete = 'nickname';
+            pseudoInput.placeholder = 'Entre ton pseudo';
+            pseudoInput.style.display = 'block';
+            pseudoInput.style.width = '100%';
+            pseudoInput.style.maxWidth = '320px';
+            pseudoInput.style.marginBottom = '8px';
+            if (saveButton && saveButton.parentElement) {
+                saveButton.parentElement.insertBefore(label, saveButton);
+                saveButton.parentElement.insertBefore(pseudoInput, saveButton);
+            } else { ascResults.append(label, pseudoInput); }
+        }
+    }
+    const finalFloor = document.getElementById('asc-final-floor');
+    if (finalFloor) finalFloor.textContent = String(Math.max(0, Number(ascensionFloor) || 0));
+    const finalScore = document.getElementById('asc-final-score');
+    if (finalScore) finalScore.textContent = `${Number((score || 0).toFixed(1))} pts`;
+    const winnerAnnounce = document.getElementById('winner-announcement');
+    if (winnerAnnounce) {
+        winnerAnnounce.innerHTML = `<h3 style="color:var(--error);">💀 FIN DE L'ASCENSION</h3><p style="color:var(--warning); font-size:1.1rem; font-weight:bold; margin-top:5px;">Ascension terminée !</p>`;
+    }
+
+    const finalP1 = document.getElementById('final-p1');
+    if (finalP1) finalP1.classList.add('hidden');
+    
+    const finalP2 = document.getElementById('final-p2');
+    if (finalP2) finalP2.classList.add('hidden');
+    
+    const duelBox = document.getElementById('duel-summary-box');
+    if (duelBox) duelBox.classList.add('hidden');
+    
+    const trapContainer = document.getElementById('trap-badge-container');
+    if (trapContainer) trapContainer.classList.add('hidden');
+
+    const btnPlayAgain = document.getElementById('btn-play-again');
+    if (btnPlayAgain) {
+        btnPlayAgain.classList.remove('hidden');
+        btnPlayAgain.disabled = false;
+    }
+}
+
 document.getElementById('btn-play-again').addEventListener('click', () => {
-    document.getElementById('btn-play-again').disabled = true;
+    const replayButton = document.getElementById('btn-play-again');
+    replayButton.disabled = true;
+
+    // Le mode Ascension utilise aussi gameMode === "solo" :
+    // il faut donc le tester avant de relancer une partie solo classique.
+    if (isAscensionMode) {
+        const playAgainMsg = document.getElementById('play-again-msg');
+        if (playAgainMsg) playAgainMsg.classList.add('hidden');
+        startAscensionGame();
+        return;
+    }
 
     if (gameMode === "solo") {
         const lenInput = document.getElementById('quiz-length-input');
@@ -1454,6 +1836,239 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
+function startAscensionGame() {
+    if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") {
+        const replayButton = document.getElementById('btn-play-again');
+        if (replayButton) replayButton.disabled = false;
+        return alert("Patientez...");
+    }
+    if (animeDatabase.length === 0) {
+        const replayButton = document.getElementById('btn-play-again');
+        if (replayButton) replayButton.disabled = false;
+        return alert("Base de données vide.");
+    }
+    unlockNativePlayer();
+
+    gameMode = "solo";
+    isAscensionMode = true;
+    const ascResults = document.getElementById('ascension-results');
+    if (ascResults) ascResults.classList.add('hidden');
+    ascensionFloor = 1;
+    currentQuestionIndex = 0;
+    loadedQuestionKey = -1;
+    ascensionHearts = 3;
+    score = 0;
+    activeMalus = null;
+    stocks = { fifty: 1, purify: 1, slow: 1 }; // 1 charge offerte au départ !
+    playedHistory = [];
+
+    // Playlist infinie mélangeant toute la base de données
+    questionsPlaylist = generatePlaylist(50, "Mix", true);
+
+    // Mise à jour de l'affichage du HUD
+      document.getElementById('normal-round-counter').classList.add('hidden');
+  document.getElementById('ascension-hearts-box').classList.remove('hidden');
+  document.getElementById('ascension-floor-pill').classList.remove('hidden');
+  document.getElementById('powers-bar').classList.remove('hidden');
+  document.getElementById('score-top-display').innerText = `SCORE : 0`;
+  updateAscensionHUD();
+
+    showScreen('screen-game');
+    preloadFirstVideo();
+    loadQuestion();
+}
+
+function updateAscensionHUD() {
+    // Rendu des cœurs
+    let heartsStr = "";
+    for (let i = 0; i < 3; i++) {
+        heartsStr += i < ascensionHearts ? "❤️" : "🖤";
+    }
+    document.getElementById('ascension-hearts').innerText = heartsStr;
+    document.getElementById('ascension-floor-pill').innerText = `ÉTAGE ${ascensionFloor}`;
+
+    // Rendu des stocks de pouvoirs
+    document.getElementById('stock-5050').innerText = stocks.fifty;
+    document.getElementById('stock-purify').innerText = stocks.purify;
+    document.getElementById('stock-slow').innerText = stocks.slow;
+
+    document.getElementById('btn-power-5050').disabled = (stocks.fifty <= 0);
+    document.getElementById('btn-power-purify').disabled = (stocks.purify <= 0 || !activeMalus);
+    document.getElementById('btn-power-slow').disabled = (stocks.slow <= 0);
+}
+
+// Les sources distantes peuvent être bloquées par CORS : ne jamais connecter le lecteur
+// original à MediaElementAudioSourceNode, car le navigateur pourrait alors rendre le son muet.
+function clearMalusAudioNodes() {
+    if (robotOscillator) {
+        try { robotOscillator.stop(); } catch (_) {}
+        try { robotOscillator.disconnect(); } catch (_) {}
+        robotOscillator = null;
+    }
+    if (robotGain) {
+        try { robotGain.disconnect(); } catch (_) {}
+        robotGain = null;
+    }
+    malusAudioNodes.forEach(node => { try { node.disconnect(); } catch (_) {} });
+    malusAudioNodes = [];
+}
+
+function stopMalusOverlay() {
+    malusOverlayNodes.forEach(node => { try { if (node.stop) node.stop(); } catch (_) {} try { node.disconnect(); } catch (_) {} });
+    malusOverlayNodes = [];
+}
+
+// Brouilleurs générés localement : ils peuvent être superposés à YouTube sans lire son flux.
+function startMalusOverlay(type) {
+    // Conserve le même AudioContext réutilisable : aucun framework externe ni boucle de traitement permanente.
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    try {
+        if (!malusAudioContext) malusAudioContext = new AudioContextClass();
+        const ctx = malusAudioContext;
+        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+        const master = ctx.createGain();
+        master.gain.value = 0.0001;
+        master.connect(ctx.destination);
+        malusOverlayNodes.push(master);
+        const now = ctx.currentTime;
+        master.gain.setTargetAtTime(type === 'vocal_cut' ? 0.075 : 0.045, now, 0.08);
+        if (type === 'vocal_cut') {
+            // Bruit rose approximé par bruit blanc filtré dans la bande de présence vocale.
+            const bufferSize = 2 * ctx.sampleRate;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            let last = 0;
+            for (let i = 0; i < bufferSize; i++) { const white = Math.random() * 2 - 1; last = (last + 0.025 * white) / 1.025; data[i] = last * 3.5; }
+            const noise = ctx.createBufferSource(); noise.buffer = buffer; noise.loop = true;
+            const band = ctx.createBiquadFilter(); band.type = 'bandpass'; band.frequency.value = 1800; band.Q.value = 0.65;
+            noise.connect(band); band.connect(master); noise.start(); malusOverlayNodes.push(noise, band);
+        } else if (type === 'instrument_cut') {
+            const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = 95;
+            const low = ctx.createBiquadFilter(); low.type = 'lowpass'; low.frequency.value = 180;
+            const highOsc = ctx.createOscillator(); highOsc.type = 'sawtooth'; highOsc.frequency.value = 850;
+            const high = ctx.createBiquadFilter(); high.type = 'lowpass'; high.frequency.value = 2400;
+            osc.connect(low); low.connect(master); highOsc.connect(high); high.connect(master);
+            osc.start(); highOsc.start(); malusOverlayNodes.push(osc, low, highOsc, high);
+        } else if (type === 'robot') {
+            const osc = ctx.createOscillator(); osc.type = 'square'; osc.frequency.value = 50;
+            const gain = ctx.createGain(); gain.gain.value = 0.018;
+            osc.connect(gain); gain.connect(ctx.destination); osc.start();
+            malusOverlayNodes.push(osc, gain);
+        } else {
+            // Secours pour les malus de timbre : bruit radio discret indépendant du flux.
+            // On ne prétend pas transformer la voix originale, car CORS peut l'interdire.
+            const bufferSize = 2 * ctx.sampleRate;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.22;
+            const noise = ctx.createBufferSource(); noise.buffer = buffer; noise.loop = true;
+            const band = ctx.createBiquadFilter(); band.type = 'bandpass';
+            band.frequency.value = (type === 'high_pitch' || type === 'female_voice') ? 2800 : 650;
+            band.Q.value = 0.7;
+            noise.connect(band); band.connect(master); noise.start();
+            malusOverlayNodes.push(noise, band);
+        }
+    } catch (error) { console.warn('[Malus audio] Brouilleur indisponible :', error); }
+}
+
+function applyAudioMalus(type) {
+    // Les malus sonores n'altèrent jamais la source originale ni sa vitesse.
+    // Les effets éventuels sont des sons locaux superposés, indépendants du flux vidéo/CORS.
+    stopMalusOverlay();
+    clearMalusAudioNodes();
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) { nativePlayer.playbackRate = 1; nativePlayer.preservesPitch = true; }
+    if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') ytPlayer.setPlaybackRate(1);
+
+}
+
+function applyAscensionPlaybackRate(rate) {
+    const nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) {
+        try { nativePlayer.playbackRate = rate; nativePlayer.preservesPitch = true; } catch (_) {}
+    }
+    if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
+        try {
+            const available = typeof ytPlayer.getAvailablePlaybackRates === 'function' ? ytPlayer.getAvailablePlaybackRates() : [];
+            const chosen = available.includes(rate) ? rate : (available.includes(1.25) ? 1.25 : rate);
+            ytPlayer.setPlaybackRate(chosen);
+        } catch (_) {}
+    }
+}
+
+function rollMalus() {
+    removeMalusEffects();
+    
+    // Pas de malus avant l'étage 10
+    if (ascensionFloor < 10) {
+        activeMalus = null;
+        document.getElementById('malus-banner').classList.add('hidden');
+        document.querySelector('.container').classList.remove('curse-aura');
+        return;
+    }
+
+    // Sélection d'un malus parmi 4
+    const malusList = ['speed', 'blur', 'wobble', 'short_timer', 'hardcore'];
+    activeMalus = malusList[Math.floor(Math.random() * malusList.length)];
+
+    const banner = document.getElementById('malus-banner');
+    const icon = document.getElementById('malus-icon');
+    const text = document.getElementById('malus-text');
+    banner.classList.remove('hidden');
+    document.querySelector('.container').classList.add('curse-aura');
+
+    if (activeMalus === 'speed') {
+        icon.innerText = "⏩";
+        text.innerText = "MALUS : Vitesse ×1,25 !";
+        applyAscensionPlaybackRate(1.25);
+    } else if (activeMalus === 'blur') {
+        icon.innerText = "🌫️";
+        text.innerText = "MALUS : Cartes Floutées !";
+        document.getElementById('choices-container').classList.add('malus-blurred');
+    } else if (activeMalus === 'wobble') {
+        icon.innerText = "📻";
+        text.innerText = "MALUS : Signal Radio Parasité !";
+        startWobbleEffect();
+    } else if (activeMalus === 'short_timer') {
+        icon.innerText = "⚡";
+        text.innerText = "MALUS : Chrono Éclair (10s) !";
+    } else if (activeMalus === 'hardcore') {
+        icon.innerText = "☠️";
+        text.innerText = "MALUS HARDCORE : choix de la même franchise et catégorie !";
+    }
+
+    updateAscensionHUD();
+}
+
+function removeMalusEffects() {
+    clearInterval(wobbleInterval);
+    stopMalusOverlay();
+    clearMalusAudioNodes();
+    var nativePlayer = document.getElementById('native-player');
+    if (nativePlayer) { nativePlayer.playbackRate = 1; nativePlayer.preservesPitch = true; }
+    if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') ytPlayer.setPlaybackRate(1);
+    document.getElementById('choices-container').classList.remove('malus-blurred');
+    document.querySelector('.container').classList.remove('curse-aura');
+    document.getElementById('malus-banner').classList.add('hidden');
+    
+    // Rétablit la vitesse normale
+    if (ytPlayer && typeof ytPlayer.setPlaybackRate === "function") ytPlayer.setPlaybackRate(1.0);
+    applyGlobalVolume();
+}
+
+// Simule un effet radio parasite en faisant trembler le volume sans toucher au CORS
+function startWobbleEffect() {
+    clearInterval(wobbleInterval);
+    var nativePlayer = document.getElementById('native-player');
+    wobbleInterval = setInterval(() => {
+        if (!isRoundActive) return;
+        const jitter = 0.4 + Math.random() * 0.6;
+        if (nativePlayer) nativePlayer.volume = globalVolume * jitter;
+        if (ytPlayer && typeof ytPlayer.setVolume === "function") ytPlayer.setVolume(globalVolume * jitter * 100);
+    }, 150);
+}
+
 // --- MENUS & ROOMS ---
 async function startSoloGame() {
     if (!ytPlayer || typeof ytPlayer.loadVideoById !== "function") return alert("Patientez...");
@@ -1461,6 +2076,7 @@ async function startSoloGame() {
     unlockNativePlayer();
     
     gameMode = "solo";
+    isAscensionMode = false; 
     currentQuestionIndex = 0;
     loadedQuestionKey = -1;
     score = 0;
@@ -1480,6 +2096,10 @@ async function startSoloGame() {
     preloadUpcomingVideos(0);
     preloadImages(questionsPlaylist[0]);
 
+    document.getElementById('normal-round-counter').classList.remove('hidden');
+  document.getElementById('ascension-hearts-box').classList.add('hidden');
+  document.getElementById('ascension-floor-pill').classList.add('hidden');
+  document.getElementById('powers-bar').classList.add('hidden');
     document.getElementById('total-questions-num').innerText = totalQuestions;
     document.getElementById('score-top-display').innerText = `SCORE : ${score}`;
     
@@ -1533,6 +2153,10 @@ function createRoom() {
             p1: { name: username, score: 0, hasAnswered: false, isCorrect: false, playAgain: false, isReady: false, isSelectionReady: false, isFinished: false, currentQuestionIndex: 0 }
         }
     }).then(async () => {
+        document.getElementById('normal-round-counter').classList.remove('hidden');
+  document.getElementById('ascension-hearts-box').classList.add('hidden');
+  document.getElementById('ascension-floor-pill').classList.add('hidden');
+  document.getElementById('powers-bar').classList.add('hidden');
         document.getElementById('display-room-code').innerText = roomCode;
         document.getElementById('display-room-mode').innerText = musicType;
         document.getElementById('display-room-length').innerText = totalQuestions;
@@ -1584,6 +2208,10 @@ function joinRoom() {
             isFinished: false,
             currentQuestionIndex: 0
         }).then(async () => {
+            document.getElementById('normal-round-counter').classList.remove('hidden');
+  document.getElementById('ascension-hearts-box').classList.add('hidden');
+  document.getElementById('ascension-floor-pill').classList.add('hidden');
+  document.getElementById('powers-bar').classList.add('hidden');
             document.getElementById('display-room-code').innerText = roomCode;
             document.getElementById('display-room-mode').innerText = roomData.musicType;
             document.getElementById('display-room-length').innerText = roomData.totalQuestions;
@@ -1637,17 +2265,23 @@ function listenToRoom() {
                 playedHistory = [];
                 hasAnsweredCurrent = false;
                 isRoundActive = false;
+                loadedQuestionKey = -1;
                 
                 resetSelectionUI();
                 showScreen('screen-selection');
             }
 
+            // L'hôte surveille la validation des choix
             if (myRole === "p1" && room.players.p1 && room.players.p1.isSelectionReady && room.players.p2 && room.players.p2.isSelectionReady) {
                 const p1Selected = room.players.p1.selectedSongIds || [];
                 const p2Selected = room.players.p2.selectedSongIds || [];
 
-                const songsForP1 = animeDatabase.filter(s => p2Selected.map(Number).includes(Number(s.id)));
-                const songsForP2 = animeDatabase.filter(s => p1Selected.map(Number).includes(Number(s.id)));
+                let songsForP1 = animeDatabase.filter(s => p2Selected.map(Number).includes(Number(s.id)));
+                let songsForP2 = animeDatabase.filter(s => p1Selected.map(Number).includes(Number(s.id)));
+
+                // Sécurité anti-playlist vide : Si une sélection est vide, on complète
+                if (songsForP1.length === 0) songsForP1 = animeDatabase.slice(0, totalQuestions);
+                if (songsForP2.length === 0) songsForP2 = animeDatabase.slice(0, totalQuestions);
 
                 const p1Playlist = buildPlaylistFromSongs(songsForP1, room.randomStart);
                 const p2Playlist = buildPlaylistFromSongs(songsForP2, room.randomStart);
@@ -1684,21 +2318,30 @@ function listenToRoom() {
         // --- PHASE DE JEU MULTIJOUEUR ---
         if (room.status === "playing") {
             if (multiGameType === "draft") {
-                questionsPlaylist = (myRole === "p1") ? room.p1_playlist : room.p2_playlist;
-                
-                // CORRECTION CRITIQUE : Si on vient de l'écran de sélection ou du Bilan, on lance la Question 1 à coup sûr !
-                if (!document.getElementById('screen-selection').classList.contains('hidden') || !document.getElementById('screen-results').classList.contains('hidden')) {
-                    clearAllTimers();
-                    currentQuestionIndex = 0;
-                    score = 0;
-                    opponentScore = 0;
-                    playedHistory = [];
-                    hasAnsweredCurrent = false;
-                    isRoundActive = false;
-                    
-                    showScreen('screen-game');
-                    preloadFirstVideo();
-                    loadQuestion();
+                const myPlaylist = (myRole === "p1") ? room.p1_playlist : room.p2_playlist;
+
+                // SÉCURITÉ CRITIQUE : N'ouvre la partie que lorsque la playlist est reçue à 100%
+                if (myPlaylist && myPlaylist.length > 0) {
+                    questionsPlaylist = myPlaylist;
+
+                    // Si on vient de l'écran de sélection ou du Bilan (Rejeu)
+                    if (!document.getElementById('screen-selection').classList.contains('hidden') || !document.getElementById('screen-results').classList.contains('hidden')) {
+                        clearAllTimers();
+                        currentQuestionIndex = 0;
+                        score = 0;
+                        opponentScore = 0;
+                        playedHistory = [];
+                        hasAnsweredCurrent = false;
+                        isRoundActive = false;
+                        loadedQuestionKey = -1;
+
+                        const choicesContainer = document.getElementById('choices-container');
+                        if (choicesContainer) choicesContainer.innerHTML = "";
+
+                        showScreen('screen-game');
+                        preloadFirstVideo();
+                        loadQuestion();
+                    }
                 }
             } else {
                 if (!document.getElementById('screen-lobby').classList.contains('hidden') || !document.getElementById('screen-results').classList.contains('hidden')) {
@@ -1731,6 +2374,7 @@ function listenToRoom() {
                 }
             }
 
+            // Mode Classique
             if (multiGameType === "classic") {
                 if (room.currentQuestionIndex !== currentQuestionIndex || (room.currentQuestionIndex === 0 && !hasAnsweredCurrent && document.getElementById('choices-container').children.length === 0)) {
                     currentQuestionIndex = room.currentQuestionIndex;
@@ -1772,11 +2416,6 @@ function listenToRoom() {
                     }
                     triggerProgression();
                 }
-            } else {
-                if (document.getElementById('choices-container').children.length === 0) {
-                    preloadFirstVideo();
-                    loadQuestion();
-                }
             }
 
             const scoreP1 = room.players.p1 ? room.players.p1.score || 0 : 0;
@@ -1797,6 +2436,14 @@ function listenToRoom() {
     });
 }
 
+function resumeAfterPerk() {
+    updateAscensionHUD();
+    showScreen('screen-game');
+    currentQuestionIndex++;
+    rollMalus();
+    loadQuestion();
+}
+
 function launchGame() {
     if (multiGameType === "draft") {
         update(ref(db, `rooms/${roomCode}`), { status: "selection" });
@@ -1807,7 +2454,72 @@ function launchGame() {
 
 async function init() {
     await loadDatabase();
+    const ascSaveButton = document.getElementById('btn-asc-save');
+    if (ascSaveButton) ascSaveButton.addEventListener('click', saveAscensionScore);
     
+    // POUVOIR 50/50 : Élimine 2 cartes fausses
+    document.getElementById('btn-power-5050').addEventListener('click', () => {
+        if (stocks.fifty <= 0 || hasAnsweredCurrent) return;
+        stocks.fifty--;
+        updateAscensionHUD();
+        
+        const currentQuestion = getCurrentQuestion();
+        const wrongCards = [...document.querySelectorAll('.choice-card')].filter(card => {
+            return card.querySelector('span').innerText !== currentQuestion.title;
+        });
+
+        // Masque 2 mauvaises cartes au hasard
+        wrongCards.sort(() => 0.5 - Math.random()).slice(0, 2).forEach(card => {
+            card.style.opacity = "0.15";
+            card.style.pointerEvents = "none";
+        });
+    });
+
+    // POUVOIR PURIFICATEUR : annule le malus. En Hardcore, remplace les choix par des équivalents.
+    // POUVOIR PURIFICATEUR : annule le malus. En Hardcore, remplace les choix par des équivalents normaux.
+    document.getElementById('btn-power-purify').addEventListener('click', () => {
+        if (stocks.purify <= 0 || !activeMalus || hasAnsweredCurrent) return;
+        
+        const wasHardcore = activeMalus === 'hardcore';
+        const currentQuestion = getCurrentQuestion();
+        
+        stocks.purify--;
+        removeMalusEffects();
+        activeMalus = null;
+
+        if (wasHardcore && currentQuestion) {
+            const equivalents = getHardcoreChoices(currentQuestion);
+            if (equivalents && equivalents.length === 4) {
+                // Met à jour la playlist en cours pour retirer le flag hardcore
+                if (questionsPlaylist[currentQuestionIndex]) {
+                    questionsPlaylist[currentQuestionIndex].choices = equivalents;
+                    questionsPlaylist[currentQuestionIndex].isHardcore = false;
+                }
+                // Réaffiche immédiatement les 4 cartes avec les animés différents
+                renderAscensionChoices(equivalents, currentQuestion);
+                console.info('[Purifier] Malus Hardcore dissipé : les propositions sont redevenues normales.');
+            }
+        }
+
+        updateAscensionHUD();
+    });
+
+    // POUVOIR RALENTISSEUR : Ajoute +5 secondes
+    document.getElementById('btn-power-slow').addEventListener('click', () => {
+        if (stocks.slow <= 0 || hasAnsweredCurrent) return;
+        stocks.slow--;
+        currentTimer += 5;
+        document.getElementById('timer-sec').innerText = currentTimer;
+        updateAscensionHUD();
+    });
+
+    // CHOIX DES PERKS AUX PALIERS
+    document.getElementById('perk-5050').addEventListener('click', () => { stocks.fifty++; resumeAfterPerk(); });
+    document.getElementById('perk-purify').addEventListener('click', () => { stocks.purify++; resumeAfterPerk(); });
+    document.getElementById('perk-slow').addEventListener('click', () => { stocks.slow++; resumeAfterPerk(); });
+    
+    document.getElementById('btn-ascension').addEventListener('click', startAscensionGame);
+
     const volumeSlider = document.getElementById('volume-slider');
     if (volumeSlider) {
         volumeSlider.addEventListener('input', (e) => {
@@ -1834,7 +2546,7 @@ async function init() {
     });
 
     document.body.addEventListener('click', () => {
-        const nativePlayer = document.getElementById('native-player');
+        var nativePlayer = document.getElementById('native-player');
         const nativeContainer = document.getElementById('native-player-container');
         if (nativePlayer && nativePlayer.muted && nativeContainer && nativeContainer.style.display !== 'none') {
             nativePlayer.muted = false;
